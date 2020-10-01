@@ -1,7 +1,3 @@
-//
-// Created by pierre on 30.09.2020.
-//
-
 #include "Point.h"
 
 Point::Point () : id_ (0) {
@@ -9,11 +5,13 @@ Point::Point () : id_ (0) {
     y_ = 0;
 }
 
-Point::Point (double x, double y) : x_ (x), y_ (y) {
+Point::Point (double x, double y, int id) : x_ (x), y_ (y) {
     static int quantity = 0; // maximum id; number of points
-    id_ = ++quantity;
-    x_ = x;
-    y_ = y;
+    if (id != -1) {
+        id_ = 0;
+    } else {
+        id_ = ++quantity;
+    }
 }
 
 Point::Point (Point const &c) : x_ (c.x ()), y_ (c.y ()), id_ (id ()) {
@@ -27,12 +25,22 @@ double Point::y () const {
     return y_;
 }
 
-int Point::fprintf (ofstream *out) const {
+int Point::fprintf (ofstream &out) const {
     //prints all the clouds to file out
-    *out << x () << " " << y () << endl;
+    out << x () << " " << y () << endl;
     return 0;
 }
 
 int Point::id () const {
     return id_;
+}
+
+void Point::shift (const double &x, const double &y) {
+    x_ += x;
+    y_ += y;
+}
+
+void Point::shift (const Point &vector) {
+    x_ += vector.x ();
+    y_ += vector.y ();
 }

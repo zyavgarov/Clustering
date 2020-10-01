@@ -72,8 +72,7 @@ void Cloud::shift (double shift_x, double shift_y) {
     //shifts the cloud to shift_x up and shift_y right
     int len = length ();
     for (int i = 0; i < len; ++i) {
-        point_[i].x_ += shift_x;
-        point_[i].y_ += shift_y;
+        point_[i].shift (shift_x, shift_y);
     }
 }
 
@@ -93,8 +92,8 @@ void Cloud::rotate (double angle) {
     for (int i = 0; i < length (); ++i) {
         double old_x = point_[i].x ();
         double old_y = point_[i].y ();
-        point_[i].x_ = old_x * cos (angle) - old_y * sin (angle);
-        point_[i].y_ = old_x * sin (angle) + old_y * cos (angle);
+        Point a (old_x * cos (angle) - old_y * sin (angle), old_x * sin (angle) + old_y * cos (angle), 0);
+        point_[i] = a;
     }
     shift (-shift_x, -shift_y);
 }
@@ -109,7 +108,7 @@ void Cloud::mirror () {
     double shift_x = -center_x;
     shift (shift_x, 0);
     for (int i = 0; i < length (); ++i) {
-        point_[i].x_ = -point_[i].x ();
+        point_[i].shift (-point_[i].x () * 2, 0);
     }
     shift (-shift_x, 0);
 }
@@ -129,16 +128,20 @@ void Cloud::zoom (double k) {
     double shift_y = -center_y;
     shift (shift_x, shift_y);
     for (int i = 0; i < length (); i++) {
-        point_[i].x_ *= k;
-        point_[i].x_ *= k;
+        Point temp (point_[i].x () * k, point_[i].y () * k, 0);
+        point_[i] = temp;
     }
     shift (-shift_x, -shift_y);
 }
 
-int Cloud::fprintf (ofstream *out) const {
+int Cloud::fprintf (ofstream out) const {
     //prints all the clouds to file out
     for (int i = 0; i < length (); ++i) {
         point_[i].fprintf (out);
     }
     return 0;
+}
+
+vector<Point> &Cloud::point () {
+    return point_;
 }

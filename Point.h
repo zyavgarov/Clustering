@@ -1,7 +1,3 @@
-//
-// Created by pierre on 30.09.2020.
-//
-
 #ifndef INTERFACE4__POINT_H_
 #define INTERFACE4__POINT_H_
 #include <fstream>
@@ -9,18 +5,19 @@ using namespace std;
 
 class Point {
   friend class Cloud;
- 
  public:
   Point ();
   Point (Point const &c);
-  Point (double x, double y);
+  Point (double x, double y, int id = -1);
   double x () const;
   double y () const;
-  int fprintf (ofstream *out) const;
   int id () const;
+  void shift (const double &x, const double &y);
+  void shift (const Point& vector);
  private:
   double x_, y_; //coords
   int id_;
+  int fprintf (ofstream &out) const;
 };
 
 #endif //INTERFACE4__POINT_H_

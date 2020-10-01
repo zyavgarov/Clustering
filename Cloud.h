@@ -1,15 +1,12 @@
-//
-// Created by pierre on 30.09.2020.
-//
-
 #ifndef INTERFACE4__CLOUD_H_
 #define INTERFACE4__CLOUD_H_
 #include "Point.h"
 #include <vector>
-using namespace std;
+#include <cmath>
+const int M = 100;
+
 class Cloud {
  public:
-  vector<Point> point_;
   Cloud ();
   explicit Cloud (int length);
   Cloud (int length, double disp_x, double disp_y);
@@ -21,8 +18,10 @@ class Cloud {
   void rotate (double angle);
   void mirror ();
   void zoom (double k);
-  int fprintf (ofstream *out) const;
+  vector<Point> &point();
+ private:
+  int fprintf (ofstream out) const;
+  vector<Point> point_;
 };
-
 
 #endif //INTERFACE4__CLOUD_H_
