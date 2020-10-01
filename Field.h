@@ -11,8 +11,8 @@ class Field {
   int add (const Cloud &addition);
   int fprintf (ofstream &out) const;
   int length () const;
-  vector<Cloud> &cloud();
-  int readable();
+  const vector<Cloud> & cloud ();
+  int readable ();
  private:
   Field &operator= (Field const &f);
   Field (Field const &f);

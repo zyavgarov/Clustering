@@ -3,8 +3,12 @@
 #include <fstream>
 using namespace std;
 
+/* There can be added some operators for adiition and multiplication to number
+ */
+
 class Point {
   friend class Cloud;
+ 
  public:
   Point ();
   Point (Point const &c);
@@ -13,7 +17,7 @@ class Point {
   double y () const;
   int id () const;
   void shift (const double &x, const double &y);
-  void shift (const Point& vector);
+  void shift (const Point &vector);
  private:
   double x_, y_; //coords
   int id_;

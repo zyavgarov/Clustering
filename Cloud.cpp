@@ -142,6 +142,6 @@ int Cloud::fprintf (ofstream &out) const {
     return 0;
 }
 
-vector<Point> &Cloud::point () {
+const vector<Point> & Cloud::point () const {
     return point_;
 }
