@@ -7,6 +7,7 @@ const int M = 100;
 
 class Cloud {
   friend class Field;
+  friend class Buffer;
  
  public:
   Cloud ();
