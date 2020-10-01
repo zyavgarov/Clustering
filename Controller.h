@@ -5,12 +5,6 @@
 
 class Controller {
  private:
-  class Cluster {
-   public:
-   private:
-    const vector<Point> point_;
-    vector<vector<bool>> edges;
-  };
   
   string log_file_name;
   ofstream logger;
@@ -25,8 +19,6 @@ class Controller {
   void log (const string &s);
   int fprintf (const string &file_name) const;
   void histogram (int pieces, vector<int> &x_distr, vector<int> &y_distr) const;
-  vector<Cluster> dbscan (double d, int k);
-  vector<vector<int>> make_distance_matrix ();
 };
 
 #endif //INTERFACE4__CONTROLLER_H_

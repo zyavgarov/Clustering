@@ -3,16 +3,15 @@
 Point::Point () : id_ (0), note (0), x_ (0), y_ (0) {
 }
 
-Point::Point (double x, double y, int id) : x_ (x), y_ (y), note(0) {
-    static int quantity = 0; // maximum id; number of points
+Point::Point (double x, double y, int id) : x_ (x), y_ (y), note (0) {
     if (id != -1) {
         id_ = 0;
     } else {
-        id_ = ++quantity;
+        id_ = ++quantity_;
     }
 }
 
-Point::Point (Point const &c) : x_ (c.x ()), y_ (c.y ()), id_ (id ()), note(0) {
+Point::Point (Point const &c) : x_ (c.x ()), y_ (c.y ()), id_ (id ()), note (0) {
 }
 
 double Point::x () const {
@@ -69,4 +68,16 @@ Point Point::operator/ (const double &a) const {
     } else {
         return Point (x () / a, this->y () / a);
     }
+}
+
+Point &Point::get_by_id (int id) {
+    return *id_pointers[id];
+}
+
+void Point::reset_quantity () {
+    quantity_ = 0;
+}
+
+int Point::quantity () {
+    return quantity_;
 }
