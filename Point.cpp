@@ -56,3 +56,7 @@ Point Point::operator+ (const Point &a) const {
         return Point (this->x () + a.x (), this->y () + a.y (), 0);
     }
 }
+
+Point Point::operator* (const double &a) const {
+    return Point (this->x () * a, this->y () * a, this->id ());
+}
