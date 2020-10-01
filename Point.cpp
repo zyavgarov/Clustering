@@ -46,17 +46,29 @@ void Point::shift (const Point &vector) {
 }
 
 Point Point::operator+ (const Point &a) const {
-    if (this->id () != 0 && a.id () != 0) {
-        return Point (this->x () + a.x (), this->y () + a.y ());
-    } else if (this->id () != 0 && a.id () == 0) {
-        return Point (this->x () + a.x (), this->y () + a.y (), this->id ());
-    } else if (a.id () != 0 && this->id () == 0) {
-        return Point (this->x () + a.x (), this->y () + a.y (), a.id ());
+    if (id () != 0 && a.id () != 0) {
+        return Point (x () + a.x (), y () + a.y ());
+    } else if (id () != 0 && a.id () == 0) {
+        return Point (x () + a.x (), y () + a.y (), id ());
+    } else if (a.id () != 0 && id () == 0) {
+        return Point (x () + a.x (), y () + a.y (), a.id ());
     } else {
-        return Point (this->x () + a.x (), this->y () + a.y (), 0);
+        return Point (x () + a.x (), y () + a.y (), 0);
     }
 }
 
 Point Point::operator* (const double &a) const {
-    return Point (this->x () * a, this->y () * a, this->id ());
+    if (id () == 0) {
+        return Point (x () * a, this->y () * a, 0);
+    } else {
+        return Point (x () * a, this->y () * a);
+    }
+}
+
+Point Point::operator/ (const double &a) const {
+    if (id () == 0) {
+        return Point (x () / a, this->y () / a, 0);
+    } else {
+        return Point (x () / a, this->y () / a);
+    }
 }
