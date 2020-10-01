@@ -18,6 +18,7 @@ class Point {
   int id () const;
   void shift (const double &x, const double &y);
   void shift (const Point &vector);
+  Point operator+ (const Point &a) const;
  private:
   double x_, y_; //coords
   int id_;
