@@ -1,11 +1,9 @@
 #include "Point.h"
 
-Point::Point () : id_ (0) {
-    x_ = 0;
-    y_ = 0;
+Point::Point () : id_ (0), note (0), x_ (0), y_ (0) {
 }
 
-Point::Point (double x, double y, int id) : x_ (x), y_ (y) {
+Point::Point (double x, double y, int id) : x_ (x), y_ (y), note(0) {
     static int quantity = 0; // maximum id; number of points
     if (id != -1) {
         id_ = 0;
@@ -14,7 +12,7 @@ Point::Point (double x, double y, int id) : x_ (x), y_ (y) {
     }
 }
 
-Point::Point (Point const &c) : x_ (c.x ()), y_ (c.y ()), id_ (id ()) {
+Point::Point (Point const &c) : x_ (c.x ()), y_ (c.y ()), id_ (id ()), note(0) {
 }
 
 double Point::x () const {
@@ -59,9 +57,9 @@ Point Point::operator+ (const Point &a) const {
 
 Point Point::operator* (const double &a) const {
     if (id () == 0) {
-        return Point (x () * a, this->y () * a, 0);
+        return Point (x () * a, y () * a, 0);
     } else {
-        return Point (x () * a, this->y () * a);
+        return Point (x () * a, y () * a);
     }
 }
 

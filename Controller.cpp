@@ -126,3 +126,15 @@ void Controller::histogram (int pieces, vector<int> &x_distr, vector<int> &y_dis
         }
     }
 }
+
+vector<Cluster> Controller::dbscan (double d, int k) {
+    // The first step is making matrix of distances
+    vector<vector<int>> distance_matrix;
+    distance_matrix = make_distance_matrix();
+    
+}
+
+vector<vector<int>> Controller::make_distance_matrix () {
+    // to be done
+}
+

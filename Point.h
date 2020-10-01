@@ -21,6 +21,7 @@ class Point {
   Point operator+ (const Point &a) const;
   Point operator* (const double &a) const;
   Point operator/ (const double &a) const;
+  int note;
  private:
   double x_, y_; //coords
   int id_;
