@@ -1,7 +1,3 @@
-//
-// Created by pierre on 01.10.2020.
-//
-
 #ifndef INTERFACE4__CONTROLLER_H_
 #define INTERFACE4__CONTROLLER_H_
 #include "Field.h"
