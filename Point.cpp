@@ -44,3 +44,15 @@ void Point::shift (const Point &vector) {
     x_ += vector.x ();
     y_ += vector.y ();
 }
+
+Point operator+ (const Point &a, const Point &b) {
+    if (a.id () != 0 && b.id () != 0) {
+        return Point (a.x () + b.x (), a.y () + b.y ());
+    } else if (a.id () != 0 && b.id () == 0) {
+        return Point (a.x () + b.x (), a.y () + b.y (), a.id ());
+    } else if (b.id () != 0 && a.id () == 0) {
+        return Point (a.x () + b.x (), a.y () + b.y (), b.id ());
+    } else {
+        return Point (a.x () + b.x (), a.y () + b.y (), 0);
+    }
+}
