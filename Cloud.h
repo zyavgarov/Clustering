@@ -6,6 +6,7 @@
 const int M = 100;
 
 class Cloud {
+  friend class Field;
  public:
   Cloud ();
   explicit Cloud (int length);
@@ -20,7 +21,7 @@ class Cloud {
   void zoom (double k);
   vector<Point> &point();
  private:
-  int fprintf (ofstream out) const;
+  int fprintf (ofstream &out) const;
   vector<Point> point_;
 };
 

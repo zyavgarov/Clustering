@@ -134,7 +134,7 @@ void Cloud::zoom (double k) {
     shift (-shift_x, -shift_y);
 }
 
-int Cloud::fprintf (ofstream out) const {
+int Cloud::fprintf (ofstream &out) const {
     //prints all the clouds to file out
     for (int i = 0; i < length (); ++i) {
         point_[i].fprintf (out);
