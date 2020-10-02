@@ -1,6 +1,7 @@
 #ifndef INTERFACE4__CONTROLLER_H_
 #define INTERFACE4__CONTROLLER_H_
 #include "Field.h"
+#include "Cluster_Search.h"
 #include <iostream>
 
 class Controller {
@@ -19,6 +20,7 @@ class Controller {
   void log (const string &s);
   int fprintf (const string &file_name) const;
   void histogram (int pieces, vector<int> &x_distr, vector<int> &y_distr) const;
+  Cluster_Search dbscan(int k, int d);
 };
 
 #endif //INTERFACE4__CONTROLLER_H_

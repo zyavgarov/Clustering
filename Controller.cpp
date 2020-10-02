@@ -127,4 +127,6 @@ void Controller::histogram (int pieces, vector<int> &x_distr, vector<int> &y_dis
     }
 }
 
-
+Cluster_Search Controller::dbscan (int k, int d) {
+    //vector<vector<double>> dist[Point::quantity()];
+}

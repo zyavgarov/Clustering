@@ -7,11 +7,11 @@
 #include "Field.h"
 
 class Cluster_Search {
- public:
-  explicit Cluster_Search (int delta); // initiate the search
+ public: // initiate the search
   int delta;// max distance between points considered to have an edge
   int cluster_len; // number of clusters after search
   vector<vector<bool>> edges; //if points with id i and j are connected edge_matrix[i][j] == true
+  static vector<vector<double>> dist; // matrix of distances
  private:
   class Cluster {
    public:
