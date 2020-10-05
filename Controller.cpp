@@ -128,5 +128,57 @@ void Controller::histogram (int pieces, vector<int> &x_distr, vector<int> &y_dis
 }
 
 Cluster_Search Controller::dbscan (int k, int d) {
-    //vector<vector<double>> dist[Point::quantity()];
+    vector<vector<double>> dist_M (Point::quantity);
+    // making matrix of distances
+    for (int i = 0; i < Point::quantity; ++i) {
+        dist_M[i] = vector<double> (Point::quantity);
+        for (int j = 0; j < Point::quantity; ++j) {
+            dist_M[i].push_back (-1);
+        }
+    }
+    for (int i = 0; i < Point::quantity; ++i) {
+        for (int j = i + 1; j < Point::quantity; ++j) {
+            dist_M[j][i] = dist_M[i][j] = Point::dist (Point::get_by_id (i), Point::get_by_id (j));
+        }
+    }
+    // matrix of incidences
+    vector<vector<bool>> incidence;
+    for (int i = 0; i < Point::quantity; ++i) {
+        incidence[i] = vector<bool> (Point::quantity);
+        for (int j = 0; j < Point::quantity; ++j) {
+            incidence[i].push_back (false);
+        }
+    }
+    for (int i = 0; i < Point::quantity; ++i) {
+        for (int j = i + 1; j < Point::quantity; ++j) {
+            incidence[j][i] = incidence[i][j] = (Point::dist (Point::get_by_id (i), Point::get_by_id (j)) < d);
+        }
+    }
+    vector<bool> burnt (Point::quantity, false);
+    vector<int> curr_cluster;
+    bool is_burning = true;
+    vector<int> curr_wave = {1};
+    while (is_burning) {
+        is_burning = false;
+        vector<int> new_wave;
+        for (int i = 0; i < curr_wave.size (); ++i) {
+            for (int j = 0; j < Point::quantity; ++j) {
+                if (i != j && incidence[i][j] && !burnt[j]) {
+                    new_wave.push_back(j);
+                    is_burning = true;
+                }
+            }
+        }
+        curr_wave = new_wave;
+        for (auto &&i: new_wave){
+            burnt[i] = true;
+        }
+    }
+    vector<Point> clus;
+    for (int i : curr_cluster) {
+        clus.push_back(Point::get_by_id(i));
+    }
+    Cluster_Search res;
+    res.add(Cluster_Search::Cluster(clus));
+    return res;
 }

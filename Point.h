@@ -2,6 +2,7 @@
 #define INTERFACE4__POINT_H_
 #include <fstream>
 #include <vector>
+#include <cmath>
 using namespace std;
 
 /* There can be added some operators for adiition and multiplication to number
@@ -10,7 +11,13 @@ using namespace std;
 class Point {
   friend class Cloud;
  
+ private:
+  double x_, y_; //coords
+  int id_;
+  int fprintf (ofstream &out) const;
  public:
+  static vector<Point *> id_pointers;
+  static int quantity;
   Point ();
   Point (Point const &c);
   Point (double x, double y, int id = -1);
@@ -24,15 +31,9 @@ class Point {
   Point operator/ (const double &a) const;
   int note; // for dbscan
   int neighbours; // for dbscan, quantity of edges from that point
-  static Point & get_by_id(int id);
-  static void reset_quantity();
-  static int quantity();
- private:
-  static int quantity_;
-  static vector<Point*> id_pointers;
-  double x_, y_; //coords
-  int id_;
-  int fprintf (ofstream &out) const;
+  static Point &get_by_id (int id);
+  static void reset_quantity ();
+  static double dist (const Point &A, const Point &B);
 };
 
 #endif //INTERFACE4__POINT_H_

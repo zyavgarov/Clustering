@@ -46,3 +46,7 @@ int Field::length () const {
     // returns the number of clouds in the field
     return cloud_.size ();
 }
+
+const vector<Cloud> &Field::cloud () {
+    return cloud_;
+}
