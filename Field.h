@@ -12,11 +12,9 @@ class Field {
   int fprintf (ofstream &out) const;
   int length () const;
   const vector<Cloud> & cloud ();
-  int readable ();
  private:
   Field &operator= (Field const &f);
   Field (Field const &f);
-  bool readable_;
   vector<Cloud> cloud_;
 };
 

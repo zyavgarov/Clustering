@@ -6,13 +6,13 @@
 
 class Controller {
  private:
-  
   string log_file_name;
   ofstream logger;
   bool write_log;
- 
+  bool readonly_;
  public:
   Field *field_;
+  vector<Cluster_Search> searches;
   explicit Controller (bool write_log);
   ~Controller ();
   int get_help (int id, string &file_name);
@@ -20,7 +20,8 @@ class Controller {
   void log (const string &s);
   int fprintf (const string &file_name) const;
   void histogram (int pieces, vector<int> &x_distr, vector<int> &y_distr) const;
-  Cluster_Search dbscan(int k, int d);
+  Cluster_Search scan(int k, int d);
+  bool readable() const;
 };
 
 #endif //INTERFACE4__CONTROLLER_H_

@@ -5,9 +5,6 @@
 #include <cmath>
 using namespace std;
 
-/* There can be added some operators for adiition and multiplication to number
- */
-
 class Point {
   friend class Cloud;
  
@@ -17,7 +14,7 @@ class Point {
   int fprintf (ofstream &out) const;
  public:
   static vector<Point *> id_pointers;
-  static int quantity;
+  static int quantity;// better make it static
   Point ();
   Point (Point const &c);
   Point (double x, double y, int id = -1);

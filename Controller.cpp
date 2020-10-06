@@ -127,58 +127,53 @@ void Controller::histogram (int pieces, vector<int> &x_distr, vector<int> &y_dis
     }
 }
 
-Cluster_Search Controller::dbscan (int k, int d) {
-    vector<vector<double>> dist_M (Point::quantity);
-    // making matrix of distances
-    for (int i = 0; i < Point::quantity; ++i) {
-        dist_M[i] = vector<double> (Point::quantity);
-        for (int j = 0; j < Point::quantity; ++j) {
-            dist_M[i].push_back (-1);
-        }
-    }
-    for (int i = 0; i < Point::quantity; ++i) {
-        for (int j = i + 1; j < Point::quantity; ++j) {
-            dist_M[j][i] = dist_M[i][j] = Point::dist (Point::get_by_id (i), Point::get_by_id (j));
-        }
+Cluster_Search Controller::scan (int k, int d) {
+    // Scans points for clusters. Points are in one cluster if there is a way between them.
+    // Two points has a straight way if and only if the distance between them is less than d
+    // A little notice: if we are on
+    readonly_ = true;
+    if (Cluster_Search::dist ().empty ()) {
+        Cluster_Search::create_dist_matrix ();
     }
     // matrix of incidences
-    vector<vector<bool>> incidence;
-    for (int i = 0; i < Point::quantity; ++i) {
-        incidence[i] = vector<bool> (Point::quantity);
-        for (int j = 0; j < Point::quantity; ++j) {
-            incidence[i].push_back (false);
-        }
-    }
+    vector<vector<bool>> incidence (Point::quantity, vector<bool> (Point::quantity, false));
     for (int i = 0; i < Point::quantity; ++i) {
         for (int j = i + 1; j < Point::quantity; ++j) {
-            incidence[j][i] = incidence[i][j] = (Point::dist (Point::get_by_id (i), Point::get_by_id (j)) < d);
+            incidence[j][i] = incidence[i][j] = (Cluster_Search::dist ()[i][j] < d);
         }
     }
     vector<bool> burnt (Point::quantity, false);
-    vector<int> curr_cluster;
-    bool is_burning = true;
-    vector<int> curr_wave = {1};
-    while (is_burning) {
-        is_burning = false;
-        vector<int> new_wave;
-        for (int i = 0; i < curr_wave.size (); ++i) {
-            for (int j = 0; j < Point::quantity; ++j) {
-                if (i != j && incidence[i][j] && !burnt[j]) {
-                    new_wave.push_back(j);
-                    is_burning = true;
+    int burnt_num = 0; // number of true in burnt vector
+    Cluster_Search res(d);
+    // that cycle checks if point in marked cluster and if not creates new one
+    for (int m = 1; m <= Point::quantity; ++m) {
+        if (burnt[m]) {
+            continue;
+        }
+        vector<int> curr_wave = {m};
+        vector<int> new_wave = curr_wave; // points, connected to smth from curr_wave
+        vector<int> curr_cluster; // points from current cluster
+        // that cycle searches for neighbours of points in curr_wave
+        while (!new_wave.empty ()) {
+            for (int i = 0; i < curr_wave.size (); ++i) {
+                for (int j = 0; j < Point::quantity; ++j) {
+                    if (i != j && incidence[i][j] && !burnt[j]) {
+                        new_wave.push_back (j);
+                    }
                 }
             }
+            curr_cluster.insert (curr_cluster.end (), curr_wave.begin (), curr_wave.end ());
+            curr_wave = new_wave;
+            burnt_num += new_wave.size ();
+            for (auto &&i: new_wave) {
+                burnt[i] = true;
+            }
         }
-        curr_wave = new_wave;
-        for (auto &&i: new_wave){
-            burnt[i] = true;
-        }
+        res.add(Cluster_Search::Cluster(curr_cluster));
     }
-    vector<Point> clus;
-    for (int i : curr_cluster) {
-        clus.push_back(Point::get_by_id(i));
-    }
-    Cluster_Search res;
-    res.add(Cluster_Search::Cluster(clus));
     return res;
+}
+
+bool Controller::readable () const {
+    return readonly_;
 }

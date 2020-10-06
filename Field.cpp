@@ -1,10 +1,8 @@
 #include "Field.h"
 
-Field::Field () {
-    readable_ = true;
-};
+Field::Field () = default;
 
-Field::Field (int f_length, int c_length) : readable_ (true) {
+Field::Field (int f_length, int c_length) {
     for (int i = 0; i < f_length; ++i) {
         cloud_.emplace_back (c_length);
     }
@@ -20,7 +18,7 @@ Field &Field::operator= (Field const &f) {
     return *this;
 }
 
-Field::Field (Field const &f) : readable_ (true) {
+Field::Field (Field const &f) {
     for (int i = 0; i < f.length (); ++i) {
         cloud_[i] = f.cloud_[i];
     }
