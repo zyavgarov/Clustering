@@ -132,19 +132,11 @@ Cluster_Search Controller::scan (int k, int d) {
     // Two points has a straight way if and only if the distance between them is less than d
     // A little notice: if we are on
     readonly_ = true;
-    if (Cluster_Search::dist ().empty ()) {
-        Cluster_Search::create_dist_matrix ();
-    }
-    // matrix of incidences
-    vector<vector<bool>> incidence (Point::quantity, vector<bool> (Point::quantity, false));
-    for (int i = 0; i < Point::quantity; ++i) {
-        for (int j = i + 1; j < Point::quantity; ++j) {
-            incidence[j][i] = incidence[i][j] = (Cluster_Search::dist ()[i][j] < d);
-        }
-    }
+    Cluster_Search::create_dist_matrix ();
+    Cluster_Search res (d);
+    res.create_edges_matrix ();
     vector<bool> burnt (Point::quantity, false);
     int burnt_num = 0; // number of true in burnt vector
-    Cluster_Search res(d);
     // that cycle checks if point in marked cluster and if not creates new one
     for (int m = 1; m <= Point::quantity; ++m) {
         if (burnt[m]) {
@@ -157,7 +149,7 @@ Cluster_Search Controller::scan (int k, int d) {
         while (!new_wave.empty ()) {
             for (int i = 0; i < curr_wave.size (); ++i) {
                 for (int j = 0; j < Point::quantity; ++j) {
-                    if (i != j && incidence[i][j] && !burnt[j]) {
+                    if (i != j && res.edges ()[i][j] && !burnt[j]) {
                         new_wave.push_back (j);
                     }
                 }
@@ -169,11 +161,11 @@ Cluster_Search Controller::scan (int k, int d) {
                 burnt[i] = true;
             }
         }
-        res.add(Cluster_Search::Cluster(curr_cluster));
+        res.add (Cluster_Search::Cluster (curr_cluster));
     }
     return res;
 }
 
-bool Controller::readable () const {
+bool Controller::readonly () const {
     return readonly_;
 }

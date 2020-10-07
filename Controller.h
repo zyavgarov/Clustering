@@ -21,7 +21,7 @@ class Controller {
   int fprintf (const string &file_name) const;
   void histogram (int pieces, vector<int> &x_distr, vector<int> &y_distr) const;
   Cluster_Search scan(int k, int d);
-  bool readable() const;
+  bool readonly() const;
 };
 
 #endif //INTERFACE4__CONTROLLER_H_

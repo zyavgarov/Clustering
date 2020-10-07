@@ -11,7 +11,7 @@ class Cluster_Search {
     vector<Point> points;
   };
   
-  Cluster_Search (double delta, int k = 0);
+  explicit Cluster_Search (double delta, int k = 0);
   Cluster_Search () = default;
   const vector<vector<bool>> &edges () const;
   static const vector<vector<double>> &dist ();
@@ -20,6 +20,7 @@ class Cluster_Search {
   vector<Cluster> clusters;
   void add (const Cluster &addition);
   static void create_dist_matrix ();
+  void create_edges_matrix ();
  private:
   vector<vector<bool>> edges_; //if points with id i and j are connected edge_matrix[i][j] == true
   static vector<vector<double>> dist_; // matrix of distances
