@@ -135,10 +135,10 @@ Cluster_Search Controller::scan (int k, int d) {
     Cluster_Search::create_dist_matrix ();
     Cluster_Search res (d);
     res.create_edges_matrix ();
-    vector<bool> burnt (Point::quantity, false);
+    vector<bool> burnt (Point::quantity_, false);
     int burnt_num = 0; // number of true in burnt vector
     // that cycle checks if point in marked cluster and if not creates new one
-    for (int m = 1; m <= Point::quantity; ++m) {
+    for (int m = 1; m <= Point::quantity_; ++m) {
         if (burnt[m]) {
             continue;
         }
@@ -148,7 +148,7 @@ Cluster_Search Controller::scan (int k, int d) {
         // that cycle searches for neighbours of points in curr_wave
         while (!new_wave.empty ()) {
             for (int i = 0; i < curr_wave.size (); ++i) {
-                for (int j = 0; j < Point::quantity; ++j) {
+                for (int j = 0; j < Point::quantity_; ++j) {
                     if (i != j && res.edges ()[i][j] && !burnt[j]) {
                         new_wave.push_back (j);
                     }

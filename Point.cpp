@@ -7,7 +7,7 @@ Point::Point (double x, double y, int id) : x_ (x), y_ (y), note (0) {
     if (id != -1) {
         id_ = 0;
     } else {
-        id_ = ++quantity;
+        id_ = ++quantity_;
     }
 }
 
@@ -75,15 +75,20 @@ Point &Point::get_by_id (int id) {
 }
 
 void Point::reset_quantity () {
-    quantity = 0;
+    quantity_ = 0;
 }
 
 double Point::dist (const Point &A, const Point &B) {
-    return sqrt(pow(A.x()-B.x(), 2)+pow(A.y()-B.y(),2));
+    return sqrt (pow (A.x () - B.x (), 2) + pow (A.y () - B.y (), 2));
 }
 
 #ifndef POINT_STATIC_INIT
 #define POINT_STATIC_INIT
-int Point::quantity = 0;
+//int Point::quantity_ = 0;
+
+int Point::quantity () {
+    return quantity_;
+}
+
 vector<Point *> Point::id_pointers;
 #endif //POINT_STATIC_INIT

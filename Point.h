@@ -12,9 +12,9 @@ class Point {
   double x_, y_; //coords
   int id_;
   int fprintf (ofstream &out) const;
+  static int quantity_;
  public:
   static vector<Point *> id_pointers;
-  static int quantity;// better make it static
   Point ();
   Point (Point const &c);
   Point (double x, double y, int id = -1);
@@ -31,6 +31,7 @@ class Point {
   static Point &get_by_id (int id);
   static void reset_quantity ();
   static double dist (const Point &A, const Point &B);
+  static int quantity() ;
 };
 
 #endif //INTERFACE4__POINT_H_

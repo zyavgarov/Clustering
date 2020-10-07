@@ -9,7 +9,7 @@ class Controller {
   string log_file_name;
   ofstream logger;
   bool write_log;
-  bool readonly_;
+  bool readonly_; // we should use that attribute in our program
  public:
   Field *field_;
   vector<Cluster_Search> searches;
