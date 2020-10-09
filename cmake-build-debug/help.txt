@@ -1,0 +1,17 @@
+BUFFER {char l} {int id}
+    if l='u' unloads buffer to field
+    if l='c' adds cloud with id to buffer
+CLOUD
+	Does the operation over the cloud
+EXIT       
+	Stops the program
+GC {double cx} {double cy} {double dx} {double dy} {int l}
+	Generates cloud on the field. Center of the cloud is cx cy, dispersion of the cloud is dx and dy by x and y. The number of points in the cloud is l
+HISTOGRAM p
+    Saves to histogram.txt histogram of distribution the points in cloud
+HELP
+	Shows the list of supported commands
+LOG {bool b}
+	Switching writing logs
+	b == 0 means writing, b == 1 means not writing
+	No parameter shows current state of writing logs
