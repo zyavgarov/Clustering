@@ -24,6 +24,8 @@ class Controller {
   Cluster_Search scan (int k, int d);
   bool readonly () const;
   Cluster_Search dbscan (int k, int d, Cluster_Search &result);
+  int buffer_add_cloud(int id) const;
+  int buffer_unload() const;
 };
 
 #endif //INTERFACE4__CONTROLLER_H_

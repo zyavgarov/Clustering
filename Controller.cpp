@@ -180,7 +180,7 @@ bool Controller::readonly () const {
 
 Cluster_Search Controller::dbscan (int k, int d, Cluster_Search &result) {
     // Seraching for points which has k neighbours
-    vector<bool> burnt (Point::quantity(), false);
+    vector<bool> burnt (Point::quantity (), false);
     for (int m = 0; m < Point::quantity (); ++m) {
         //if(){}
     }
@@ -196,6 +196,26 @@ Cluster_Search Controller::dbscan (int k, int d, Cluster_Search &result) {
             core_points[i] = true;
         }
     }
-    vector<bool> peripheral_points(Point::quantity());
+    vector<bool> peripheral_points (Point::quantity ());
     return Cluster_Search ();
+}
+
+int Controller::buffer_add_cloud (int id) const {
+    // adds cloud with id to buffer
+    // returns -1 if field is readonly
+    if (readonly ()) {
+        return -1;
+    }
+    field_->buf.add (field_->cloud ()[id]);
+    return 0;
+}
+
+int Controller::buffer_unload () const {
+    // unloads buffer to field
+    // returns -1 if field is readonly
+    if (readonly ()) {
+        return -1;
+    }
+    field_->add (field_->buf.cloud);
+    return 0;
 }
