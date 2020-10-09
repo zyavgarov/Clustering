@@ -136,6 +136,10 @@ int Interface::manager (string cur_command) {
         show ("Histogram saved to histogram_x.txt and histogram_y.txt");
     } else if (main == "EXIT") {
         return -1;
+    } else if (main == "BUFFERLOAD") {
+        int cloud_id;;
+        ss >> cloud_id;
+        
     } else {
         // something went wrong
         show ("Unknown command. Check your input and try again.");

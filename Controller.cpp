@@ -1,6 +1,6 @@
 #include "Controller.h"
 
-Controller::Controller (bool write_log) : write_log (write_log), field_ (nullptr) {
+Controller::Controller (bool write_log) : write_log (write_log), field_ (nullptr), readonly_ (false) {
     if (write_log) {
         log_file_name = "log_ctrl.txt";
         logger = ofstream (log_file_name);
@@ -31,6 +31,10 @@ int Controller::generate_cloud (int id,
                                 double disp_y = 1,
                                 int c_length = 1000) {
     // generates cloud with center on the field with dispersions by x and y
+    // -1 if readonly
+    if (readonly ()) {
+        return -1;
+    }
     Cloud cloud (c_length, disp_x, disp_y);
     cloud.shift (center_x, center_y);
     if (field_ == nullptr) {
@@ -132,13 +136,17 @@ Cluster_Search Controller::scan (int k, int d) {
     // Two points has a straight way if and only if the distance between them is less than d
     // A little notice: if we are on
     readonly_ = true;
-    Cluster_Search::create_dist_matrix ();
-    Cluster_Search res (d);
-    res.create_edges_matrix ();
-    vector<bool> burnt (Point::quantity_, false);
+    // Cluster_Search::create_dist_matrix ();
+    Cluster_Search result (d);
+    result.create_edges_matrix ();
+    if (k > 1) {
+        return dbscan (k, d, result);
+    }
+    // wave algorithm
+    vector<bool> burnt (Point::quantity (), false);
     int burnt_num = 0; // number of true in burnt vector
     // that cycle checks if point in marked cluster and if not creates new one
-    for (int m = 1; m <= Point::quantity_; ++m) {
+    for (int m = 1; m <= Point::quantity (); ++m) {
         if (burnt[m]) {
             continue;
         }
@@ -148,8 +156,8 @@ Cluster_Search Controller::scan (int k, int d) {
         // that cycle searches for neighbours of points in curr_wave
         while (!new_wave.empty ()) {
             for (int i = 0; i < curr_wave.size (); ++i) {
-                for (int j = 0; j < Point::quantity_; ++j) {
-                    if (i != j && res.edges ()[i][j] && !burnt[j]) {
+                for (int j = 0; j < Point::quantity (); ++j) {
+                    if (i != j && result.edges ()[i][j] && !burnt[j]) {
                         new_wave.push_back (j);
                     }
                 }
@@ -161,11 +169,33 @@ Cluster_Search Controller::scan (int k, int d) {
                 burnt[i] = true;
             }
         }
-        res.add (Cluster_Search::Cluster (curr_cluster));
+        result.add (Cluster_Search::Cluster (curr_cluster));
     }
-    return res;
+    return result;
 }
 
 bool Controller::readonly () const {
     return readonly_;
+}
+
+Cluster_Search Controller::dbscan (int k, int d, Cluster_Search &result) {
+    // Seraching for points which has k neighbours
+    vector<bool> burnt (Point::quantity(), false);
+    for (int m = 0; m < Point::quantity (); ++m) {
+        //if(){}
+    }
+    vector<bool> core_points (Point::quantity (), false);
+    for (int i = 1; i <= Point::quantity (); ++i) {
+        int neighbours = 0;
+        for (int j = 1; j <= Point::quantity (); ++j) {
+            if (i != j && result.edges ()[i][j]) {
+                neighbours++;
+            }
+        }
+        if (neighbours >= k) {
+            core_points[i] = true;
+        }
+    }
+    vector<bool> peripheral_points(Point::quantity());
+    return Cluster_Search ();
 }

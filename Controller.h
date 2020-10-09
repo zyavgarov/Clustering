@@ -10,6 +10,7 @@ class Controller {
   ofstream logger;
   bool write_log;
   bool readonly_; // we should use that attribute in our program
+  //Buffer buf;
  public:
   Field *field_;
   vector<Cluster_Search> searches;
@@ -20,8 +21,9 @@ class Controller {
   void log (const string &s);
   int fprintf (const string &file_name) const;
   void histogram (int pieces, vector<int> &x_distr, vector<int> &y_distr) const;
-  Cluster_Search scan(int k, int d);
-  bool readonly() const;
+  Cluster_Search scan (int k, int d);
+  bool readonly () const;
+  Cluster_Search dbscan (int k, int d, Cluster_Search &result);
 };
 
 #endif //INTERFACE4__CONTROLLER_H_

@@ -1,32 +1,30 @@
 #include "Buffer.h"
-Buffer::Buffer (Controller *cc) : cc (cc) {
-    cloud = new Cloud ();
-}
 
-Buffer::~Buffer () {
-    delete cloud;
-}
-
-void Buffer::add (const Cloud &c) const {
+void Buffer::add (const Cloud &c) {
+    //adds cloud to buffer
     for (int i = 0; i < c.length (); ++i) {
-        cloud->point_.push_back (c.point()[i]);
+        cloud.point_.push_back (c.point()[i]);
     }
 }
 
-void Buffer::add (const Point &p) const {
-    cloud->point_.push_back (p);
+void Buffer::add (const Point &p) {
+    //adds point to buffer
+    cloud.point_.push_back (p);
 }
 
-void Buffer::add (const Buffer &b) const {
+void Buffer::add (const Buffer &b) {
+    //adds another buffer to buffer
     for (int i = 0; i < b.length (); ++i) {
-        cloud->point_.push_back (b.cloud->point_[i]);
+        cloud.point_.push_back (b.cloud.point_[i]);
     }
 }
 
 int Buffer::length () const {
-    return cloud->length ();
+    // returns number of points in buffer
+    return cloud.length ();
 }
 
-void Buffer::unload () const {
-    cc->field_->add (*cloud);
+const vector<Point>& Buffer::unload () const {
+    // returns all the points from buffer
+    return cloud.point();
 }

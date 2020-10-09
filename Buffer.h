@@ -1,19 +1,19 @@
 #ifndef INTERFACE4__BUFFER_H_
 #define INTERFACE4__BUFFER_H_
-#include "Controller.h"
+//#include "Controller.h"
+#include "Cloud.h"
 
 class Buffer {
  public:
-  explicit Buffer (Controller *cc);
-  ~Buffer ();
-  void add (const Cloud &c) const;
-  void add (const Point &p) const;
-  void add (const Buffer &b) const;
-  void unload () const;
+  Buffer () = default;
+  void add (const Cloud &c);
+  void add (const Point &p);
+  void add (const Buffer &b);
+  const vector<Point> &unload () const;
   int length () const;
-  Cloud *cloud;
+  Cloud cloud;
  private:
-  Controller *cc;
+  //Controller *cc;
 };
 
 #endif //INTERFACE4__BUFFER_H_

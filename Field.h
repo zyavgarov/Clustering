@@ -1,10 +1,10 @@
 #ifndef INTERFACE4__FIELD_H_
 #define INTERFACE4__FIELD_H_
 
-#include "Cloud.h"
-
+#include "Buffer.h"
 class Field {
  public:
+  friend class Buffer;
   Field ();
   Field (int f_length, int c_length);
   ~Field ();
@@ -12,6 +12,7 @@ class Field {
   int fprintf (ofstream &out) const;
   int length () const;
   const vector<Cloud> & cloud ();
+  Buffer buf;
  private:
   Field &operator= (Field const &f);
   Field (Field const &f);

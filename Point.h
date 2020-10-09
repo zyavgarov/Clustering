@@ -7,14 +7,13 @@ using namespace std;
 
 class Point {
   friend class Cloud;
- 
  private:
   double x_, y_; //coords
   int id_;
   int fprintf (ofstream &out) const;
   static int quantity_;
- public:
   static vector<Point *> id_pointers;
+ public:
   Point ();
   Point (Point const &c);
   Point (double x, double y, int id = -1);
