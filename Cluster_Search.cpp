@@ -27,9 +27,9 @@ Cluster_Search::Cluster_Search (double delta, int k) : delta (delta), k (k) {
 void Cluster_Search::create_edges_matrix () {
     // matrix of incidences
     if (edges_.empty ()) {
-        vector<vector<bool>> incidence (Point::quantity(), vector<bool> (Point::quantity(), false));
-        for (int i = 0; i < Point::quantity(); ++i) {
-            for (int j = i + 1; j < Point::quantity(); ++j) {
+        vector<vector<bool>> incidence (Point::quantity (), vector<bool> (Point::quantity (), false));
+        for (int i = 0; i < Point::quantity (); ++i) {
+            for (int j = i + 1; j < Point::quantity (); ++j) {
                 incidence[j][i] = incidence[i][j] = (field_->dist ()[i][j] < delta);
             }
         }
@@ -66,4 +66,26 @@ void Cluster_Search::wave_clustering () {
         }
         add (Cluster_Search::Cluster (curr_cluster));
     }
+}
+
+vector<int> Cluster_Search::db_sorting () const {
+    // counting neighbours for all the points
+    vector<int> type (Point::quantity (), 0);
+    for (int i = 0; i < Point::quantity (); ++i) {
+        vector<int> neighbours;
+        for (int j = 0; j < Point::quantity (); ++j) {
+            if (edges ()[i][j]) {
+                neighbours.push_back (j);
+            }
+        }
+        if (neighbours.size () >= k) {
+            type[i] = 2;
+            for (int neighbour : neighbours) {
+                if (type[neighbour] != 2) {
+                    type[neighbour] = 1;
+                }
+            }
+        }
+    }
+    return type;
 }

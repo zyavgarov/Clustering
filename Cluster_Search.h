@@ -19,7 +19,7 @@ class Cluster_Search {
   vector<Cluster> clusters;
   void add (const Cluster &addition);
   void create_edges_matrix ();
-  vector<int> db_sorting ();
+  vector<int> db_sorting () const;
   void db_clustering (vector<int> vector);
   void wave_clustering ();
  private:
