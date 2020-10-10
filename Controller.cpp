@@ -131,7 +131,7 @@ void Controller::histogram (int pieces, vector<int> &x_distr, vector<int> &y_dis
     }
 }
 
-Cluster_Search Controller::scan (int k, int d) {
+Cluster_Search Controller::scan (int k, double d) {
     // Scans points for clusters. Points are in one cluster if there is a way between them.
     // Two points has a straight way if and only if the distance between them is less than d
     // A little notice: if we are on
@@ -178,7 +178,7 @@ bool Controller::readonly () const {
     return readonly_;
 }
 
-Cluster_Search Controller::dbscan (int k, int d, Cluster_Search &result) {
+Cluster_Search Controller::dbscan (int k, double d, Cluster_Search &result) {
     // Seraching for points which has k neighbours
     vector<bool> burnt (Point::quantity (), false);
     for (int m = 0; m < Point::quantity (); ++m) {
@@ -218,4 +218,27 @@ int Controller::buffer_unload () const {
     }
     field_->add (field_->buf.cloud);
     return 0;
+}
+
+int Controller::matrix () {
+    readonly_ = true;
+    field_->create_dist_matrix ();
+    return 0;
+}
+
+Cluster_Search Controller::dbscan_2 (double d, int k) {
+    // realises dbscan-clustering with k-core points and d-incidence
+    Cluster_Search result (d, k);
+    //most of happening down there can be moved to Cluster_Search and simplified like result.dbscan(k);
+    result.create_edges_matrix();
+    vector<int> state = result.db_sorting (); // 0 if dust, 1 if peripherical, 2 is core;
+    result.db_clustering (state);
+    return result;
+}
+
+Cluster_Search wave(double d){
+    Cluster_Search result (d);
+    result.create_edges_matrix();
+    result.wave_clustering();
+    return result;
 }

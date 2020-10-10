@@ -1,22 +1,30 @@
+
 #ifndef INTERFACE4__FIELD_H_
 #define INTERFACE4__FIELD_H_
-
 #include "Buffer.h"
+#include "Cluster_Search.h"
+
 class Field {
  public:
   friend class Buffer;
+  
   Field ();
-  Field (int f_length, int c_length);
   ~Field ();
   int add (const Cloud &addition);
   int fprintf (ofstream &out) const;
   int length () const;
-  const vector<Cloud> & cloud ();
   Buffer buf;
+  const vector<vector<double>> &dist ()const;
+  const vector<Cloud> &cloud ();
+  bool readonly() const;
+  void create_dist_matrix();
  private:
   Field &operator= (Field const &f);
   Field (Field const &f);
   vector<Cloud> cloud_;
+  vector<vector<double>> dist_; // matrix of distances
+  vector<Cluster_Search> searches_;
+  bool readonly_;
 };
 
 #endif //INTERFACE4__FIELD_H_
