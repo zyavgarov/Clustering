@@ -221,6 +221,11 @@ int Controller::buffer_unload () const {
 }
 
 int Controller::matrix () {
+    // sets field to readonly, creats matrix of distances
+    // if there is no field returns -1
+    if (field_ == nullptr){
+        return -1;
+    }
     readonly_ = true;
     field_->create_dist_matrix ();
     return 0;

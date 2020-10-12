@@ -150,9 +150,12 @@ int Interface::manager (string cur_command) {
             show ("Added cloud " + to_string (cloud_id) + " to buffer");
         }
     } else if (main == "MATRIX") {
-        cc->matrix ();
-        show ("Field is readonly now. You can analyze it.");
-        show ("Type HELP to see what you can do");
+        if (cc->matrix () == -1){
+            show("Field not found");
+        } else{
+            show ("Field is readonly now. You can analyze it.");
+            show ("Type HELP to see what you can do");
+        }
     } else {
         // something went wrong
         show ("Unknown command. Check your input and try again.");
