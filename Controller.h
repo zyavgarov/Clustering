@@ -14,7 +14,7 @@ class Controller {
  public:
   Field *field_;
   vector<Cluster_Search> searches;
-  explicit Controller (bool write_log);
+  explicit Controller (bool write_log = true);
   ~Controller ();
   int get_help (int id, string &file_name);
   int generate_cloud (int id, double center_x, double center_y, double disp_x, double disp_y, int c_length);
