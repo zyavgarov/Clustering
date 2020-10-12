@@ -135,20 +135,24 @@ int Interface::manager (string cur_command) {
         out.close ();
         show ("Histogram saved to histogram_x.txt and histogram_y.txt");
     } else if (main == "EXIT") {
-        show("Finishing...");
+        show ("Finishing...");
         return -1;
     } else if (main == "BUFFER") {
         char l;
         ss >> l;
-        if (l == 'u'){
-            cc->buffer_unload();
-            show("Buffer loaded to field");
-        } else if (l == 'c'){
+        if (l == 'u') {
+            cc->buffer_unload ();
+            show ("Buffer loaded to field");
+        } else if (l == 'c') {
             int cloud_id;
             ss >> cloud_id;
-            cc->buffer_add_cloud(cloud_id);
-            show("Added cloud " + to_string(cloud_id) + " to buffer");
+            cc->buffer_add_cloud (cloud_id);
+            show ("Added cloud " + to_string (cloud_id) + " to buffer");
         }
+    } else if (main == "MATRIX") {
+        cc->matrix ();
+        show ("Field is readonly now. You can analyze it.");
+        show ("Type HELP to see what you can do");
     } else {
         // something went wrong
         show ("Unknown command. Check your input and try again.");

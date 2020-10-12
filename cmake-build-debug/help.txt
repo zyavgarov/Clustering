@@ -15,3 +15,5 @@ LOG {bool b}
 	Switching writing logs
 	b == 0 means writing, b == 1 means not writing
 	No parameter shows current state of writing logs
+MATRIX
+    Sets field to readonly and prepares it to be analyzed
