@@ -20,7 +20,7 @@ class Cluster_Search {
   void add (const Cluster &addition);
   void create_edges_matrix ();
   vector<int> db_sorting () const;
-  void db_clustering (vector<int> vector);
+  void db_clustering (const vector<int> &state);
   void wave_clustering ();
  private:
   Field *field_;

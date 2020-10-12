@@ -89,3 +89,39 @@ vector<int> Cluster_Search::db_sorting () const {
     }
     return type;
 }
+
+void Cluster_Search::db_clustering (const vector<int> &state) {
+    vector<bool> burnt (Point::quantity (), false);
+    for (int l = 0; l < state.size (); ++l) {
+        if (burnt[l]) {
+            continue;
+        }
+        vector<int> curr_cluster;
+        if (state[l] == 2) {
+            vector<int> curr_added;
+            curr_added.push_back (l);
+            vector<int> new_added;
+            while (!curr_added.empty ()) {
+                for (int i = 0; i < curr_added.size (); ++i) {
+                    for (int j = 0; j < Point::quantity (); ++j) {
+                        if (!burnt[j] && i != j && edges ()[i][j]) {
+                            new_added.push_back (j);
+                            burnt[j] = true;
+                        }
+                    }
+                }
+                curr_cluster.insert (curr_cluster.end (), new_added.begin (), new_added.end ());
+                curr_added = new_added;
+            }
+            clusters.emplace_back (curr_cluster);
+        } else if (state[l] == 0) {
+            clusters.emplace_back (vector<int> (1, l));
+            burnt[l] = true;
+        }
+        /* The problems are:
+         * - bruteforcing of Points sometimes can start from 0. This is not allowed
+         * - curr_cluster vector in some algorithms is removed before going to the next point
+         * - I still need to finish the functions about clustering
+         */
+    }
+}
