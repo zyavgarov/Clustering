@@ -25,12 +25,8 @@ class Point {
   Point operator+ (const Point &a) const;
   Point operator* (const double &a) const;
   Point operator/ (const double &a) const;
-  int note; // for dbscan
-  int neighbours; // for dbscan, quantity of edges from that point
   static Point &get_by_id (int id);
-  static void reset_quantity ();
   static double dist (const Point &A, const Point &B);
   static int quantity() ;
 };
-
 #endif //INTERFACE4__POINT_H_

@@ -1,9 +1,9 @@
 #include "Point.h"
-
-Point::Point () : id_ (0), note (0), x_ (0), y_ (0) {
+int Point::quantity_ = 0;
+Point::Point () : id_ (0), x_ (0), y_ (0) {
 }
 
-Point::Point (double x, double y, int id) : x_ (x), y_ (y), note (0) {
+Point::Point (double x, double y, int id) : x_ (x), y_ (y) {
     if (id != -1) {
         id_ = 0;
     } else {
@@ -11,7 +11,7 @@ Point::Point (double x, double y, int id) : x_ (x), y_ (y), note (0) {
     }
 }
 
-Point::Point (Point const &c) : x_ (c.x ()), y_ (c.y ()), id_ (id ()), note (0) {
+Point::Point (Point const &c) : x_ (c.x ()), y_ (c.y ()), id_ (id ()) {
 }
 
 double Point::x () const {
@@ -72,10 +72,6 @@ Point Point::operator/ (const double &a) const {
 
 Point &Point::get_by_id (int id) {
     return *id_pointers[id];
-}
-
-void Point::reset_quantity () {
-    quantity_ = 0;
 }
 
 double Point::dist (const Point &A, const Point &B) {
