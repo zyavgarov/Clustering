@@ -32,7 +32,7 @@ int Controller::generate_cloud (int id,
                                 int c_length = 1000) {
     // generates cloud with center on the field with dispersions by x and y
     // -1 if readonly
-    if (readonly ()) {
+    if (field_->readonly ()) {
         return -1;
     }
     Cloud cloud (c_length, disp_x, disp_y);
@@ -198,7 +198,7 @@ Cluster_Search Controller::dbscan (int k, double d, Cluster_Search &result) {
 int Controller::buffer_add_cloud (int id) const {
     // adds cloud with id to buffer
     // returns -1 if field is readonly
-    if (readonly ()) {
+    if (field_->readonly ()) {
         return -1;
     }
     field_->buf.add (field_->cloud ()[id]);
@@ -208,14 +208,14 @@ int Controller::buffer_add_cloud (int id) const {
 int Controller::buffer_unload () const {
     // unloads buffer to field
     // returns -1 if field is readonly
-    if (readonly ()) {
+    if (field_->readonly ()) {
         return -1;
     }
     field_->add (field_->buf.cloud);
     return 0;
 }
 
-int Controller::matrix () {
+int Controller::matrix () const {
     // sets field to readonly, creats matrix of distances
     // if there is no field returns -1
     if (field_ == nullptr){
