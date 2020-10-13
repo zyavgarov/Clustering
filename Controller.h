@@ -9,7 +9,6 @@ class Controller {
   string log_file_name;
   ofstream logger;
   bool write_log;
-  bool readonly_; // we should use that attribute in our program
   void log (const string &s);
  public:
   Field *field_;

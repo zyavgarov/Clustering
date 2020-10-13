@@ -24,7 +24,7 @@ class Field {
   vector<Cloud> cloud_;
   vector<vector<double>> dist_; // matrix of distances
   vector<Cluster_Search> searches_;
-  bool readonly_;
+  bool readonly_{};
 };
 
 #endif //INTERFACE4__FIELD_H_

@@ -1,6 +1,6 @@
 #include "Controller.h"
 
-Controller::Controller (bool write_log) : write_log (write_log), field_ (nullptr), readonly_ (false) {
+Controller::Controller (bool write_log) : write_log (write_log), field_ (nullptr) {
     if (write_log) {
         log_file_name = "log_ctrl.txt";
         logger = ofstream (log_file_name);
@@ -135,7 +135,6 @@ Cluster_Search Controller::scan (int k, double d) {
     // Scans points for clusters. Points are in one cluster if there is a way between them.
     // Two points has a straight way if and only if the distance between them is less than d
     // A little notice: if we are on
-    readonly_ = true;
     // Cluster_Search::create_dist_matrix ();
     Cluster_Search result (d);
     result.create_edges_matrix ();
@@ -172,10 +171,6 @@ Cluster_Search Controller::scan (int k, double d) {
         result.add (Cluster_Search::Cluster (curr_cluster));
     }
     return result;
-}
-
-bool Controller::readonly () const {
-    return readonly_;
 }
 
 Cluster_Search Controller::dbscan (int k, double d, Cluster_Search &result) {
@@ -226,7 +221,6 @@ int Controller::matrix () {
     if (field_ == nullptr){
         return -1;
     }
-    readonly_ = true;
     field_->create_dist_matrix ();
     return 0;
 }

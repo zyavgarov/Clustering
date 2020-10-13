@@ -1,6 +1,7 @@
 #include "Field.h"
 
-Field::Field () = default;
+Field::Field () : readonly_ (false) {
+}
 
 Field &Field::operator= (Field const &f) {
     if (this != &f) {
@@ -22,6 +23,10 @@ Field::~Field () = default;
 
 int Field::add (const Cloud &addition) {
     // The function adds cloud to the field
+    // returns -1 if readonly
+    if (readonly ()) {
+        return -1;
+    }
     cloud_.push_back (addition);
     return 0;
 }
@@ -52,8 +57,9 @@ bool Field::readonly () const {
 }
 
 void Field::create_dist_matrix () {
+    readonly_ = false;
     dist_.clear ();
-    dist_ = vector<vector<double>>(Point::quantity(), vector<double>(Point::quantity()));
+    dist_ = vector<vector<double>> (Point::quantity (), vector<double> (Point::quantity ()));
     for (int i = 0; i < Point::quantity (); ++i) {
         for (int j = 0; j < Point::quantity (); ++j) {
             dist_[i][j] = dist_[j][i] = Point::dist (Point::get_by_id (i), Point::get_by_id (j));
