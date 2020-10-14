@@ -23,7 +23,7 @@ class Controller {
   int buffer_add_cloud(int id) const;
   int buffer_unload() const;
   int matrix() const;
-  Cluster_Search wave (double d) const;
+  Cluster_Search wave (double d);
 };
 
 #endif //INTERFACE4__CONTROLLER_H_

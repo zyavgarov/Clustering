@@ -1,5 +1,6 @@
 #include "Point.h"
 int Point::quantity_ = 0;
+
 Point::Point () : id_ (0), x_ (0), y_ (0) {
 }
 
@@ -8,6 +9,7 @@ Point::Point (double x, double y, int id) : x_ (x), y_ (y) {
         id_ = 0;
     } else {
         id_ = ++quantity_;
+        id_pointers.push_back (this);
     }
 }
 
@@ -70,8 +72,8 @@ Point Point::operator/ (const double &a) const {
     }
 }
 
-Point &Point::get_by_id (int id) {
-    return *id_pointers[id];
+const Point &Point::get_by_id (int id) {
+    return *(id_pointers[id - 1]);
 }
 
 double Point::dist (const Point &A, const Point &B) {

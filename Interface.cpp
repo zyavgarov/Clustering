@@ -150,12 +150,23 @@ int Interface::manager (string cur_command) {
             show ("Added cloud " + to_string (cloud_id) + " to buffer");
         }
     } else if (main == "MATRIX") {
-        if (cc->matrix () == -1){
-            show("Field not found");
-        } else{
+        if (cc->matrix () == -1) {
+            show ("Field not found");
+        } else {
             show ("Field is readonly now. You can analyze it.");
             show ("Type HELP to see what you can do");
         }
+    } else if (main == "WAVE") {
+        double delta;
+        ss >> delta;
+        cc->wave (delta);
+        show ("Field is clusterized");
+    } else if (main == "DBSCAN") {
+        double delta;
+        int k;
+        ss >> delta >> k;
+        cc->dbscan(delta, k);
+        show("Field is clusterized");
     } else {
         // something went wrong
         show ("Unknown command. Check your input and try again.");

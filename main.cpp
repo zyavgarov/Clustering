@@ -1,8 +1,10 @@
 #include <iostream>
+#include <fstream>
 #include "Interface.h"
 
 int main () {
     Controller cc;
     Interface ii(0, true, &cc);
-    ii.run();
+    ifstream s("run.txt");
+    ii.run(s);
 }

@@ -57,12 +57,12 @@ bool Field::readonly () const {
 }
 
 void Field::create_dist_matrix () {
-    readonly_ = false;
+    readonly_ = true;
     dist_.clear ();
     dist_ = vector<vector<double>> (Point::quantity (), vector<double> (Point::quantity ()));
     for (int i = 0; i < Point::quantity (); ++i) {
         for (int j = 0; j < Point::quantity (); ++j) {
-            dist_[i][j] = dist_[j][i] = Point::dist (Point::get_by_id (i), Point::get_by_id (j));
+            dist_[i][j] = dist_[j][i] = Point::dist (Point::get_by_id (i + 1), Point::get_by_id (j + 1));
         }
     }
 }

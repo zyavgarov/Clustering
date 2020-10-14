@@ -1,5 +1,6 @@
 #include "Cluster_Search.h"
 #include "Field.h"
+#include <iostream> // to be deleted
 
 Cluster_Search::Cluster::Cluster (vector<Point> vec) : points (vec) {
 }
@@ -8,7 +9,7 @@ Cluster_Search::Cluster::Cluster (const vector<int> &vec) {
     vector<Point> a;
     a.reserve (vec.size ());
     for (int i : vec) {
-        a.push_back (Point::get_by_id (i));
+        a.push_back (Point::get_by_id (i+1));
     }
 }
 
@@ -47,23 +48,24 @@ void Cluster_Search::wave_clustering () {
             continue;
         }
         vector<int> curr_wave = {m};
-        vector<int> new_wave = curr_wave; // points, connected to smth from curr_wave
+        vector<int> next_wave; // points, connected to smth from curr_wave
         vector<int> curr_cluster; // points from current cluster
         // that cycle searches for neighbours of points in curr_wave
-        while (!new_wave.empty ()) {
+        while (!curr_wave.empty ()) {
             for (int i = 0; i < curr_wave.size (); ++i) {
                 for (int j = 0; j < Point::quantity (); ++j) {
                     if (i != j && edges ()[i][j] && !burnt[j]) {
-                        new_wave.push_back (j);
+                        next_wave.push_back (j);
                     }
                 }
             }
             curr_cluster.insert (curr_cluster.end (), curr_wave.begin (), curr_wave.end ());
-            curr_wave = new_wave;
-            burnt_num += new_wave.size ();
-            for (auto &&i: new_wave) {
+            curr_wave = next_wave;
+            burnt_num += next_wave.size ();
+            for (auto &&i: next_wave) {
                 burnt[i] = true;
             }
+            next_wave.clear();
         }
         add (Cluster_Search::Cluster (curr_cluster));
     }

@@ -32,14 +32,14 @@ int Controller::generate_cloud (int id,
                                 int c_length = 1000) {
     // generates cloud with center on the field with dispersions by x and y
     // -1 if readonly
-    if (field_->readonly ()) {
-        return -1;
-    }
     Cloud cloud (c_length, disp_x, disp_y);
     cloud.shift (center_x, center_y);
     if (field_ == nullptr) {
         field_ = new Field ();
         log ("Field initialized");
+    }
+    if (field_->readonly ()) {
+        return -1;
     }
     field_->add (cloud);
     log (to_string (id) + ": generated cloud (" + to_string (center_x) + ", " + to_string (center_y)
@@ -167,8 +167,9 @@ Cluster_Search Controller::dbscan (double d, int k) const {
     return result.dbscan ();
 }
 
-Cluster_Search Controller::wave (double d) const {
+Cluster_Search Controller::wave (double d) { // what if field is not readonly
     // realises wave-clustering with distance of incidence d
     Cluster_Search result (field_, d);
+    log("Started wave-clustering");
     return result.wave ();
 }
