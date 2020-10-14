@@ -19,12 +19,11 @@ class Controller {
   int generate_cloud (int id, double center_x, double center_y, double disp_x, double disp_y, int c_length);
   int fprintf (const string &file_name) const;
   void histogram (int pieces, vector<int> &x_distr, vector<int> &y_distr) const;
-  Cluster_Search scan (int k, double d);
-  Cluster_Search dbscan_2 (double d, int k);
-  Cluster_Search dbscan (int k, double d, Cluster_Search &result);
+  Cluster_Search dbscan (double d, int k) const;
   int buffer_add_cloud(int id) const;
   int buffer_unload() const;
   int matrix() const;
+  Cluster_Search wave (double d) const;
 };
 
 #endif //INTERFACE4__CONTROLLER_H_

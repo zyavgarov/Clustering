@@ -20,7 +20,8 @@ void Cluster_Search::add (const Cluster_Search::Cluster &addition) {
     clusters.push_back (addition);
 }
 
-Cluster_Search::Cluster_Search (double delta, int k) : delta (delta), k (k) {
+Cluster_Search::Cluster_Search (Field *field, double delta, int k) : field_ (field), delta (delta), k (k) {
+    
     create_edges_matrix ();
 }
 
@@ -124,4 +125,16 @@ void Cluster_Search::db_clustering (const vector<int> &state) {
          * - I still need to finish the functions about clustering
          */
     }
+}
+
+Cluster_Search Cluster_Search::wave () {
+    create_edges_matrix();
+    wave_clustering();
+    return *this;
+}
+
+Cluster_Search Cluster_Search::dbscan () {
+    create_edges_matrix();
+    db_clustering(db_sorting());
+    return *this;
 }
