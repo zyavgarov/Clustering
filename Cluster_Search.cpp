@@ -42,7 +42,7 @@ void Cluster_Search::wave_clustering () {
     vector<bool> burnt (Point::quantity (), false);
     int burnt_num = 0; // number of true in burnt vector
     // that cycle checks if point in marked cluster and if not creates new one
-    for (int m = 1; m <= Point::quantity (); ++m) {
+    for (int m = 0; m < Point::quantity (); ++m) {
         if (burnt[m]) {
             continue;
         }

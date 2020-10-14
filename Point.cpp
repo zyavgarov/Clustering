@@ -9,6 +9,9 @@ Point::Point (double x, double y, int id) : x_ (x), y_ (y) {
         id_ = 0;
     } else {
         id_ = ++quantity_;
+        if (id_pointers.empty()){
+            id_pointers.push_back(nullptr);
+        }
         id_pointers.push_back (this);
     }
 }
@@ -73,7 +76,7 @@ Point Point::operator/ (const double &a) const {
 }
 
 const Point &Point::get_by_id (int id) {
-    return *(id_pointers[id - 1]);
+    return *(id_pointers[id]);
 }
 
 double Point::dist (const Point &A, const Point &B) {
