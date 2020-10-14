@@ -9,7 +9,7 @@ Cluster_Search::Cluster::Cluster (const vector<int> &vec) {
     vector<Point> a;
     a.reserve (vec.size ());
     for (int i : vec) {
-        a.push_back (Point::get_by_id (i+1));
+        a.push_back (Point::get_by_id (i + 1));
     }
 }
 
@@ -22,7 +22,6 @@ void Cluster_Search::add (const Cluster_Search::Cluster &addition) {
 }
 
 Cluster_Search::Cluster_Search (Field *field, double delta, int k) : field_ (field), delta (delta), k (k) {
-    
     create_edges_matrix ();
 }
 
@@ -65,7 +64,7 @@ void Cluster_Search::wave_clustering () {
             for (auto &&i: next_wave) {
                 burnt[i] = true;
             }
-            next_wave.clear();
+            next_wave.clear ();
         }
         add (Cluster_Search::Cluster (curr_cluster));
     }
@@ -121,22 +120,15 @@ void Cluster_Search::db_clustering (const vector<int> &state) {
             clusters.emplace_back (vector<int> (1, l));
             burnt[l] = true;
         }
-        /* The problems are:
-         * - bruteforcing of Points sometimes can start from 0. This is not allowed
-         * - curr_cluster vector in some algorithms is removed before going to the next point
-         * - I still need to finish the functions about clustering
-         */
     }
 }
 
 Cluster_Search Cluster_Search::wave () {
-    create_edges_matrix();
-    wave_clustering();
+    wave_clustering ();
     return *this;
 }
 
 Cluster_Search Cluster_Search::dbscan () {
-    create_edges_matrix();
-    db_clustering(db_sorting());
+    db_clustering (db_sorting ());
     return *this;
 }
