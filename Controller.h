@@ -12,7 +12,6 @@ class Controller {
   void log (const string &s);
  public:
   Field *field_;
-  vector<Cluster_Search> searches;
   explicit Controller (bool write_log = true);
   ~Controller ();
   int get_help (int id, string &file_name);
@@ -24,6 +23,7 @@ class Controller {
   int buffer_unload() const;
   int matrix() const;
   Cluster_Search wave (double d);
+  const vector<Cluster_Search>& info_cluster_search() const;
 };
 
 #endif //INTERFACE4__CONTROLLER_H_

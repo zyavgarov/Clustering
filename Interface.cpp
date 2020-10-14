@@ -165,8 +165,13 @@ int Interface::manager (string cur_command) {
         double delta;
         int k;
         ss >> delta >> k;
-        cc->dbscan(delta, k);
-        show("Field is clusterized");
+        cc->dbscan (delta, k);
+        show ("Field is clusterized");
+    } else if (main == "INFOCLUSTERSEARCH" || main == "INFOCS") {
+        vector<Cluster_Search> searches = cc->info_cluster_search();
+        for (int i = 0; i < searches.size(); ++i) {
+            show(to_string(i) + ": d = " + to_string(searches[i].delta) + "; clusters: " + to_string(searches[i].clusters.size()));
+        }
     } else {
         // something went wrong
         show ("Unknown command. Check your input and try again.");

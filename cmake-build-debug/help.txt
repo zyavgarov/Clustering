@@ -23,5 +23,8 @@ WAVE {double delta}
     they are defined not connected
 
 Coming soon:
+infoclustersearch
 dbscan
 s-tree
+hdbscan
+kmeans

@@ -1,4 +1,3 @@
-
 #ifndef INTERFACE4__FIELD_H_
 #define INTERFACE4__FIELD_H_
 #include "Buffer.h"
@@ -7,7 +6,6 @@
 class Field {
  public:
   friend class Buffer;
-  
   Field ();
   ~Field ();
   int add (const Cloud &addition);
@@ -18,6 +16,7 @@ class Field {
   const vector<Cloud> &cloud ();
   bool readonly() const;
   void create_dist_matrix();
+  const vector<Cluster_Search>& searches() const;
  private:
   Field &operator= (Field const &f);
   Field (Field const &f);

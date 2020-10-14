@@ -66,3 +66,7 @@ void Field::create_dist_matrix () {
         }
     }
 }
+
+const vector<Cluster_Search> &Field::searches () const {
+    return searches_;
+}

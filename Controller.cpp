@@ -173,3 +173,7 @@ Cluster_Search Controller::wave (double d) { // what if field is not readonly
     log("Started wave-clustering");
     return result.wave ();
 }
+
+const vector<Cluster_Search> &Controller::info_cluster_search () const {
+    return field_->searches();
+}
