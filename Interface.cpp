@@ -62,11 +62,11 @@ int Interface::manager (string cur_command) {
     /* gets command for controller and sends it;
      * returns -1 for exit;
      */
-    for (auto &c: cur_command) c = toupper (c); // string to upper case
     log ("> " + cur_command);
     stringstream ss (cur_command);
     string main;
     ss >> main;
+    for (auto &c: main) c = toupper (c);
     if (main == "HELP") {
         // output of manual
         string manual;
@@ -138,16 +138,57 @@ int Interface::manager (string cur_command) {
         show ("Finishing...");
         return -1;
     } else if (main == "BUFFER") {
-        char l;
-        ss >> l;
-        if (l == 'u') {
-            cc->buffer_unload ();
-            show ("Buffer loaded to field");
-        } else if (l == 'c') {
+        string operation;
+        ss >> operation;
+        for (auto &c: operation) c = toupper (c);
+        if (operation == "UNLOAD") {
+            if (cc->buffer_unload () == -1) {
+                show ("Field in readonly mode");
+            } else {
+                show ("Buffer unloaded to the field");
+            }
+        } else if (operation == "ADD") {
             int cloud_id;
             ss >> cloud_id;
-            cc->buffer_add_cloud (cloud_id);
-            show ("Added cloud " + to_string (cloud_id) + " to buffer");
+            if (cc->buffer_add_cloud (cloud_id) == -1) {
+                show ("Field in readonly mode");
+            } else {
+                show ("Cloud №" + to_string (cloud_id) + " added to buffer");
+            }
+        } else if (operation == "ROTATE") {
+            double angle;
+            ss >> angle;
+            if (cc->buffer_rotate (angle) == -1) {
+                show ("Field in readonly mode");
+            } else {
+                show ("Buffer rotated");
+            }
+        } else if (operation == "ZOOM") {
+            double k;
+            ss >> k;
+            if (cc->buffer_zoom (k) == -1) {
+                show ("Field in readonly mode");
+            } else {
+                show ("Buffer zoomed");
+            }
+        } else if (operation == "SHIFT") {
+            double x, y;
+            ss >> x >> y;
+            if (cc->buffer_shift (x, y) == -1) {
+                show ("Field in readonly mode");
+            } else {
+                show ("Buffer shifted");
+            }
+        } else if (operation == "MIRROR") {
+            if (cc->buffer_mirror () == -1) {
+                show ("Field in readonly mode");
+            } else {
+                show ("Buffer reflected");
+            }
+        } else {
+            // something went wrong
+            show ("Unknown buffer operation. Check your input and try again.");
+            show ("Type HELP to see the list of supported commands");
         }
     } else if (main == "MATRIX") {
         if (cc->matrix () == -1) {
@@ -168,9 +209,10 @@ int Interface::manager (string cur_command) {
         cc->dbscan (delta, k);
         show ("Field is clusterized");
     } else if (main == "INFOCLUSTERSEARCH" || main == "INFOCS") {
-        vector<Cluster_Search> searches = cc->info_cluster_search();
-        for (int i = 0; i < searches.size(); ++i) {
-            show(to_string(i) + ": d = " + to_string(searches[i].delta) + "; clusters: " + to_string(searches[i].clusters.size()));
+        vector<Cluster_Search> searches = cc->info_cluster_search ();
+        for (int i = 0; i < searches.size (); ++i) {
+            show (to_string (i) + ": d = " + to_string (searches[i].delta) + "; clusters: "
+                      + to_string (searches[i].clusters.size ()));
         }
     } else {
         // something went wrong
