@@ -17,9 +17,6 @@ class Cloud {
   ~Cloud ();
   int length () const;
   void shift (double shift_x, double shift_y);
-  void rotate (double angle);
-  void mirror ();
-  void zoom (double k);
   const vector<Point> & point () const;
  private:
   int fprintf (ofstream &out) const;
