@@ -9,10 +9,13 @@ int main () {
 
 /* The problems are:
  * - curr_cluster vector in some algorithms is removed before going to the next point
+ * - check permissions for readonly
+ * - understand how vector of Cluster_Search is kept in memory
  * - searching the ways to output the clustering
  * - INFOCLUSTERSEARCH
  * - spanning tree & s-tree_histo
  * - hdbscan
  * - Symmetric matrixes
  * - k-means
+ * - working over the cloud should be in buffer
  */
