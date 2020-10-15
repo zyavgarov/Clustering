@@ -14,7 +14,7 @@ class Interface {
   void show (const string &s);
   int run (ifstream &inp);
  private:
-  int manager (string cur_command);
+  int manager (const string& cur_command);
   Controller *cc;
   ofstream logger;
   string log_file_name;

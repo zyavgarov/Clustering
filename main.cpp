@@ -2,9 +2,9 @@
 
 int main () {
     Controller cc;
-    Interface ii(0, true, &cc);
-    ifstream s("run.txt");
-    ii.run(s);
+    Interface ii (0, true, &cc);
+    ifstream s ("run.txt");
+    ii.run (s);
 }
 
 /* The problems are:
@@ -17,5 +17,5 @@ int main () {
  * - hdbscan
  * - Symmetric matrixes
  * - k-means
- * - working over the cloud should be in buffer
+ * - BINARY command
  */

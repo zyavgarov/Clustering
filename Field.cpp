@@ -70,3 +70,7 @@ void Field::create_dist_matrix () {
 const vector<Cluster_Search> &Field::searches () const {
     return searches_;
 }
+
+void Field::create_edges_matrix (double delta) {
+    searches_.emplace_back (this, delta);
+}

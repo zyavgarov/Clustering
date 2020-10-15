@@ -18,6 +18,7 @@ class Field {
   bool readonly () const;
   void create_dist_matrix ();
   const vector<Cluster_Search> &searches () const;
+  void create_edges_matrix(double delta);
  private:
   Field &operator= (Field const &f);
   Field (Field const &f);

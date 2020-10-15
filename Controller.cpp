@@ -213,3 +213,7 @@ int Controller::buffer_rotate (double angle) const {
     field_->buf.rotate (angle);
     return 0;
 }
+
+int Controller::incidence_matrix (double delta) const {
+    field_->create_edges_matrix(delta);
+}

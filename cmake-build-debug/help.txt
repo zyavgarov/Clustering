@@ -34,7 +34,6 @@ WAVE {double delta}
     they are defined not connected
 
 Coming soon:
-extended buffer
 binary
 infoclustersearch
 dbscan

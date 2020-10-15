@@ -58,7 +58,7 @@ int Interface::run (ifstream &inp) {
     return 0;
 }
 
-int Interface::manager (string cur_command) {
+int Interface::manager (const string& cur_command) {
     /* gets command for controller and sends it;
      * returns -1 for exit;
      */

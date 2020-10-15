@@ -22,7 +22,6 @@ void Cluster_Search::add (const Cluster_Search::Cluster &addition) {
 }
 
 Cluster_Search::Cluster_Search (Field *field, double delta, int k) : field_ (field), delta (delta), k (k) {
-    create_edges_matrix ();
 }
 
 void Cluster_Search::create_edges_matrix () {
