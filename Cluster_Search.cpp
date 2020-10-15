@@ -69,8 +69,9 @@ void Cluster_Search::wave_clustering () {
     }
 }
 
-vector<int> Cluster_Search::db_sorting () const {
+vector<int> Cluster_Search::db_sorting (int density) {
     // counting neighbours for all the points
+    k = density;
     vector<int> type (Point::quantity (), 0);
     for (int i = 0; i < Point::quantity (); ++i) {
         vector<int> neighbours;
@@ -127,7 +128,7 @@ Cluster_Search Cluster_Search::wave () {
     return *this;
 }
 
-Cluster_Search Cluster_Search::dbscan () {
-    db_clustering (db_sorting ());
+Cluster_Search Cluster_Search::dbscan (int k) {
+    db_clustering (db_sorting (k));
     return *this;
 }

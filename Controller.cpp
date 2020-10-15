@@ -161,17 +161,17 @@ int Controller::matrix () const {
     return 0;
 }
 
-Cluster_Search Controller::dbscan (double d, int k) const {
+Cluster_Search Controller::dbscan (double d, int k) const { // 1) what if field is not readonly 2) incidence matrix already created
     // realises dbscan-clustering with k-core points and d-incidence
     Cluster_Search result (field_, d, k);
-    return result.dbscan ();
+    return result.dbscan (0);
 }
 
-Cluster_Search Controller::wave (double d) { // what if field is not readonly
+int Controller::wave (double d) { // 1) what if field is not readonly 2) incidence matrix already created
     // realises wave-clustering with distance of incidence d
-    Cluster_Search result (field_, d);
     log ("Started wave-clustering");
-    return result.wave ();
+    field_->wave_clustering();
+    return 0;
 }
 
 const vector<Cluster_Search> &Controller::info_cluster_search () const {
@@ -215,5 +215,7 @@ int Controller::buffer_rotate (double angle) const {
 }
 
 int Controller::incidence_matrix (double delta) const {
+    //creates incidence matrix in field
     field_->create_edges_matrix(delta);
+    return 0;
 }

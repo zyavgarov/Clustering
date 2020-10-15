@@ -74,3 +74,13 @@ const vector<Cluster_Search> &Field::searches () const {
 void Field::create_edges_matrix (double delta) {
     searches_.emplace_back (this, delta);
 }
+
+int Field::wave_clustering () {
+    searches_.back().wave();
+    return 0;
+}
+
+int Field::db_clustering (int k) {
+    searches_.back ().dbscan (0);
+    return 0;
+}

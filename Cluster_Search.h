@@ -20,11 +20,11 @@ class Cluster_Search {
   vector<Cluster> clusters;
   void add (const Cluster &addition);
   void create_edges_matrix ();
-  vector<int> db_sorting () const;
+  vector<int> db_sorting (int density);
   void db_clustering (const vector<int> &state);
   void wave_clustering ();
   Cluster_Search wave ();
-  Cluster_Search dbscan ();
+  Cluster_Search dbscan (int k);
   Cluster_Search s_tree ();
  private:
   Field *field_;

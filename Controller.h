@@ -26,7 +26,7 @@ class Controller {
   int buffer_rotate (double angle) const;
   int matrix () const;
   int incidence_matrix(double delta) const;
-  Cluster_Search wave (double d);
+  int wave (double d);
   Cluster_Search dbscan (double d, int k) const;
   const vector<Cluster_Search> &info_cluster_search () const;
 };
