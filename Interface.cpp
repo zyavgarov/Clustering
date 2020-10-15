@@ -214,6 +214,11 @@ int Interface::manager (const string &cur_command) {
             show (to_string (i) + ": d = " + to_string (searches[i].delta) + "; clusters: "
                       + to_string (searches[i].clusters.size ()));
         }
+    } else if (main == "BINARY") {
+        double delta;
+        ss >> delta;
+        cc->incidence_matrix(delta);
+        show("Incidence matrix is created. Now you can run clustering");
     } else {
         // something went wrong
         show ("Unknown command. Check your input and try again.");

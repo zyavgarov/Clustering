@@ -15,7 +15,8 @@ int main () {
  * - INFOCLUSTERSEARCH
  * - spanning tree & s-tree_histo
  * - hdbscan
- * - Symmetric matrixes
+ * - Symmetric matrices
  * - k-means
  * - BINARY command
+ * - Interface::manager should be simplified and separated to little functions
  */
