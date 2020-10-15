@@ -30,10 +30,8 @@ LOG {bool b}
 	No parameter shows current state of writing logs
 MATRIX
     Sets field to state readonly and prepares it to be analyzed
-WAVE {double delta}
+WAVE
     Searches clusters in the field using wave-clustering algorithm.
-    If the distance between two points is more than delta,
-    they are defined not connected
 
 Coming soon:
 infoclustersearch
