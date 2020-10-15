@@ -6,8 +6,11 @@ const int M = 100;
 
 class Cloud {
   friend class Field;
+  
   friend class Controller;
+  
   friend class Buffer;
+ 
  public:
   Cloud ();
   explicit Cloud (int length);
@@ -17,7 +20,7 @@ class Cloud {
   ~Cloud ();
   int length () const;
   void shift (double shift_x, double shift_y);
-  const vector<Point> & point () const;
+  const vector<Point> &point () const;
  private:
   int fprintf (ofstream &out) const;
   vector<Point> point_;

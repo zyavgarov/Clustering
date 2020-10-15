@@ -6,17 +6,18 @@
 class Field {
  public:
   friend class Buffer;
+  
   Field ();
   ~Field ();
   int add (const Cloud &addition);
   int fprintf (ofstream &out) const;
   int length () const;
   Buffer buf;
-  const vector<vector<double>> &dist ()const;
+  const vector<vector<double>> &dist () const;
   const vector<Cloud> &cloud ();
-  bool readonly() const;
-  void create_dist_matrix();
-  const vector<Cluster_Search>& searches() const;
+  bool readonly () const;
+  void create_dist_matrix ();
+  const vector<Cluster_Search> &searches () const;
  private:
   Field &operator= (Field const &f);
   Field (Field const &f);

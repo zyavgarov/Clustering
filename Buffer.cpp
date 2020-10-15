@@ -3,7 +3,7 @@
 void Buffer::add (const Cloud &c) {
     //adds cloud to buffer
     for (int i = 0; i < c.length (); ++i) {
-        cloud.point_.push_back (c.point()[i]);
+        cloud.point_.push_back (c.point ()[i]);
     }
 }
 
@@ -17,9 +17,9 @@ int Buffer::length () const {
     return cloud.length ();
 }
 
-const vector<Point>& Buffer::unload () const {
+const vector<Point> &Buffer::unload () const {
     // returns all the points from buffer
-    return cloud.point();
+    return cloud.point ();
 }
 
 void Buffer::shift (double shift_x, double shift_y) {

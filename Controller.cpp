@@ -170,10 +170,46 @@ Cluster_Search Controller::dbscan (double d, int k) const {
 Cluster_Search Controller::wave (double d) { // what if field is not readonly
     // realises wave-clustering with distance of incidence d
     Cluster_Search result (field_, d);
-    log("Started wave-clustering");
+    log ("Started wave-clustering");
     return result.wave ();
 }
 
 const vector<Cluster_Search> &Controller::info_cluster_search () const {
-    return field_->searches();
+    return field_->searches ();
+}
+
+int Controller::buffer_shift (double x, double y) const {
+    //shifts cloud in buffer to vector (x, y)
+    if (field_->readonly ()) {
+        return -1;
+    }
+    field_->buf.shift (x, y);
+    return 0;
+}
+
+int Controller::buffer_zoom (double k) const {
+    //zooms cloud in buffer to coefficient k
+    if (field_->readonly ()) {
+        return -1;
+    }
+    field_->buf.zoom (k);
+    return 0;
+}
+
+int Controller::buffer_mirror () const {
+    //zooms cloud in buffer to coefficient k
+    if (field_->readonly ()) {
+        return -1;
+    }
+    field_->buf.mirror ();
+    return 0;
+}
+
+int Controller::buffer_rotate (double angle) const {
+    //rotates cloud in buffer to angle
+    if (field_->readonly ()) {
+        return -1;
+    }
+    field_->buf.rotate (angle);
+    return 0;
 }
