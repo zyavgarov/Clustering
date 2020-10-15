@@ -161,16 +161,16 @@ int Controller::matrix () const {
     return 0;
 }
 
-Cluster_Search Controller::dbscan (double d, int k) const { // 1) what if field is not readonly 2) incidence matrix already created
+int Controller::dbscan (int k) const { // 1) what if field is not readonly 2) incidence matrix already created
     // realises dbscan-clustering with k-core points and d-incidence
-    Cluster_Search result (field_, d, k);
-    return result.dbscan (0);
+    field_->db_clustering(k);
+    return 0;
 }
 
-int Controller::wave (double d) { // 1) what if field is not readonly 2) incidence matrix already created
-    // realises wave-clustering with distance of incidence d
-    log ("Started wave-clustering");
+int Controller::wave () { // 1) what if field is not readonly 2) incidence matrix already created
+    // realises wave-clustering algorithm
     field_->wave_clustering();
+    log ("Started wave-clustering");
     return 0;
 }
 
