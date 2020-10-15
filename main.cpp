@@ -17,6 +17,5 @@ int main () {
  * - hdbscan
  * - Symmetric matrices
  * - k-means
- * - BINARY command
  * - Interface::manager should be simplified and separated to little functions
  */

@@ -1,6 +1,5 @@
 #include "Cluster_Search.h"
 #include "Field.h"
-#include <iostream> // to be deleted
 
 Cluster_Search::Cluster::Cluster (vector<Point> vec) : points (vec) {
 }
@@ -11,6 +10,7 @@ Cluster_Search::Cluster::Cluster (const vector<int> &vec) {
     for (int i : vec) {
         a.push_back (Point::get_by_id (i + 1));
     }
+    points = a;
 }
 
 const vector<vector<bool>> &Cluster_Search::edges () const {
@@ -22,6 +22,7 @@ void Cluster_Search::add (const Cluster_Search::Cluster &addition) {
 }
 
 Cluster_Search::Cluster_Search (Field *field, double delta, int k) : field_ (field), delta (delta), k (k) {
+    create_edges_matrix ();
 }
 
 void Cluster_Search::create_edges_matrix () {
@@ -39,33 +40,32 @@ void Cluster_Search::create_edges_matrix () {
 
 void Cluster_Search::wave_clustering () {
     vector<bool> burnt (Point::quantity (), false);
-    int burnt_num = 0; // number of true in burnt vector
     // that cycle checks if point in marked cluster and if not creates new one
     for (int m = 0; m < Point::quantity (); ++m) {
         if (burnt[m]) {
             continue;
         }
         vector<int> curr_wave = {m};
+        burnt[m] = true;
         vector<int> next_wave; // points, connected to smth from curr_wave
         vector<int> curr_cluster; // points from current cluster
         // that cycle searches for neighbours of points in curr_wave
         while (!curr_wave.empty ()) {
             for (int i = 0; i < curr_wave.size (); ++i) {
                 for (int j = 0; j < Point::quantity (); ++j) {
-                    if (i != j && edges ()[i][j] && !burnt[j]) {
+                    if (edges ()[i][j] && !burnt[j]) {
                         next_wave.push_back (j);
                     }
                 }
             }
             curr_cluster.insert (curr_cluster.end (), curr_wave.begin (), curr_wave.end ());
             curr_wave = next_wave;
-            burnt_num += next_wave.size ();
             for (auto &&i: next_wave) {
                 burnt[i] = true;
             }
             next_wave.clear ();
         }
-        add (Cluster_Search::Cluster (curr_cluster));
+        add (Cluster_Search::Cluster (curr_cluster)); // here is the problem. Clusters which are found just disappear here
     }
 }
 
@@ -128,7 +128,7 @@ Cluster_Search Cluster_Search::wave () {
     return *this;
 }
 
-Cluster_Search Cluster_Search::dbscan (int k) {
-    db_clustering (db_sorting (k));
+Cluster_Search Cluster_Search::dbscan (int density) {
+    db_clustering (db_sorting (density));
     return *this;
 }

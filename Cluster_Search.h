@@ -24,7 +24,7 @@ class Cluster_Search {
   void db_clustering (const vector<int> &state);
   void wave_clustering ();
   Cluster_Search wave ();
-  Cluster_Search dbscan (int k);
+  Cluster_Search dbscan (int density);
   Cluster_Search s_tree ();
  private:
   Field *field_;
