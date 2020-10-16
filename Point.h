@@ -12,11 +12,12 @@ class Point {
   int id_;
   int fprintf (ofstream &out) const;
   static int quantity_;
-  static vector<Point *> id_pointers;
+  static vector<Point *> id_pointers; // vector of pointers because vector of references is not supported
  public:
   Point ();
   Point (Point const &c);
   Point (double x, double y, int id = -1);
+  Point&operator=(Point const&p);
   double x () const;
   double y () const;
   int id () const;

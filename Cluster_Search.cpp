@@ -65,7 +65,7 @@ void Cluster_Search::wave_clustering () {
             }
             next_wave.clear ();
         }
-        add (Cluster_Search::Cluster (curr_cluster)); // here is the problem. Clusters which are found just disappear here
+        add (Cluster_Search::Cluster (curr_cluster));
     }
 }
 

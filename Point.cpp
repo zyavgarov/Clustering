@@ -9,14 +9,15 @@ Point::Point (double x, double y, int id) : x_ (x), y_ (y) {
         id_ = 0;
     } else {
         id_ = ++quantity_;
-        if (id_pointers.empty()){
-            id_pointers.push_back(nullptr);
+        if (id_pointers.empty ()) {
+            id_pointers.push_back (nullptr);
         }
         id_pointers.push_back (this);
     }
 }
 
-Point::Point (Point const &c) : x_ (c.x ()), y_ (c.y ()), id_ (id ()) {
+Point::Point (Point const &c) : x_ (c.x ()), y_ (c.y ()), id_ (++quantity_) {
+    id_pointers.push_back (this);
 }
 
 double Point::x () const {
@@ -85,6 +86,16 @@ double Point::dist (const Point &A, const Point &B) {
 
 int Point::quantity () {
     return quantity_;
+}
+
+Point &Point::operator= (const Point &p) {
+    if (this != &p) {
+        x_ = p.x ();
+        y_ = p.y ();
+        id_ = ++quantity_;
+        id_pointers.push_back(this);
+    }
+    return *this;
 }
 
 vector<Point *> Point::id_pointers;
