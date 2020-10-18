@@ -1,11 +1,11 @@
 #include "Cluster_Search.h"
 #include "Field.h"
 
-Cluster_Search::Cluster::Cluster (vector<Point> vec) : points (vec) {
+Cluster_Search::Cluster::Cluster (vector<const Point *> vec) : points (vec) {
 }
 
 Cluster_Search::Cluster::Cluster (const vector<int> &vec) {
-    vector<Point> a;
+    vector<const Point *> a;
     a.reserve (vec.size ());
     for (int i : vec) {
         a.push_back (Point::get_by_id (i + 1));

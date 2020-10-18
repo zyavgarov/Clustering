@@ -7,6 +7,7 @@ using namespace std;
 
 class Point {
   friend class Cloud;
+ 
  private:
   double x_, y_; //coords
   int id_;
@@ -17,7 +18,7 @@ class Point {
   Point ();
   Point (Point const &c);
   Point (double x, double y, int id = -1);
-  Point&operator=(Point const&p);
+  Point &operator= (Point const &p);
   double x () const;
   double y () const;
   int id () const;
@@ -26,8 +27,9 @@ class Point {
   Point operator+ (const Point &a) const;
   Point operator* (const double &a) const;
   Point operator/ (const double &a) const;
-  static const Point &get_by_id (int id);
-  static double dist (const Point &A, const Point &B);
-  static int quantity() ;
+  static const Point * get_by_id (int id);
+  static double dist (const Point *A, const Point *B);
+  static int quantity ();
 };
+
 #endif //INTERFACE4__POINT_H_

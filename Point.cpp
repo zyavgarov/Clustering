@@ -76,12 +76,12 @@ Point Point::operator/ (const double &a) const {
     }
 }
 
-const Point &Point::get_by_id (int id) {
-    return *(id_pointers[id]);
+const Point * Point::get_by_id (int id) {
+    return id_pointers[id];
 }
 
-double Point::dist (const Point &A, const Point &B) {
-    return sqrt (pow (A.x () - B.x (), 2) + pow (A.y () - B.y (), 2));
+double Point::dist (const Point *A, const Point *B) {
+    return sqrt (pow (A->x () - B->x (), 2) + pow (A->y () - B->y (), 2));
 }
 
 int Point::quantity () {
@@ -93,7 +93,7 @@ Point &Point::operator= (const Point &p) {
         x_ = p.x ();
         y_ = p.y ();
         id_ = ++quantity_;
-        id_pointers.push_back(this);
+        id_pointers.push_back (this);
     }
     return *this;
 }

@@ -22,7 +22,8 @@ class Cloud {
   const vector<Point *> &point () const;
  private:
   int fprintf (ofstream &out) const;
-  vector<Point *> point_;
+  vector<Point *>
+      point_; // vector of pointers used for having a unique point with unique id without problems while copying
 };
 
 #endif //INTERFACE4__CLOUD_H_

@@ -8,9 +8,9 @@ class Cluster_Search {
  public:
   class Cluster {
    public:
-    explicit Cluster (vector<Point> vec);
+    explicit Cluster (vector<const Point *> vec);
     explicit Cluster (const vector<int> &vec);
-    vector<Point> points; // I don't understand why do I need that
+    vector<const Point *> points; // I don't understand why do I need that
   };
   
   explicit Cluster_Search (Field *field, double delta, int k = 0);
