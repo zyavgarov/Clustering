@@ -3,13 +3,13 @@
 void Buffer::add (const Cloud &c) {
     //adds cloud to buffer
     for (int i = 0; i < c.length (); ++i) {
-        cloud.point_.push_back (c.point ()[i]);
+        cloud.point_.push_back (new Point (*c.point ()[i]));
     }
 }
 
-void Buffer::add (const Point &p) {
+void Buffer::add (Point *p) {
     //adds point to buffer
-    cloud.point_.push_back (p);
+    cloud.point_.push_back (new Point (*p));
 }
 
 int Buffer::length () const {
@@ -17,7 +17,7 @@ int Buffer::length () const {
     return cloud.length ();
 }
 
-const vector<Point> &Buffer::unload () const {
+const vector<Point *> &Buffer::unload () const {
     // returns all the points from buffer
     return cloud.point ();
 }
@@ -26,7 +26,7 @@ void Buffer::shift (double shift_x, double shift_y) {
     //shifts the cloud to shift_x up and shift_y right
     int len = length ();
     for (int i = 0; i < len; ++i) {
-        cloud.point_[i].shift (shift_x, shift_y);
+        cloud.point_[i]->shift (shift_x, shift_y);
     }
 }
 
@@ -35,8 +35,8 @@ void Buffer::rotate (double angle) {
     double center_x = 0;
     double center_y = 0;
     for (const auto &p: cloud.point_) {
-        center_x += p.x ();
-        center_y += p.y ();
+        center_x += p->x ();
+        center_y += p->y ();
     }
     center_x /= length ();
     center_y /= length ();
@@ -44,10 +44,12 @@ void Buffer::rotate (double angle) {
     double shift_y = -center_y;
     shift (shift_x, shift_y);
     for (int i = 0; i < length (); ++i) {
-        double old_x = cloud.point_[i].x ();
-        double old_y = cloud.point_[i].y ();
-        Point a (old_x * cos (angle) - old_y * sin (angle), old_x * sin (angle) + old_y * cos (angle), 0);
-        cloud.point_[i] = a;
+        double old_x = cloud.point_[i]->x ();
+        double old_y = cloud.point_[i]->y ();
+        delete cloud.point_[i];
+        cloud.point_[i] = new Point (old_x * cos (angle) - old_y * sin (angle),
+                                     old_x * sin (angle) + old_y * cos (angle),
+                                     0);
     }
     shift (-shift_x, -shift_y);
 }
@@ -56,13 +58,13 @@ void Buffer::mirror () {
     //makes a reflection about center and Oy
     double center_x = 0;
     for (const auto &p: cloud.point_) {
-        center_x += p.x ();
+        center_x += p->x ();
     }
     center_x /= length ();
     double shift_x = -center_x;
     shift (shift_x, 0);
     for (int i = 0; i < length (); ++i) {
-        cloud.point_[i].shift (-cloud.point_[i].x () * 2, 0);
+        cloud.point_[i]->shift (-cloud.point_[i]->x () * 2, 0);
     }
     shift (-shift_x, 0);
     
@@ -74,8 +76,8 @@ void Buffer::zoom (double k) {
     double center_x = 0;
     double center_y = 0;
     for (const auto &p: cloud.point_) {
-        center_x += p.x ();
-        center_y += p.y ();
+        center_x += p->x ();
+        center_y += p->y ();
     }
     center_x /= length ();
     center_y /= length ();
@@ -83,8 +85,16 @@ void Buffer::zoom (double k) {
     double shift_y = -center_y;
     shift (shift_x, shift_y);
     for (int i = 0; i < length (); i++) {
-        Point temp (cloud.point_[i].x () * k, cloud.point_[i].y () * k, 0);
-        cloud.point_[i] = temp;
+        Point temp (cloud.point_[i]->x () * k, cloud.point_[i]->y () * k, 0);
+        delete cloud.point_[i];
+        cloud.point_[i] = new Point (cloud.point_[i]->x () * k, cloud.point_[i]->y () * k, 0);
     }
     shift (-shift_x, -shift_y);
+}
+
+void Buffer::erase () {
+    for (auto &p: cloud.point_){
+        delete p;
+    }
+    cloud.point_.clear();
 }

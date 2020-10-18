@@ -74,13 +74,13 @@ void Controller::histogram (int pieces, vector<int> &x_distr, vector<int> &y_dis
     for (int i = 0; i < field_->length (); ++i) {
         for (int j = 0; j < field_->cloud ()[i].length (); ++j) {
             if (started) {
-                if (field_->cloud ()[i].point ()[j].x () > max) {
-                    max = field_->cloud ()[i].point ()[j].x ();
-                } else if (field_->cloud ()[i].point ()[j].x () < min) {
-                    min = field_->cloud ()[i].point ()[j].x ();
+                if (field_->cloud ()[i].point ()[j]->x () > max) {
+                    max = field_->cloud ()[i].point ()[j]->x ();
+                } else if (field_->cloud ()[i].point ()[j]->x () < min) {
+                    min = field_->cloud ()[i].point ()[j]->x ();
                 }
             } else {
-                min = max = field_->cloud ()[i].point ()[j].x ();
+                min = max = field_->cloud ()[i].point ()[j]->x ();
                 started = true;
             }
         }
@@ -95,7 +95,7 @@ void Controller::histogram (int pieces, vector<int> &x_distr, vector<int> &y_dis
     for (int i = 0; i < field_->length (); ++i) {
         for (int j = 0; j < field_->cloud ()[i].length (); ++j) {
             for (int k = 0; k < pieces; ++k) {
-                if (min + piece_len * (k + 1) > field_->cloud ()[i].point ()[j].x ()) {
+                if (min + piece_len * (k + 1) > field_->cloud ()[i].point ()[j]->x ()) {
                     ++x_distr[k];
                     break;
                 }
@@ -107,13 +107,13 @@ void Controller::histogram (int pieces, vector<int> &x_distr, vector<int> &y_dis
     for (int i = 0; i < field_->length (); ++i) {
         for (int j = 0; j < field_->cloud ()[i].length (); ++j) {
             if (started) {
-                if (field_->cloud ()[i].point ()[j].y () > max) {
-                    max = field_->cloud ()[i].point ()[j].y ();
-                } else if (field_->cloud ()[i].point ()[j].y () < min) {
-                    min = field_->cloud ()[i].point ()[j].y ();
+                if (field_->cloud ()[i].point ()[j]->y () > max) {
+                    max = field_->cloud ()[i].point ()[j]->y ();
+                } else if (field_->cloud ()[i].point ()[j]->y () < min) {
+                    min = field_->cloud ()[i].point ()[j]->y ();
                 }
             } else {
-                min = max = field_->cloud ()[i].point ()[j].y ();
+                min = max = field_->cloud ()[i].point ()[j]->y ();
                 started = true;
             }
         }
@@ -122,7 +122,7 @@ void Controller::histogram (int pieces, vector<int> &x_distr, vector<int> &y_dis
     for (int i = 0; i < field_->length (); ++i) {
         for (int j = 0; j < field_->cloud ()[i].length (); ++j) {
             for (int k = 0; k < pieces; ++k) {
-                if (min + piece_len * (k + 1) > field_->cloud ()[i].point ()[j].x ()) {
+                if (min + piece_len * (k + 1) > field_->cloud ()[i].point ()[j]->x ()) {
                     ++y_distr[k];
                     break;
                 }
