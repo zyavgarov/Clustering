@@ -201,12 +201,13 @@ int Interface::manager (const string &cur_command) {
         double delta;
         ss >> delta;
         cc->wave ();
-        show ("Field is clusterized");
+        show ("Field is clustered");
     } else if (main == "DBSCAN") {
         int k;
         ss >> k;
+        show("Clustering...");
         cc->dbscan (k);
-        show ("Field is clusterized");
+        show ("Field is clustered");
     } else if (main == "INFOCLUSTERSEARCH" || main == "INFOCS") {
         vector<Cluster_Search> searches = cc->info_cluster_search ();
         for (int i = 0; i < searches.size (); ++i) {

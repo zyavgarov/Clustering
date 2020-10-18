@@ -104,7 +104,7 @@ void Cluster_Search::db_clustering (const vector<int> &state) {
             curr_added.push_back (l);
             vector<int> new_added;
             while (!curr_added.empty ()) {
-                for (int i = 0; i < curr_added.size (); ++i) {
+                for (int i : curr_added) {
                     for (int j = 0; j < Point::quantity (); ++j) {
                         if (!burnt[j] && i != j && edges ()[i][j]) {
                             new_added.push_back (j);
@@ -114,9 +114,12 @@ void Cluster_Search::db_clustering (const vector<int> &state) {
                 }
                 curr_cluster.insert (curr_cluster.end (), new_added.begin (), new_added.end ());
                 curr_added = new_added;
+                new_added.clear();
             }
             clusters.emplace_back (curr_cluster);
         } else if (state[l] == 0) {
+            // Doesn't seem to be true.
+            // That point can be connected to core point which has id number more than ours
             clusters.emplace_back (vector<int> (1, l));
             burnt[l] = true;
         }
