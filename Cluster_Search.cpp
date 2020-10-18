@@ -51,8 +51,8 @@ void Cluster_Search::wave_clustering () {
         vector<int> curr_cluster; // points from current cluster
         // that cycle searches for neighbours of points in curr_wave
         while (!curr_wave.empty ()) {
-            for (int i = 0; i < curr_wave.size (); ++i) {
-                for (int j = 0; j < Point::quantity (); ++j) {
+            for (int i : curr_wave) {
+                for (int j = m + 1; j < Point::quantity (); ++j) {
                     if (edges ()[i][j] && !burnt[j]) {
                         next_wave.push_back (j);
                     }

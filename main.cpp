@@ -11,7 +11,7 @@ int main () {
  * - curr_cluster vector in some algorithms is removed before going to the next point
  * - check permissions for readonly
  * - understand how vector of Cluster_Search is kept in memory
- * - INFOCLUSTERSEARCH
+ * - INFOCLUSTERSEARCH (or infocs) should be useful for particular searches and clusters;
  * - spanning tree & s-tree_histo
  * - hdbscan
  * - Symmetric matrices
