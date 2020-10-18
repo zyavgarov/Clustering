@@ -1,9 +1,9 @@
 #include "Buffer.h"
 
-void Buffer::add (const Cloud &c) {
+void Buffer::add (Cloud *c) {
     //adds cloud to buffer
-    for (int i = 0; i < c.length (); ++i) {
-        cloud.point_.push_back (new Point (*c.point ()[i]));
+    for (int i = 0; i < c->length (); ++i) {
+        cloud.point_.push_back (new Point (*c->point ()[i]));
     }
 }
 

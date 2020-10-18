@@ -5,7 +5,7 @@
 
 class Buffer {
  public:
-  void add (const Cloud &c);
+  void add (Cloud *c);
   void add (Point *p);
   const vector<Point *> &unload () const;
   void erase();

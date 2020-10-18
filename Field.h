@@ -9,12 +9,12 @@ class Field {
   
   Field ();
   ~Field ();
-  int add (const Cloud &addition);
+  int add (Cloud *addition);
   int fprintf (ofstream &out) const;
   int length () const;
   Buffer buf;
   const vector<vector<double>> &dist () const;
-  const vector<Cloud> &cloud ();
+  const vector<Cloud *> & cloud ();
   bool readonly () const;
   void create_dist_matrix ();
   const vector<Cluster_Search> &searches () const;
@@ -24,7 +24,7 @@ class Field {
  private:
   Field &operator= (Field const &f);
   Field (Field const &f);
-  vector<Cloud> cloud_;
+  vector<Cloud *> cloud_;
   vector<vector<double>> dist_; // matrix of distances
   vector<Cluster_Search> searches_;
   bool readonly_{};

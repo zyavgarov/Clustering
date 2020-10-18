@@ -5,6 +5,9 @@ Field::Field () : readonly_ (false) {
 
 Field &Field::operator= (Field const &f) {
     if (this != &f) {
+        for (auto &c: cloud_){
+            delete c;
+        }
         cloud_.clear ();
         for (int i = 0; i < f.length (); ++i) {
             cloud_.push_back (f.cloud_[i]);
@@ -14,6 +17,10 @@ Field &Field::operator= (Field const &f) {
 }
 
 Field::Field (Field const &f) {
+    for (auto &c: cloud_){
+        delete c;
+    }
+    cloud_.clear ();
     for (int i = 0; i < f.length (); ++i) {
         cloud_[i] = f.cloud_[i];
     }
@@ -21,7 +28,7 @@ Field::Field (Field const &f) {
 
 Field::~Field () = default;
 
-int Field::add (const Cloud &addition) {
+int Field::add (Cloud *addition) {
     // The function adds cloud to the field
     // returns -1 if readonly
     if (readonly ()) {
@@ -34,7 +41,7 @@ int Field::add (const Cloud &addition) {
 int Field::fprintf (ofstream &out) const {
     //prints all the clouds to file out
     for (int i = 0; i < length (); ++i) {
-        cloud_[i].fprintf (out);
+        cloud_[i]->fprintf (out);
     }
     return 0;
 }
@@ -44,7 +51,7 @@ int Field::length () const {
     return cloud_.size ();
 }
 
-const vector<Cloud> &Field::cloud () {
+const vector<Cloud *> &Field::cloud () {
     return cloud_;
 }
 

@@ -32,8 +32,8 @@ int Controller::generate_cloud (int id,
                                 int c_length = 1000) {
     // generates cloud with center on the field with dispersions by x and y
     // -1 if readonly
-    Cloud cloud (c_length, disp_x, disp_y);
-    cloud.shift (center_x, center_y);
+    auto *cloud = new Cloud(c_length, disp_x, disp_y);
+    cloud->shift (center_x, center_y);
     if (field_ == nullptr) {
         field_ = new Field ();
         log ("Field initialized");
@@ -72,15 +72,15 @@ void Controller::histogram (int pieces, vector<int> &x_distr, vector<int> &y_dis
     x_distr.clear ();
     y_distr.clear ();
     for (int i = 0; i < field_->length (); ++i) {
-        for (int j = 0; j < field_->cloud ()[i].length (); ++j) {
+        for (int j = 0; j < field_->cloud ()[i]->length (); ++j) {
             if (started) {
-                if (field_->cloud ()[i].point ()[j]->x () > max) {
-                    max = field_->cloud ()[i].point ()[j]->x ();
-                } else if (field_->cloud ()[i].point ()[j]->x () < min) {
-                    min = field_->cloud ()[i].point ()[j]->x ();
+                if (field_->cloud ()[i]->point ()[j]->x () > max) {
+                    max = field_->cloud ()[i]->point ()[j]->x ();
+                } else if (field_->cloud ()[i]->point ()[j]->x () < min) {
+                    min = field_->cloud ()[i]->point ()[j]->x ();
                 }
             } else {
-                min = max = field_->cloud ()[i].point ()[j]->x ();
+                min = max = field_->cloud ()[i]->point ()[j]->x ();
                 started = true;
             }
         }
@@ -93,9 +93,9 @@ void Controller::histogram (int pieces, vector<int> &x_distr, vector<int> &y_dis
     }
     x_distr = line;
     for (int i = 0; i < field_->length (); ++i) {
-        for (int j = 0; j < field_->cloud ()[i].length (); ++j) {
+        for (int j = 0; j < field_->cloud ()[i]->length (); ++j) {
             for (int k = 0; k < pieces; ++k) {
-                if (min + piece_len * (k + 1) > field_->cloud ()[i].point ()[j]->x ()) {
+                if (min + piece_len * (k + 1) > field_->cloud ()[i]->point ()[j]->x ()) {
                     ++x_distr[k];
                     break;
                 }
@@ -105,24 +105,24 @@ void Controller::histogram (int pieces, vector<int> &x_distr, vector<int> &y_dis
     //same for y
     started = false;
     for (int i = 0; i < field_->length (); ++i) {
-        for (int j = 0; j < field_->cloud ()[i].length (); ++j) {
+        for (int j = 0; j < field_->cloud ()[i]->length (); ++j) {
             if (started) {
-                if (field_->cloud ()[i].point ()[j]->y () > max) {
-                    max = field_->cloud ()[i].point ()[j]->y ();
-                } else if (field_->cloud ()[i].point ()[j]->y () < min) {
-                    min = field_->cloud ()[i].point ()[j]->y ();
+                if (field_->cloud ()[i]->point ()[j]->y () > max) {
+                    max = field_->cloud ()[i]->point ()[j]->y ();
+                } else if (field_->cloud ()[i]->point ()[j]->y () < min) {
+                    min = field_->cloud ()[i]->point ()[j]->y ();
                 }
             } else {
-                min = max = field_->cloud ()[i].point ()[j]->y ();
+                min = max = field_->cloud ()[i]->point ()[j]->y ();
                 started = true;
             }
         }
     }
     y_distr = line;
     for (int i = 0; i < field_->length (); ++i) {
-        for (int j = 0; j < field_->cloud ()[i].length (); ++j) {
+        for (int j = 0; j < field_->cloud ()[i]->length (); ++j) {
             for (int k = 0; k < pieces; ++k) {
-                if (min + piece_len * (k + 1) > field_->cloud ()[i].point ()[j]->x ()) {
+                if (min + piece_len * (k + 1) > field_->cloud ()[i]->point ()[j]->x ()) {
                     ++y_distr[k];
                     break;
                 }
@@ -147,7 +147,7 @@ int Controller::buffer_unload () const {
     if (field_->readonly ()) {
         return -1;
     }
-    field_->add (field_->buf.cloud);
+    field_->add (&field_->buf.cloud);
     return 0;
 }
 

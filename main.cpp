@@ -18,4 +18,5 @@ int main () {
  * - k-means
  * - Interface::manager should be simplified and separated to little functions
  * - maybe architecture of cloud_ in Field should be rewritten too
+ * - using c++11 random lib to remove warnings
  */
