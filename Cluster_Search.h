@@ -10,7 +10,7 @@ class Cluster_Search {
    public:
     explicit Cluster (vector<const Point *> vec);
     explicit Cluster (const vector<int> &vec);
-    vector<const Point *> points; // I don't understand why do I need that
+    vector<const Point *> points; //It's never read, but really works to save the points
   };
   
   explicit Cluster_Search (Field *field, double delta, int k = 0);

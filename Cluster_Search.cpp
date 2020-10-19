@@ -114,7 +114,7 @@ void Cluster_Search::db_clustering (const vector<int> &state) {
                 }
                 curr_cluster.insert (curr_cluster.end (), new_added.begin (), new_added.end ());
                 curr_added = new_added;
-                new_added.clear();
+                new_added.clear ();
             }
             clusters.emplace_back (curr_cluster);
         } else if (state[l] == 0) {
@@ -134,4 +134,45 @@ Cluster_Search Cluster_Search::wave () {
 Cluster_Search Cluster_Search::dbscan (int density) {
     db_clustering (db_sorting (density));
     return *this;
+}
+
+Cluster_Search Cluster_Search::s_tree () {
+    //searching minimum in dist matrix
+    int min_i = 0;
+    int min_j = 0;
+    int min_dist_all = field_->dist ()[0][0];
+    for (int i = 0; i < Point::quantity (); ++i) {
+        for (int j = i + 1; j < Point::quantity (); ++j) {
+            if (field_->dist ()[i][j] < min_dist_all) {
+                min_i = i;
+                min_j = j;
+            }
+        }
+    }
+    // Here should be smth about tree
+    vector<int> added{min_i, min_j}; // vector of points already in tree
+    vector<bool> added_b (Point::quantity (), false);
+    added_b[min_i] = added_b[min_j] = true;
+    vector<int> curr_neighbours; // vector of neighbours of tree
+    vector<double> curr_neighbs_dist; // vector of distances to current neighbours
+    //searching neighbours
+    for (int i: added) {
+        for (int j = 0; j < Point::quantity (); ++j) {
+            if (!added[j] && edges ()[i][j]) {
+                curr_neighbours.push_back (j);
+                curr_neighbs_dist.push_back (field_->dist ()[i][j]);
+            }
+        }
+    }
+    //searching minimal distance to point on the border of tree
+    double min_dist_border = curr_neighbs_dist[0];
+    int min_j_border = 0;
+    for (int j = 0; j < curr_neighbs_dist.size (); ++j) {
+        if (curr_neighbs_dist[j] < min_dist_border){
+            min_dist_border = curr_neighbs_dist[j];
+            min_j_border = curr_neighbours[j];
+        }
+    }
+    
+    return Cluster_Search (nullptr, 0);
 }
