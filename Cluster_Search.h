@@ -1,6 +1,7 @@
 #ifndef INTERFACE4__CLUSTER_SEARCH_H_
 #define INTERFACE4__CLUSTER_SEARCH_H_
 #include "Cloud.h"
+#include "TreeNode.h"
 
 class Field;
 
@@ -29,6 +30,16 @@ class Cluster_Search {
  private:
   Field *field_;
   vector<vector<bool>> edges_; //if points with id i and j are connected edge_matrix[i][j] == true
+  int add_closest_point (TreeNode<int> &node, vector<bool> &added);
+  vector<int> create_histogram (TreeNode<int> root, int pieces);
+  void get_closest (TreeNode<int> &current,
+                    vector<bool> &added,
+                    double &min_dist,
+                    TreeNode<int> *&tree_node,
+                    TreeNode<int> *&out_node);
+  void get_tree_range (TreeNode<int> *&node, double &max_dist, double &min_dist);
+  void picking_histogram (TreeNode<int> *node, double max_dist, double min_dist, vector<int> &histogram);
+  static void put_value_to_histogram (vector<int> &histogram, double min_dist, double max_dist, double distance);
 };
 
 #endif //INTERFACE4__CLUSTER_SEARCH_H_
