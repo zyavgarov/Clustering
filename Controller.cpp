@@ -219,3 +219,7 @@ int Controller::incidence_matrix (double delta) const {
     field_->create_edges_matrix(delta);
     return 0;
 }
+
+vector<int> Controller::s_tree () const {
+    return field_->s_tree();
+}

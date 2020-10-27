@@ -5,7 +5,7 @@
 
 template<class T>
 class TreeNode {
-  friend class Cluster_Search;
+  friend class Field;
  
  public:
   explicit TreeNode (T v);
@@ -17,7 +17,7 @@ class TreeNode {
   const TreeNode<T> *last_child () const;
   const TreeNode<T> *add_child (TreeNode<T> *t);
   const TreeNode<T> *add_child (T value);
-  T value() const;
+  T value () const;
  private:
   T value_;
   TreeNode<T> *last_child_ ();
@@ -72,7 +72,11 @@ template<class T>
 const TreeNode<T> *TreeNode<T>::add_child (TreeNode<T> *t) {
     // adds child to node. Returns pointer to it
     //i'm not sure but there are possible problems with linking
-    last_child_ ()->brother_ = t;
+    if (first_child () != nullptr) {
+        last_child_ ()->brother_ = t;
+    } else {
+        first_child_ = t;
+    }
     return t;
 }
 

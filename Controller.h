@@ -25,10 +25,11 @@ class Controller {
   int buffer_mirror () const;
   int buffer_rotate (double angle) const;
   int matrix () const;
-  int incidence_matrix(double delta) const;
+  int incidence_matrix (double delta) const;
   int wave ();
   int dbscan (int k) const;
   const vector<Cluster_Search> &info_cluster_search () const;
+  vector<int> s_tree () const;
 };
 
 #endif //INTERFACE4__CONTROLLER_H_

@@ -205,7 +205,7 @@ int Interface::manager (const string &cur_command) {
     } else if (main == "DBSCAN") {
         int k;
         ss >> k;
-        show("Clustering...");
+        show ("Clustering...");
         cc->dbscan (k);
         show ("Field is clustered");
     } else if (main == "INFOCLUSTERSEARCH" || main == "INFOCS") {
@@ -217,8 +217,13 @@ int Interface::manager (const string &cur_command) {
     } else if (main == "BINARY") {
         double delta;
         ss >> delta;
-        cc->incidence_matrix(delta);
-        show("Incidence matrix is created. Now you can run clustering");
+        cc->incidence_matrix (delta);
+        show ("Incidence matrix is created. Now you can run clustering");
+    } else if (main == "STREE") {
+        vector<int> histogram = cc->s_tree ();
+        for (int i : histogram) {
+            show (to_string (i));
+        }
     } else {
         // something went wrong
         show ("Unknown command. Check your input and try again.");
