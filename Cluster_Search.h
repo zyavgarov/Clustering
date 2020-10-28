@@ -30,6 +30,7 @@ class Cluster_Search {
  private:
   Field *field_;
   vector<vector<bool>> edges_;
+  static void fprintf_type (const vector<int> &state);
 };
 
 #endif //INTERFACE4__CLUSTER_SEARCH_H_

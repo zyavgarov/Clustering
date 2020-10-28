@@ -81,6 +81,7 @@ const vector<Cluster_Search> &Field::searches () const {
 
 void Field::create_edges_matrix (double delta) {
     searches_.emplace_back (this, delta);
+    fprintf_incidence_graph (searches ().back (), searches ().size () - 1);
 }
 
 int Field::wave_clustering () {
@@ -254,5 +255,18 @@ void Field::fprintf_node (TreeNode<int> *node, ofstream *out) {
              << endl;
         *out << endl;
         cursor = cursor->brother_;
+    }
+}
+
+void Field::fprintf_incidence_graph (const Cluster_Search &search, int id) {
+    ofstream out ("incidence" + to_string (id) + ".txt");
+    for (int i = 0; i < Point::quantity (); ++i) {
+        for (int j = i + 1; j < Point::quantity (); ++j) {
+            if (search.edges ()[i][j]) {
+                out << Point::get_by_id (i + 1)->x () << " " << Point::get_by_id (i + 1)->y () << endl;
+                out << Point::get_by_id (j + 1)->x () << " " << Point::get_by_id (j + 1)->y () << endl;
+                out << endl;
+            }
+        }
     }
 }

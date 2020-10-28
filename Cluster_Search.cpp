@@ -70,7 +70,7 @@ void Cluster_Search::wave_clustering () {
 }
 
 vector<int> Cluster_Search::db_sorting (int density) {
-    // counting neighbours for all the points
+    // counts number of neighbours for all the points
     k = density;
     vector<int> type (Point::quantity (), 0);
     for (int i = 0; i < Point::quantity (); ++i) {
@@ -93,6 +93,9 @@ vector<int> Cluster_Search::db_sorting (int density) {
 }
 
 void Cluster_Search::db_clustering (const vector<int> &state) {
+    // picks up core points and finds its cluster
+    // saves info about the states of points to file
+    // result of clustering saved to file too
     vector<bool> burnt (Point::quantity (), false);
     for (int l = 0; l < state.size (); ++l) {
         if (burnt[l]) {
@@ -124,6 +127,8 @@ void Cluster_Search::db_clustering (const vector<int> &state) {
             burnt[l] = true;
         }
     }
+    fprintf_type (state);
+    //fprintf_clusters();
 }
 
 Cluster_Search Cluster_Search::wave () {
@@ -149,4 +154,16 @@ Cluster_Search &Cluster_Search::operator= (const Cluster_Search &cs) {
         edges_ = cs.edges_;
     }
     return *this;
+}
+
+void Cluster_Search::fprintf_type (const vector<int> &state) {
+    ofstream core ("core.txt");
+    ofstream peripherical ("peripherical.txt");
+    for (int i = 0; i < state.size (); ++i) {
+        if (state[i] == 2) {
+            core << Point::get_by_id (i + 1)->x () << " " << Point::get_by_id (i + 1)->y () << endl;
+        } else if (state[i] == 1) {
+            peripherical << Point::get_by_id (i + 1)->x () << " " << Point::get_by_id (i + 1)->y () << endl;
+        }
+    }
 }

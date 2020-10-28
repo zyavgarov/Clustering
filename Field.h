@@ -42,6 +42,7 @@ class Field {
   void put_value_to_histogram (vector<int> &histogram, double min_dist, double max_dist, double distance);
   void fprintf_tree (const string& file_name, TreeNode<int> *root);
   void fprintf_node (TreeNode<int> *node, ofstream *out);
+  static void fprintf_incidence_graph (const Cluster_Search &search, int id);
 };
 
 #endif //INTERFACE4__FIELD_H_
