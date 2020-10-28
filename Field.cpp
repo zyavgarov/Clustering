@@ -1,4 +1,5 @@
 #include "Field.h"
+#include <iostream>
 
 Field::Field () : readonly_ (false) {
 }
@@ -79,7 +80,7 @@ const vector<Cluster_Search> &Field::searches () const {
 }
 
 void Field::create_edges_matrix (double delta) {
-    searches_.push_back (Cluster_Search (this, delta));
+    searches_.emplace_back (this, delta);
 }
 
 int Field::wave_clustering () {
@@ -96,7 +97,7 @@ vector<int> Field::s_tree () {
 //searching minimum in dist matrix
     int min_i = 0;
     int min_j = 0;
-    double min_dist_all = dist ()[0][0];
+    double min_dist_all = dist ()[0][1];
     vector<bool> added (Point::quantity (), false);
     for (int i = 0; i < Point::quantity (); ++i) {
         for (int j = i + 1; j < Point::quantity (); ++j) {
@@ -113,6 +114,7 @@ vector<int> Field::s_tree () {
     do {
         closest = add_closest_point (root, added);
     } while (closest >= 0);
+    fprintf_tree ("tree.txt", &root);
     vector<int> histogram = create_histogram (root, 30);
     return histogram;
 }
@@ -123,10 +125,11 @@ int Field::add_closest_point (TreeNode<int> &node, vector<bool> &added) {
     TreeNode<int> *curr_min; // point which has closest neighbour out of tree
     TreeNode<int> *cursor = &node;
     TreeNode<int> *out_node = nullptr;
-    double dist;
+    double dist = -1;
     get_closest (node, added, dist, cursor, out_node);
     if (out_node != nullptr) {
         cursor->add_child (out_node);
+        added[out_node->value ()] = true;
         return out_node->value ();
     } else {
         return -1;
@@ -142,6 +145,9 @@ void Field::get_closest (TreeNode<int> &current,
     // min dist is the distance to closest point to tree
     // added[i] is true if point i in tree
     // tree_node and out node are ends of smallest distance
+    // if found, function changes min_dist, tree_node (to show where new edge should start) \
+    // and out_node (showing the end of a new edge)
+    // dist named -1 means that every distance is less than given
     if (current.first_child () != nullptr) {
         get_closest (*current.first_child_, added, min_dist, tree_node, out_node);
     }
@@ -149,7 +155,9 @@ void Field::get_closest (TreeNode<int> &current,
         get_closest (*current.brother_, added, min_dist, tree_node, out_node);
     }
     for (int i = 0; i < Point::quantity (); ++i) {
-        if (dist ()[current.value ()][i] < min_dist && !added[i]) {
+        double a = dist ()[current.value ()][i];
+        bool b = (min_dist == -1) || (a < min_dist);
+        if (b && !added[i] && (i != current.value ())) {
             min_dist = dist ()[current.value ()][i];
             tree_node = &current;
             delete out_node;
@@ -166,7 +174,7 @@ vector<int> Field::create_histogram (TreeNode<int> &root, int pieces) {
     double max_dist = dist ()[root.value ()][root.first_child ()->value ()];
     double min_dist = max_dist;
     TreeNode<int> *root_pointer = &root;
-    get_tree_range (root_pointer, max_dist, min_dist);
+    get_tree_range (root_pointer, min_dist, max_dist);
     
     // picking up the distances in tree and filling the vector of histogram
     vector<int> histogram (pieces, 0);
@@ -174,7 +182,7 @@ vector<int> Field::create_histogram (TreeNode<int> &root, int pieces) {
     return histogram;
 }
 
-void Field::get_tree_range (TreeNode<int> *&node, double &max_dist, double &min_dist) {
+void Field::get_tree_range (TreeNode<int> *&node, double &min_dist, double &max_dist) {
     if (node->first_child () != nullptr) {
         double dist_to_child = dist ()[node->value ()][node->first_child ()->value ()];
         if (dist_to_child > max_dist) {
@@ -182,35 +190,35 @@ void Field::get_tree_range (TreeNode<int> *&node, double &max_dist, double &min_
         } else if (dist_to_child < min_dist) {
             min_dist = dist_to_child;
         }
-        get_tree_range (node->first_child_, max_dist, min_dist);
+        get_tree_range (node->first_child_, min_dist, max_dist);
     }
     if (node->brother () != nullptr) {
-        double dist_to_brother = dist ()[node->value ()][node->first_child ()->value ()];
+        double dist_to_brother = dist ()[node->value ()][node->brother ()->value ()];
         if (dist_to_brother > max_dist) {
             max_dist = dist_to_brother;
         } else if (dist_to_brother < min_dist) {
             min_dist = dist_to_brother;
         }
-        get_tree_range (node->brother_, max_dist, min_dist);
+        get_tree_range (node->brother_, min_dist, max_dist);
     }
 }
 
-void Field::picking_histogram (TreeNode<int> *node,
-                               double max_dist,
-                               double min_dist,
-                               vector<int> &histogram) {
-    if (node->first_child () != nullptr) {
-        put_value_to_histogram (histogram,
-                                min_dist,
-                                max_dist,
-                                dist ()[node->value ()][node->first_child ()->value ()]);
-    }
+void Field::picking_histogram (TreeNode<int> *node, double min_dist, double max_dist, vector<int> &histogram) {
     if (node->brother () != nullptr) {
+        picking_histogram (node->brother_, min_dist, max_dist, histogram);
+        put_value_to_histogram (histogram,
+                                min_dist,
+                                max_dist,
+                                dist ()[node->value ()][node->brother ()->value ()]);
+    }
+    if (node->first_child () != nullptr) {
+        picking_histogram (node->first_child_, min_dist, max_dist, histogram);
         put_value_to_histogram (histogram,
                                 min_dist,
                                 max_dist,
                                 dist ()[node->value ()][node->first_child ()->value ()]);
     }
+    
 }
 
 void Field::put_value_to_histogram (vector<int> &histogram,
@@ -220,8 +228,31 @@ void Field::put_value_to_histogram (vector<int> &histogram,
     // searches the place of number in histogram and when found increments that row in histogram
     double step = (max_dist - min_dist) / (histogram.size ());
     int i = 0;
-    while (distance > min_dist + step * i) {
+    while (distance > min_dist + step * (i + 1)) {
         i++;
     }
     histogram[i]++;
+}
+
+void Field::fprintf_tree (const string &file_name, TreeNode<int> *root) {
+    ofstream out (file_name);
+    fprintf_node (root, &out);
+}
+
+void Field::fprintf_node (TreeNode<int> *node, ofstream *out) {
+    if (node->brother () != nullptr) {
+        fprintf_node (node->brother_, out);
+    }
+    if (node->first_child () != nullptr) {
+        fprintf_node (node->first_child_, out);
+    }
+    TreeNode<int> *cursor = node->first_child_;
+    while (cursor != nullptr) {
+        *out << Point::get_by_id (node->value () + 1)->x () << " " << Point::get_by_id (node->value () + 1)->y ()
+             << endl;
+        *out << Point::get_by_id (cursor->value () + 1)->x () << " " << Point::get_by_id (cursor->value () + 1)->y ()
+             << endl;
+        *out << endl;
+        cursor = cursor->brother_;
+    }
 }

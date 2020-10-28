@@ -23,7 +23,6 @@ class TreeNode {
   TreeNode<T> *last_child_ ();
   TreeNode<T> *first_child_;
   TreeNode<T> *brother_;
-  TreeNode<T> *parent_; // i've heard that it can be removed
 };
 
 template<class T>
@@ -90,10 +89,8 @@ const TreeNode<T> *TreeNode<T>::add_child (T v) {
 
 template<class T>
 TreeNode<T>::TreeNode (const TreeNode<T> &t) {
-    delete parent_;
     delete brother_;
     delete first_child_;
-    parent_ = t.parent_;
     brother_ = t.brother_;
     first_child_ = t.first_child_;
     value_ = t.value_;
@@ -102,10 +99,8 @@ TreeNode<T>::TreeNode (const TreeNode<T> &t) {
 template<class T>
 TreeNode<T> &TreeNode<T>::operator= (const TreeNode<T> &t) {
     if (this != t) {
-        delete parent_;
         delete brother_;
         delete first_child_;
-        parent_ = t.parent_;
         brother_ = t.brother_;
         first_child_ = t.first_child_;
         value_ = t.value_;

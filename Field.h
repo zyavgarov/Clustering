@@ -37,9 +37,11 @@ class Field {
                     TreeNode<int> *&tree_node,
                     TreeNode<int> *&out_node);
   vector<int> create_histogram (TreeNode<int> &root, int pieces);
-  void picking_histogram (TreeNode<int> *node, double max_dist, double min_dist, vector<int> &histogram);
-  void get_tree_range (TreeNode<int> *&node, double &max_dist, double &min_dist);
+  void picking_histogram (TreeNode<int> *node, double min_dist, double max_dist, vector<int> &histogram);
+  void get_tree_range (TreeNode<int> *&node, double &min_dist, double &max_dist);
   void put_value_to_histogram (vector<int> &histogram, double min_dist, double max_dist, double distance);
+  void fprintf_tree (const string& file_name, TreeNode<int> *root);
+  void fprintf_node (TreeNode<int> *node, ofstream *out);
 };
 
 #endif //INTERFACE4__FIELD_H_
