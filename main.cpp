@@ -4,7 +4,10 @@ int main () {
     Controller cc;
     Interface ii (0, true, &cc);
     ifstream s ("run.txt");
-    ii.run (s);
+    ii.run ();
+    Point a(3, 4);
+    a.shift(1,2);
+    //a.x() = 3;
 }
 
 /* The problems are:

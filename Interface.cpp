@@ -92,7 +92,7 @@ int Interface::manager (const string &cur_command) {
     } else if (main == "GC") {
         // generation of cloud(s)
         double x, y, disp_x, disp_y;
-        int dots;
+        int dots = 0;
         ss >> x >> y >> disp_x >> disp_y >> dots;
         cc->generate_cloud (id, x, y, disp_x, disp_y, dots);
         show ("Cloud created");
@@ -200,8 +200,14 @@ int Interface::manager (const string &cur_command) {
     } else if (main == "WAVE") {
         double delta;
         ss >> delta;
-        cc->wave ();
-        show ("Field is clustered");
+        int err = cc->wave ();
+        if (err == 0){
+            show ("Field is clustered");
+        } else if (err == -1){
+            show("Check field state. Type MATRIX to set it to readonly");
+        } else if (err == -2){
+            show("Field doesn't exist. Type GC to create the clouds");
+        }
     } else if (main == "DBSCAN") {
         int k;
         ss >> k;

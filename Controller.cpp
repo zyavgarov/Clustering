@@ -169,7 +169,18 @@ int Controller::dbscan (int k) const { // 1) what if field is not readonly 2) in
 
 int Controller::wave () { // 1) what if field is not readonly 2) incidence matrix already created
     // realises wave-clustering algorithm
-    field_->wave_clustering();
+    /* Errors:
+     * -1 - Field is not in readonly mode
+     * -2 - Field doesn't exist
+     */
+    if (field_ == nullptr){
+        log("Field doesn't exist");
+        return -2;
+    }
+    if (field_->wave_clustering() == -1){
+        log("Field is not in readonly state");
+        return -1;
+    }
     log ("Started wave-clustering");
     return 0;
 }

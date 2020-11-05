@@ -85,6 +85,11 @@ void Field::create_edges_matrix (double delta) {
 }
 
 int Field::wave_clustering () {
+    // if not readonly state returns -1
+    // if readonly - clustering
+    if (!readonly()){
+        return -1;
+    }
     searches_.back ().wave ();
     return 0;
 }
