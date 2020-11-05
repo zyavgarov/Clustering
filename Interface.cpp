@@ -233,6 +233,8 @@ int Interface::manager (const string &cur_command) {
         for (int i : histogram) {
             show (to_string (i));
         }
+    } else if (main == "#") {
+        // doing nothing, that's comment
     } else {
         // something went wrong
         show ("Unknown command. Check your input and try again.");
