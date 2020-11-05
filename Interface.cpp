@@ -232,11 +232,17 @@ int Interface::manager (const string &cur_command) {
                       + to_string (searches[i].clusters.size ()));
         }
     } else if (main == "BINARY") {
+        //creating matrix of incidences
         double delta;
         ss >> delta;
-        cc->incidence_matrix (delta);
-        show ("Incidence matrix is created. Now you can run clustering");
+        int err = cc->incidence_matrix (delta);
+        if (err == 0) {
+            show ("Incidence matrix is created. Now you can run clustering");
+        } else if (err == -2) {
+            show ("Field not found");
+        }
     } else if (main == "STREE") {
+        // searching minimal spanning tree
         vector<int> histogram = cc->s_tree ();
         for (int i : histogram) {
             show (to_string (i));

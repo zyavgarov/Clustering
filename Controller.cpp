@@ -251,8 +251,15 @@ int Controller::buffer_rotate (double angle) const {
     return 0;
 }
 
-int Controller::incidence_matrix (double delta) const {
-    //creates incidence matrix in field
+int Controller::incidence_matrix (double delta) {
+    /* creates incidence matrix in field
+     * Errors:
+     * -2 - Field not found
+     */
+    if (field_ == nullptr) {
+        log ("Field not found");
+        return -2;
+    }
     field_->create_edges_matrix (delta);
     return 0;
 }

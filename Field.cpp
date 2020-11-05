@@ -80,6 +80,7 @@ const vector<Cluster_Search> &Field::searches () const {
 }
 
 void Field::create_edges_matrix (double delta) {
+    // creating incidence matrix, saving incidence graph to file
     searches_.emplace_back (this, delta);
     fprintf_incidence_graph (searches ().back (), searches ().size () - 1);
 }
@@ -145,7 +146,7 @@ vector<int> Field::s_tree () {
 int Field::add_closest_point (TreeNode<int> &node, vector<bool> &added) {
     // searches for closest point to tree and adds it
     // returns number of the point
-    TreeNode<int> *curr_min; // point which has closest neighbour out of tree
+    // point which has closest neighbour out of tree
     TreeNode<int> *cursor = &node;
     TreeNode<int> *out_node = nullptr;
     double dist = -1;
