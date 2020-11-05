@@ -21,7 +21,7 @@ class Field {
   const vector<Cluster_Search> &searches () const;
   void create_edges_matrix (double delta);
   int wave_clustering (int search_id);
-  int db_clustering (int k);
+  int db_clustering (int search_id, int k);
   vector<int> s_tree ();
  private:
   Field &operator= (Field const &f);

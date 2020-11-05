@@ -198,7 +198,6 @@ int Interface::manager (const string &cur_command) {
             show ("Type HELP to see what you can do");
         }
     } else if (main == "WAVE") {
-        double delta;
         int search_id;
         ss >> search_id;
         int err = cc->wave (search_id);
@@ -213,10 +212,19 @@ int Interface::manager (const string &cur_command) {
         }
     } else if (main == "DBSCAN") {
         int k;
-        ss >> k;
+        int search_id;
+        ss >> search_id >> k;
         show ("Clustering...");
-        cc->dbscan (k);
-        show ("Field is clustered");
+        int err = cc->dbscan (search_id, k);
+        if (err == 0) {
+            show ("Field is clustered");
+        } else if (err == -1) {
+            show ("Check field state. Type MATRIX to set it to readonly");
+        } else if (err == -2) {
+            show ("Field doesn't exist. Type GC to create the clouds");
+        } else if (err == -3) {
+            show ("No search with such id. Type INFOCS to see accessible searches");
+        }
     } else if (main == "INFOCLUSTERSEARCH" || main == "INFOCS") {
         vector<Cluster_Search> searches = cc->info_cluster_search ();
         for (int i = 0; i < searches.size (); ++i) {

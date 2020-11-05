@@ -5,13 +5,9 @@ int main () {
     Interface ii (0, true, &cc);
     ifstream s ("run.txt");
     ii.run ();
-    Point a(3, 4);
-    a.shift(1,2);
-    //a.x() = 3;
 }
 
 /* The problems are:
- * - curr_cluster vector in some algorithms is removed before going to the next point
  * - check permissions for editing and clustering
  * - INFOCLUSTERSEARCH (or infocs) should be useful for particular searches and clusters;
  * - hdbscan
@@ -20,7 +16,9 @@ int main () {
  * - Interface::manager should be simplified and separated to little functions
  * - using c++11 random lib to avoid warnings
  * - stop creating binary matrix without distance matrix
- * - mechanics which moves interface to console administrating if there is no EXIT line in file
- * - support comments in script
+ * - mechanics which moves interface to console administrating if there is no EXIT line in script file
  * - understand noreturn warning
+ * - EM-clustering
+ * - k-means with multiple cores
+ * - error in file should throw a manual input
  */

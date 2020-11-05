@@ -14,6 +14,8 @@ BUFFER {string operation}
         Zooms buffer to coefficient k from its center
     operation = "mirror"
         Reflects the cloud like in mirror
+DBSCAN {int id} {int k}
+        Searches clusters in the field using dbscan algorithm with parameter k using incidences in search numbered id
 EXIT       
 	Stops the program
 GC {double cx} {double cy} {double dx} {double dy} {int len}

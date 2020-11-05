@@ -101,8 +101,18 @@ int Field::wave_clustering (int search_id) {
     return 0;
 }
 
-int Field::db_clustering (int k) {
-    searches_.back ().dbscan (k);
+int Field::db_clustering (int search_id, int k) {
+    /* Errors
+     * -1 field is not in readonly mode
+     * -3 There is no such Cluster_Search
+     */
+    if (!readonly ()) {
+        return -1;
+    }
+    if (search_id >= searches ().size ()) {
+        return -3;
+    }
+    searches_[search_id].dbscan (k);
     return 0;
 }
 
