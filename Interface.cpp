@@ -199,14 +199,17 @@ int Interface::manager (const string &cur_command) {
         }
     } else if (main == "WAVE") {
         double delta;
-        ss >> delta;
-        int err = cc->wave ();
-        if (err == 0){
+        int search_id;
+        ss >> search_id;
+        int err = cc->wave (search_id);
+        if (err == 0) {
             show ("Field is clustered");
-        } else if (err == -1){
-            show("Check field state. Type MATRIX to set it to readonly");
-        } else if (err == -2){
-            show("Field doesn't exist. Type GC to create the clouds");
+        } else if (err == -1) {
+            show ("Check field state. Type MATRIX to set it to readonly");
+        } else if (err == -2) {
+            show ("Field doesn't exist. Type GC to create the clouds");
+        } else if (err == -3) {
+            show ("No search with such id. Type INFOCS to see accessible searches");
         }
     } else if (main == "DBSCAN") {
         int k;

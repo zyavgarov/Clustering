@@ -32,7 +32,7 @@ int Controller::generate_cloud (int id,
                                 int c_length = 1000) {
     // generates cloud with center on the field with dispersions by x and y
     // -1 if readonly
-    auto *cloud = new Cloud(c_length, disp_x, disp_y);
+    auto *cloud = new Cloud (c_length, disp_x, disp_y);
     cloud->shift (center_x, center_y);
     if (field_ == nullptr) {
         field_ = new Field ();
@@ -163,23 +163,28 @@ int Controller::matrix () const {
 
 int Controller::dbscan (int k) const { // 1) what if field is not readonly 2) incidence matrix already created
     // realises dbscan-clustering with k-core points and d-incidence
-    field_->db_clustering(k);
+    field_->db_clustering (k);
     return 0;
 }
 
-int Controller::wave () { // 1) what if field is not readonly 2) incidence matrix already created
-    // realises wave-clustering algorithm
-    /* Errors:
+int Controller::wave (int search_id) {
+    /* realises wave-clustering algorithm
+     * Errors:
      * -1 - Field is not in readonly mode
      * -2 - Field doesn't exist
+     * -3 - No search with such search_id
      */
-    if (field_ == nullptr){
-        log("Field doesn't exist");
+    if (field_ == nullptr) {
+        log ("Field doesn't exist");
         return -2;
     }
-    if (field_->wave_clustering() == -1){
-        log("Field is not in readonly state");
-        return -1;
+    int err = field_->wave_clustering (search_id);
+    if (err == -1) {
+        log ("Field is not in readonly state");
+        return err;
+    } else if (err == -3) {
+        log ("No search with such id");
+        return err;
     }
     log ("Started wave-clustering");
     return 0;
@@ -227,10 +232,10 @@ int Controller::buffer_rotate (double angle) const {
 
 int Controller::incidence_matrix (double delta) const {
     //creates incidence matrix in field
-    field_->create_edges_matrix(delta);
+    field_->create_edges_matrix (delta);
     return 0;
 }
 
 vector<int> Controller::s_tree () const {
-    return field_->s_tree();
+    return field_->s_tree ();
 }

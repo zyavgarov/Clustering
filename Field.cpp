@@ -84,13 +84,20 @@ void Field::create_edges_matrix (double delta) {
     fprintf_incidence_graph (searches ().back (), searches ().size () - 1);
 }
 
-int Field::wave_clustering () {
+int Field::wave_clustering (int search_id) {
     // if not readonly state returns -1
     // if readonly - clustering
-    if (!readonly()){
+    /* Errors
+     * -1 field is not in readonly mode
+     * -3 There is no such Cluster_Search
+     */
+    if (!readonly ()) {
         return -1;
     }
-    searches_.back ().wave ();
+    if (search_id >= searches ().size ()) {
+        return -3;
+    }
+    searches_[search_id].wave ();
     return 0;
 }
 

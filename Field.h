@@ -20,7 +20,7 @@ class Field {
   void create_dist_matrix ();
   const vector<Cluster_Search> &searches () const;
   void create_edges_matrix (double delta);
-  int wave_clustering ();
+  int wave_clustering (int search_id);
   int db_clustering (int k);
   vector<int> s_tree ();
  private:

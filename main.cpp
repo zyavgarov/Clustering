@@ -23,4 +23,5 @@ int main () {
  * - mechanics which moves interface to console administrating if there is no EXIT line in file
  * - support comments in script
  * - understand noreturn warning
+ * - wave clustering should start by Cluster_search id not by the last
  */
