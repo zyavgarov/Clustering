@@ -16,8 +16,17 @@ Point::Point (double x, double y, int id) : x_ (x), y_ (y) {
     }
 }
 
-Point::Point (Point const &c) : x_ (c.x ()), y_ (c.y ()), id_ (++quantity_) {
+Point::Point (Point const &c) : x_ (c.x ()), y_ (c.y ()) {
     id_pointers.push_back (this);
+    if (c.id () == 0) {
+        id_ = 0;
+    } else {
+        id_ = ++quantity_;
+        if (id_pointers.empty ()) {
+            id_pointers.push_back (nullptr);
+        }
+        id_pointers.push_back (this);
+    }
 }
 
 double Point::x () const {
@@ -70,13 +79,13 @@ Point Point::operator* (const double &a) const {
 
 Point Point::operator/ (const double &a) const {
     if (id () == 0) {
-        return Point (x () / a, this->y () / a, 0);
+        return Point (x () / a, y () / a, 0);
     } else {
-        return Point (x () / a, this->y () / a);
+        return Point (x () / a, y () / a);
     }
 }
 
-const Point * Point::get_by_id (int id) {
+const Point *Point::get_by_id (int id) {
     return id_pointers[id];
 }
 
@@ -92,8 +101,13 @@ Point &Point::operator= (const Point &p) {
     if (this != &p) {
         x_ = p.x ();
         y_ = p.y ();
-        id_ = ++quantity_;
-        id_pointers.push_back (this);
+        if (p.id () != 0) {
+            id_ = ++quantity_;
+            if (id_pointers.empty ()) {
+                id_pointers.push_back (nullptr);
+            }
+            id_pointers.push_back (this);
+        }
     }
     return *this;
 }
