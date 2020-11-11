@@ -127,7 +127,7 @@ void Cluster_Search::db_clustering (const vector<int> &state) {
             burnt[l] = true;
         }
     }
-    fprintf_type (state);
+    dbscan_fprintf_type (state);
     //fprintf_clusters();
 }
 
@@ -156,7 +156,7 @@ Cluster_Search &Cluster_Search::operator= (const Cluster_Search &cs) {
     return *this;
 }
 
-void Cluster_Search::fprintf_type (const vector<int> &state) {
+void Cluster_Search::dbscan_fprintf_type (const vector<int> &state) {
     ofstream core ("core.txt");
     ofstream peripherical ("peripherical.txt");
     for (int i = 0; i < state.size (); ++i) {
@@ -165,5 +165,70 @@ void Cluster_Search::fprintf_type (const vector<int> &state) {
         } else if (state[i] == 1) {
             peripherical << Point::get_by_id (i + 1)->x () << " " << Point::get_by_id (i + 1)->y () << endl;
         }
+    }
+}
+
+Cluster_Search Cluster_Search::k_means (int clusters_number) {
+    bool changed = true;
+    vector<Point> cores (clusters_number); // Pointers to core points
+    vector<int> nearest_cluster (Point::quantity (), 0); // shows which element of cores is the nearest to that point
+    // filling core vector by random points
+    for (auto &core: cores) {
+        core = Point (((double) rand () / RAND_MAX - 0.5) * 0.1, ((double) rand () / RAND_MAX - 0.5) * 0.1, 0);
+    }
+    int iteration = 0;
+    while (changed || iteration == 1) {
+        // searching the closest point for each vector
+        changed = false;
+        for (int i = 0; i < Point::quantity (); ++i) {
+            for (int j = 0; j < cores.size (); ++j) {
+                double a = Point::dist (Point::get_by_id (i + 1), &cores[j]);
+                double b = Point::dist (Point::get_by_id (i + 1), &cores[nearest_cluster[i]]);
+                if (a < b) {
+                    changed = true;
+                    nearest_cluster[i] = j;
+                }
+            }
+        }
+        // recomputing cores
+        vector<int> cluster_length (clusters_number, 0);
+        //vector<Point> sum_vectors (clusters_number, Point ());
+        for (int i = 0; i < Point::quantity (); ++i) {
+            cores[nearest_cluster[i]].shift (*Point::get_by_id (i + 1));
+            cluster_length[nearest_cluster[i]]++;
+        }
+        for (int i = 0; i < cores.size (); ++i) {
+            cores[i] = Point (cores[i].x () / cluster_length[i],
+                              cores[i].y () / cluster_length[i],
+                              0);
+        }
+        // check the changes
+        /*Point temp_null_point;
+        for (auto &sum_vector : sum_vectors) {
+            if (Point::dist (&sum_vector, &temp_null_point) > 0.01) {
+                continue;
+            }
+            changed = false;
+            break;
+        }*/
+        kmeans_fprintf (nearest_cluster, iteration);
+        iteration++;
+    }
+    clusters.clear ();
+    vector<vector<int>> clusters_to_set (clusters_number);
+    for (int i = 0; i < nearest_cluster.size (); ++i) {
+        clusters_to_set[nearest_cluster[i]].push_back (i);
+    }
+    for (int i = 0; i < clusters_number; ++i) {
+        clusters.emplace_back (clusters_to_set[i]);
+    }
+    return *this;
+}
+
+void Cluster_Search::kmeans_fprintf (vector<int> &nearest_cluster, int iteration) {
+    ofstream out ("kmeans/km" + to_string (iteration) + ".txt");
+    for (int i = 0; i < Point::quantity (); ++i) {
+        out << Point::get_by_id (i + 1)->x () << " " << Point::get_by_id (i + 1)->y () << " " << nearest_cluster[i]
+            << endl;
     }
 }

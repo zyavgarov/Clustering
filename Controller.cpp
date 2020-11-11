@@ -32,8 +32,6 @@ int Controller::generate_cloud (int id,
                                 int c_length = 1000) {
     // generates cloud with center on the field with dispersions by x and y
     // -1 if readonly
-    auto *cloud = new Cloud (c_length, disp_x, disp_y);
-    cloud->shift (center_x, center_y);
     if (field_ == nullptr) {
         field_ = new Field ();
         log ("Field initialized");
@@ -41,6 +39,8 @@ int Controller::generate_cloud (int id,
     if (field_->readonly ()) {
         return -1;
     }
+    auto *cloud = new Cloud (c_length, disp_x, disp_y);
+    cloud->shift (center_x, center_y);
     field_->add (cloud);
     log (to_string (id) + ": generated cloud (" + to_string (center_x) + ", " + to_string (center_y)
              + ") with dispersion (" + to_string (disp_x) + ";" + to_string (disp_y) + ")");
@@ -216,7 +216,7 @@ const vector<Cluster_Search> &Controller::info_cluster_search () const {
 }
 
 int Controller::buffer_shift (double x, double y) const {
-    //shifts cloud in buffer to vector (x, y)
+    // shifts cloud in buffer to vector (x, y)
     if (field_->readonly ()) {
         return -1;
     }
@@ -243,7 +243,7 @@ int Controller::buffer_mirror () const {
 }
 
 int Controller::buffer_rotate (double angle) const {
-    //rotates cloud in buffer to angle
+    // rotates cloud in buffer to angle
     if (field_->readonly ()) {
         return -1;
     }
@@ -266,4 +266,25 @@ int Controller::incidence_matrix (double delta) {
 
 vector<int> Controller::s_tree () const {
     return field_->s_tree ();
+}
+
+int Controller::k_means (int clusters_number) {
+    /* realises k-means clustering
+     * Errors:
+     * -1 - Field is not in readonly mode
+     * -2 - Field doesn't exist
+     */
+    if (field_ == nullptr) {
+        log ("Field doesn't exist");
+        return -2;
+    }
+    int err = field_->k_means (clusters_number);
+    if (err == 0) {
+        log ("Field is clustered");
+        return err;
+    } else if (err == -1) {
+        log ("Field is not in readonly state");
+        return err;
+    }
+    return 0;
 }

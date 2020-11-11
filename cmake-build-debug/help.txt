@@ -26,6 +26,8 @@ HISTOGRAM {int p}
     p is number of pieces in histogram
 HELP
 	Shows the list of supported commands
+KMEANS {int clusters}
+    Search clusters in the field using k-means algorithm
 LOG {bool b}
 	Switching writing logs
 	b == 0 means writing, b == 1 means not writing

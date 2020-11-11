@@ -247,6 +247,18 @@ int Interface::manager (const string &cur_command) {
         for (int i : histogram) {
             show (to_string (i));
         }
+    } else if (main == "KMEANS") {
+        int k;
+        ss >> k;
+        show ("Clustering...");
+        int err = cc->k_means (k);
+        if (err == 0) {
+            show ("Field is clustered");
+        } else if (err == -1) {
+            show ("Check field state. Type MATRIX to set it to readonly");
+        } else if (err == -2) {
+            show ("Field doesn't exist. Type GC to create the clouds");
+        }
     } else if (main == "#") {
         // doing nothing, that's comment
     } else {

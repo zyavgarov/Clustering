@@ -28,6 +28,7 @@ class Controller {
   int incidence_matrix (double delta);
   int wave (int search_id);
   int dbscan (int search_id, int k);
+  int k_means (int clusters_number);
   const vector<Cluster_Search> &info_cluster_search () const;
   vector<int> s_tree () const;
 };

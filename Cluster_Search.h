@@ -13,7 +13,7 @@ class Cluster_Search {
     vector<const Point *> points; //It's never read, but really works to save the points
   };
   
-  explicit Cluster_Search (Field *field, double delta, int k = 0);
+  explicit Cluster_Search (Field *field, double delta = 0, int k = 0);
   Cluster_Search (Cluster_Search const &cs);
   Cluster_Search &operator= (Cluster_Search const &cs);
   const vector<vector<bool>> &edges () const;
@@ -27,10 +27,12 @@ class Cluster_Search {
   void wave_clustering ();
   Cluster_Search wave ();
   Cluster_Search dbscan (int density);
+  Cluster_Search k_means (int clusters_number);
  private:
   Field *field_;
   vector<vector<bool>> edges_;
-  static void fprintf_type (const vector<int> &state);
+  static void dbscan_fprintf_type (const vector<int> &state);
+  void kmeans_fprintf (vector<int> &nearest_cluster, int iteration);
 };
 
 #endif //INTERFACE4__CLUSTER_SEARCH_H_
