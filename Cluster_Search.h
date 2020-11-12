@@ -32,7 +32,7 @@ class Cluster_Search {
   Field *field_;
   vector<vector<bool>> edges_;
   static void dbscan_fprintf_type (const vector<int> &state);
-  void kmeans_fprintf (vector<int> &nearest_cluster, int iteration);
+  void kmeans_fprintf (vector<int> &nearest_cluster, vector<Point> &cores, int iteration);
 };
 
 #endif //INTERFACE4__CLUSTER_SEARCH_H_

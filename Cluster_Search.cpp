@@ -211,7 +211,7 @@ Cluster_Search Cluster_Search::k_means (int clusters_number) {
             changed = false;
             break;
         }*/
-        kmeans_fprintf (nearest_cluster, iteration);
+        kmeans_fprintf (nearest_cluster, cores, iteration);
         iteration++;
     }
     clusters.clear ();
@@ -225,10 +225,14 @@ Cluster_Search Cluster_Search::k_means (int clusters_number) {
     return *this;
 }
 
-void Cluster_Search::kmeans_fprintf (vector<int> &nearest_cluster, int iteration) {
+void Cluster_Search::kmeans_fprintf (vector<int> &nearest_cluster, vector<Point> &cores, int iteration) {
     ofstream out ("kmeans/km" + to_string (iteration) + ".txt");
     for (int i = 0; i < Point::quantity (); ++i) {
         out << Point::get_by_id (i + 1)->x () << " " << Point::get_by_id (i + 1)->y () << " " << nearest_cluster[i]
+            << endl;
+    }
+    for (auto &core : cores) {
+        out << core.x () << " " << core.y () << " " << -1
             << endl;
     }
 }
