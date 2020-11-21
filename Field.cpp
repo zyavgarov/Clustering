@@ -71,12 +71,12 @@ bool Field::readonly () const {
 void Field::create_dist_matrix () {
     readonly_ = true;
     dist_.clear ();
-    dist_ = vector<vector<double>> (Point::quantity (), vector<double> (Point::quantity ()));
+    /*dist_ = vector<vector<double>> (Point::quantity (), vector<double> (Point::quantity ()));
     for (int i = 0; i < Point::quantity (); ++i) {
         for (int j = i; j < Point::quantity (); ++j) {
             dist_[i][j] = dist_[j][i] = Point::dist (Point::get_by_id (i + 1), Point::get_by_id (j + 1));
         }
-    }
+    }*/
 }
 
 const vector<Cluster_Search> &Field::searches () const {
@@ -307,5 +307,17 @@ int Field::k_means (int clusters_number) {
     }
     searches_.emplace_back (this);
     searches_.back ().k_means (clusters_number);
+    return 0;
+}
+
+int Field::k_means_cores (int clusters_number, int cores_number) {
+    /* Errors
+     * -1 field is not in readonly mode
+     */
+    if (!readonly ()) {
+        return -1;
+    }
+    searches_.emplace_back (this);
+    searches_.back ().k_means_cores (clusters_number, cores_number);
     return 0;
 }

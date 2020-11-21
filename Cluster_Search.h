@@ -28,11 +28,14 @@ class Cluster_Search {
   Cluster_Search wave ();
   Cluster_Search dbscan (int density);
   Cluster_Search k_means (int clusters_number);
+  Cluster_Search em (int clusters_number);
+  Cluster_Search k_means_cores (int clusters_number, int cores_number);
  private:
   Field *field_;
   vector<vector<bool>> edges_;
   static void dbscan_fprintf_type (const vector<int> &state);
   void kmeans_fprintf (vector<int> &nearest_cluster, vector<Point> &cores, int iteration);
+  static void kmeans_core_fprintf (const vector<int> &nearest_cluster, const vector<vector<Point>> &cores, int iteration);
 };
 
 #endif //INTERFACE4__CLUSTER_SEARCH_H_

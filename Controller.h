@@ -29,8 +29,10 @@ class Controller {
   int wave (int search_id);
   int dbscan (int search_id, int k);
   int k_means (int clusters_number);
+  int em (int clusters_number);
   const vector<Cluster_Search> &info_cluster_search () const;
   vector<int> s_tree () const;
+  int k_means_cores (int clusters_number, int cores_number);
 };
 
 #endif //INTERFACE4__CONTROLLER_H_

@@ -28,6 +28,8 @@ HELP
 	Shows the list of supported commands
 KMEANS {int clusters}
     Search clusters in the field using k-means algorithm
+KMCORES {int clusters} {int coresnum}
+    Search clusters in the field using k-means algorithm with cores
 LOG {bool b}
 	Switching writing logs
 	b == 0 means writing, b == 1 means not writing

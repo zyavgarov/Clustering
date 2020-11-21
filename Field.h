@@ -24,6 +24,7 @@ class Field {
   int db_clustering (int search_id, int k);
   int k_means (int clusters_number);
   vector<int> s_tree ();
+  int k_means_cores (int clusters_number, int cores_number);
  private:
   Field &operator= (Field const &f);
   Field (Field const &f);

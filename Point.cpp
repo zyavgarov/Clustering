@@ -53,6 +53,7 @@ void Point::shift (const double &x, const double &y) {
 }
 
 void Point::shift (const Point &vector) {
+    //OFTEN THROWS INVALID WRITE IN VALGRIND
     x_ += vector.x ();
     y_ += vector.y ();
 }
