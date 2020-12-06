@@ -33,6 +33,7 @@ class Controller {
   const vector<Cluster_Search> &info_cluster_search () const;
   vector<int> s_tree () const;
   int k_means_cores (int clusters_number, int cores_number);
+  int hierarchical_algorithm ();
 };
 
 #endif //INTERFACE4__CONTROLLER_H_

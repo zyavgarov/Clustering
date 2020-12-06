@@ -273,6 +273,28 @@ int Interface::manager (const string &cur_command) {
         } else if (err == -2) {
             show ("Field doesn't exist. Type GC to create the clouds");
         }
+    } else if (main == "EM") {
+        int k;
+        ss >> k;
+        show ("Clustering...");
+        int err = cc->em (k);
+        if (err == 0) {
+            show ("Field is clustered");
+        } else if (err == -1) {
+            show ("Check field state. Type MATRIX to set it to readonly");
+        } else if (err == -2) {
+            show ("Field doesn't exist. Type GC to create the clouds");
+        }
+    } else if (main == "HA") {
+        show ("Clustering...");
+        int err = cc->hierarchical_algorithm();
+        if (err == 0) {
+            show ("Field is clustered");
+        } else if (err == -1) {
+            show ("Check field state. Type MATRIX to set it to readonly");
+        } else if (err == -2) {
+            show ("Field doesn't exist. Type GC to create the clouds");
+        }
     } else if (main == "#") {
         // doing nothing, that's comment
     } else {

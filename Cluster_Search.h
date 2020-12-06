@@ -1,6 +1,8 @@
 #ifndef INTERFACE4__CLUSTER_SEARCH_H_
 #define INTERFACE4__CLUSTER_SEARCH_H_
 #include "Cloud.h"
+#include "TreeNode.h"
+#define EM_LIMITATION 0.01
 
 class Field;
 
@@ -25,17 +27,48 @@ class Cluster_Search {
   vector<int> db_sorting (int density);
   void db_clustering (const vector<int> &state);
   void wave_clustering ();
+  const TreeNode<const Point *> *tree_root ();
   Cluster_Search wave ();
   Cluster_Search dbscan (int density);
   Cluster_Search k_means (int clusters_number);
   Cluster_Search em (int clusters_number);
   Cluster_Search k_means_cores (int clusters_number, int cores_number);
+  Cluster_Search hierarchical_algorithm ();
  private:
   Field *field_;
   vector<vector<bool>> edges_;
   static void dbscan_fprintf_type (const vector<int> &state);
   void kmeans_fprintf (vector<int> &nearest_cluster, vector<Point> &cores, int iteration);
-  static void kmeans_core_fprintf (const vector<int> &nearest_cluster, const vector<vector<Point>> &cores, int iteration);
+  static void kmeans_core_fprintf (const vector<int> &nearest_cluster,
+                                   const vector<vector<Point>> &cores,
+                                   int iteration);
+  static double em_get_probability_cluster_similarity (int point,
+                                                       int cluster,
+                                                       const vector<Point> &means,
+                                                       const vector<vector<double>> &matrix);
+  static double em_get_prior (int cluster,
+                              const vector<vector<double>> &posteriors);
+  static double em_get_posterior (int cluster,
+                                  int point,
+                                  const vector<Point> &means,
+                                  const vector<double> &priors,
+                                  const vector<vector<vector<double>>> &covariants,
+                                  const vector<vector<double>> &another_vector_of_probabilities);
+  static void em_fprintf (vector<vector<double>> &posteriors,
+                          int iteration,
+                          vector<vector<vector<double>>> &cov_matrix,
+                          vector<Point> &means);
+  void ha_get_closest_nodes (int &a, int &b, const vector<TreeNode<const Point *> *> &tree_node);
+  void ha_merge_nodes (int a, int b, vector<TreeNode<const Point *> *> &tree_nodes);
+  Point *ha_get_new_node_center (TreeNode<const Point *> *&first, TreeNode<const Point *> *&second);
+  void ha_get_node_sum (TreeNode<const Point *> *&node, double &sum_x, double &sum_y, int &points);
+  static void ha_fprintf (const vector<TreeNode<const Point *> *> &tree_nodes, int iteration, Point old_1, Point old_2);
+  TreeNode<const Point *> *tree_root_;
+  TreeNode<const Point *> *&ha_get_node_by_coords (int a,
+                                                   vector<TreeNode<const Point *> *> &tree_node,
+                                                   int &i,
+                                                   double x,
+                                                   double y);
 };
 
 #endif //INTERFACE4__CLUSTER_SEARCH_H_
