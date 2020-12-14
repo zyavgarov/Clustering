@@ -341,7 +341,28 @@ int Controller::hierarchical_algorithm () {
         log ("Field doesn't exist");
         return -2;
     }
-    int err = field_->hieararchical_algorithm();
+    int err = field_->hieararchical_algorithm ();
+    if (err == 0) {
+        log ("Field is clustered");
+        return err;
+    } else if (err == -1) {
+        log ("Field is not in readonly state");
+        return err;
+    }
+    return 0;
+}
+
+int Controller::forel () {
+    /* realises k-means clustering
+     * Errors:
+     * -1 - Field is not in readonly mode
+     * -2 - Field doesn't exist
+     */
+    if (field_ == nullptr) {
+        log ("Field doesn't exist");
+        return -2;
+    }
+    int err = field_->forel ();
     if (err == 0) {
         log ("Field is clustered");
         return err;

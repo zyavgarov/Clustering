@@ -113,4 +113,9 @@ Point &Point::operator= (const Point &p) {
     return *this;
 }
 
+void Point::set (double x, double y) {
+    x_ = x;
+    y_ = y;
+}
+
 vector<Point *> Point::id_pointers;

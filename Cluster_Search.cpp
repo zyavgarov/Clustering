@@ -1,5 +1,6 @@
 #include "Cluster_Search.h"
 #include "Field.h"
+#include <utility>
 
 Cluster_Search::Cluster::Cluster (vector<const Point *> vec) : points (vec) {
 }
@@ -724,11 +725,11 @@ void Cluster_Search::ha_get_node_sum (TreeNode<const Point *> *&node, double &su
 
 void Cluster_Search::ha_fprintf (const vector<TreeNode<const Point *> *> &tree_nodes,
                                  int iteration,
-                                 Point old_1,
-                                 Point old_2) {
+                                 const Point &old_1,
+                                 const Point &old_2) {
     ofstream out ("ha/ha" + to_string (iteration) + ".txt");
-    for (int i = 0; i < tree_nodes.size (); ++i) {
-        out << tree_nodes[i]->value ()->x () << " " << tree_nodes[i]->value ()->y () << " " << 0 << endl;
+    for (auto tree_node : tree_nodes) {
+        out << tree_node->value ()->x () << " " << tree_node->value ()->y () << " " << 0 << endl;
     }
     out << old_1.x () << " " << old_1.y () << " " << 1 << endl;
     out << old_2.x () << " " << old_2.y () << " " << 1 << endl;
@@ -737,3 +738,486 @@ void Cluster_Search::ha_fprintf (const vector<TreeNode<const Point *> *> &tree_n
 const TreeNode<const Point *> *Cluster_Search::tree_root () {
     return tree_root_;
 }
+
+Cluster_Search Cluster_Search::forel () {
+    // realises the forel algorithm
+    vector<TreeNode<Point> *> center_nodes;
+    double R = 0.4;
+    for (int p = 0; p < Point::quantity (); ++p) {
+        auto *temp = new TreeNode<Point> (Point (Point::get_by_id (p + 1)->x (), Point::get_by_id (p + 1)->y (), 0));
+        center_nodes.push_back (temp);
+    }
+    int print_number = 0;
+    while (center_nodes.size () > 1) {
+        vector<bool> clustered (center_nodes.size (), false);
+        vector<TreeNode<Point> *> new_center_nodes;
+        for (int p = 0; p < center_nodes.size (); ++p) {
+            // If the point is clustered we pass over it
+            // if not - we make it a new center
+            if (clustered[p]) {
+                continue;
+            }
+            Point new_center (center_nodes[p]->value ().x (), center_nodes[p]->value ().y (), 0);
+            vector<bool> in_circle (center_nodes.size (), false);
+            // the vector shows if the point is close enough to center
+            for (int i = 0; i < center_nodes.size (); ++i) {
+                Point p_i (center_nodes[i]->value ().x (), center_nodes[i]->value ().y (), 0);
+                double distance = Point::dist (&new_center, &p_i);
+                if (distance < R) {
+                    in_circle[i] = true;
+                }
+            }
+            bool changed = true;
+            while (changed) {
+                changed = false;
+                
+                // recomputing center
+                new_center = Point ();
+                int node_size = 0;
+                for (int i = 0; i < center_nodes.size (); ++i) {
+                    if (in_circle[i]) {
+                        new_center = new_center + center_nodes[i]->value ();
+                        node_size++;
+                    }
+                }
+                new_center = new_center / node_size;
+                
+                // updating circles
+                for (int i = 0; i < center_nodes.size (); ++i) {
+                    Point p_i (center_nodes[i]->value ().x (), center_nodes[i]->value ().y (), 0);
+                    double distance = Point::dist (&new_center, &p_i);
+                    if (distance < R) {
+                        if (!in_circle[i]) {
+                            changed = true;
+                            in_circle[i] = true;
+                        }
+                    } else {
+                        if (in_circle[i]) {
+                            changed = true;
+                            in_circle[i] = false;
+                        }
+                    }
+                }
+                frl_fprintf_e (print_number, center_nodes, new_center_nodes, clustered, in_circle, R, new_center);
+                print_number++;
+            }
+            auto *node = new TreeNode<Point> (new_center);
+            for (int i = 0; i < in_circle.size (); ++i) {
+                if (in_circle[i] && !clustered[i]) {
+                    node->add_child (center_nodes[i]); // the problem is here. I cant find the moment where i put brothers to the ring
+                    clustered[i] = true;
+                }
+            }
+            new_center_nodes.push_back (node);
+        }
+        center_nodes = new_center_nodes;
+        R *= 2;
+    }
+    return *this;
+}
+
+void Cluster_Search::frl_fprintf (int print_number,
+                                  const vector<TreeNode<struct Point> *> &center_nodes,
+                                  const vector<TreeNode<struct Point> *> &new_center_nodes,
+                                  vector<bool> clustered,
+                                  vector<bool> in_circle,
+                                  double R,
+                                  const Point &circle_center) {
+    ofstream out ("forel/frl" + to_string (print_number) + ".txt");
+    for (int i = 0; i < center_nodes.size (); ++i) {
+        if (!clustered[i] && !in_circle[i]) {
+            out << center_nodes[i]->value ().x () << " " << center_nodes[i]->value ().y () << " -2" << endl;
+        }
+    }
+    for (int i = 0; i < new_center_nodes.size (); ++i) {
+        out << new_center_nodes[i]->value ().x () << " " << new_center_nodes[i]->value ().y () << " -1" << endl;
+        if (new_center_nodes[i]->first_child () != nullptr) {
+            
+            auto *pointer = new_center_nodes[i]->first_child ();
+            do {
+                out << pointer->value ().x () << " " << pointer->value ().y () << " " << i << endl;
+                if (pointer->brother () == nullptr) {
+                    break;
+                } else {
+                    pointer = pointer->brother ();
+                }
+            } while (true);
+        }
+    }
+    for (int i = 0; i < in_circle.size (); ++i) {
+        out << center_nodes[i]->value ().x () << " " << center_nodes[i]->value ().y () << " -3" << endl;
+    }
+    ofstream circle ("forel/circle" + to_string (print_number) + ".txt");
+    circle << circle_center.x () << " " << circle_center.y () << " " << R << endl;
+}
+
+void Cluster_Search::frl_fprintf_e (int print_num,
+                                    vector<TreeNode<Point> *> center_nodes, vector<TreeNode<Point> *> new_centers_node,
+                                    vector<bool> clustered,
+                                    vector<bool> in_circle,
+                                    double R,
+                                    Point center) {
+    ofstream out ("forel/frl" + to_string (print_num) + ".txt");
+    ofstream circle ("forel/circle" + to_string (print_num) + ".txt");
+    for (int i = 0; i < new_centers_node.size (); ++i) {
+        circle << new_centers_node[i]->value ().x () << " " << new_centers_node[i]->value ().y () << " " << R << endl;
+        auto *pointer = new_centers_node[i]->first_child ();
+        while (pointer != nullptr) {
+            out << pointer->value ().x () << " " << pointer->value ().y () << " " << i << endl;
+            pointer = pointer->brother ();
+        }
+    }
+    // current circle print
+    for (int i = 0; i < in_circle.size (); ++i) {
+        if (in_circle[i]) {
+            out << center_nodes[i]->value ().x () << " " << center_nodes[i]->value ().y () << " -1" << endl;
+        }
+    }
+    circle << center.x () << " " << center.y () << " " << R << endl;
+    //printing unclustered points
+    for (int i = 0; i < center_nodes.size (); ++i) {
+        if (!clustered[i] && !in_circle[i]) {
+            out << center_nodes[i]->value ().x () << " " << center_nodes[i]->value ().y () << " " << endl;
+        }
+    }
+}
+/*
+Cluster_Search Cluster_Search::forel_enhanced(){
+    vector<TreeNode<Point>*> centers_nodes;
+    while (centers_nodes.size() > 1){
+        vector<TreeNode<Point>*> new_centers_nodes;
+    }
+}*/
+
+
+
+
+
+
+
+
+
+
+#include <iostream>
+
+double Cluster_Search::N (const Point *a, vector<double> m, vector<double> Sgm) {
+    double det = Sgm[0] * Sgm[3] - Sgm[1] * Sgm[2];
+    vector<vector<double>> b_s (2, vector<double> (2));
+    b_s[0][0] = Sgm[3] / det;
+    b_s[0][1] = -Sgm[1] / det;
+    b_s[1][0] = -Sgm[2] / det;
+    b_s[1][1] = Sgm[0] / det;
+    if (det < 0) { det = -det; }
+    return exp (-(b_s[0][0] * (a->x () - m[0]) * (a->x () - m[0])
+        + (b_s[1][0] + b_s[0][1]) * (a->x () - m[0]) * (a->y () - m[1])
+        + b_s[1][1] * (a->y () - m[1]) * (a->y () - m[1])) / 2) / (sqrt (2 * M_PI * det));
+}
+/*
+void Field::stepForGifOfEM (int step,
+                            vector<vector<double> > sgm,
+                            vector<vector<double> > m,
+                            vector<vector<double> > r,
+                            int k) {
+    char p[30];
+    sprintf (p, "EM points of %d step.txt", step);
+    ofstream step_points (p);
+    for (int i = 0; i < full_p.size (); i++) {
+        int ind = 0;
+        for (int c = 0; c < k; c++) {
+            if (r[i][c] > r[i][ind]) { ind = c; }
+        }
+        step_points << full_p[i].x << " " << full_p[i].y << " " << ind << endl;
+    }
+    step_points.close ();
+    char ell[31];
+    sprintf (ell, "EM step_ellipses of %d step.txt", step);
+    ofstream step_ellipses (ell);
+    for (int c = 0; c < k; c++) {
+        double discr, angle;
+        vector<double> lumbd, v;
+        discr = (sgm[c][0] + sgm[c][3]) * (sgm[c][0] + sgm[c][3]) - 4 * (sgm[c][0] * sgm[c][3] - sgm[c][1] * sgm[c][2]);
+        if (discr >= 0) {
+            lumbd.push_back ((sgm[c][0] + sgm[c][3] + sqrt (discr)) / 2);
+            lumbd.push_back ((sgm[c][0] + sgm[c][3] - sqrt (discr)) / 2);
+        }
+        v.push_back (sgm[c][0] - lumbd[0]);
+        v.push_back (sgm[c][1]);
+        if (v[1] < 0) {
+            v[0] *= -1;
+            v[1] *= -1;
+        }
+        angle = acos (v[0] / sqrt (v[0] * v[0] + v[1] * v[1]));
+        angle *= 180;
+        angle /= PI;
+        step_ellipses << m[c][0] << " " << m[c][1] << " " << 3 * lumbd[1] << " " << 3 * lumbd[0] << " " << angle
+                      << endl;
+    }
+    step_ellipses.close ();
+}
+
+void Field::EMAlgorithm (int k) {
+    Cluster_Search new_find_cl;
+    vector<vector<double> > mu, r, Sigm;
+    vector<double> pi, v0;
+    // counting sum of all points
+    double s_x = 0, s_y = 0;
+    for (int i = 0; i < full_p.size (); i++) {
+        s_x += full_p[i].x;
+        s_y += full_p[i].y;
+    }
+    for (int i = 0; i < k; i++) {
+        vector<vector<double> > v22;
+        vector<double> v4, v2;
+        for (int j = 0; j < 4; j++) {
+            v4.push_back (0);
+        }
+        for (int j = 0; j < 2; j++) {
+            v2.push_back (0);
+        };
+        Sigm.push_back (v4);
+        mu.push_back (v2);
+        mu[i][0] = full_p[i].x;
+        mu[i][1] = full_p[i].y;
+        pi.push_back ((double) 1 / k);
+        v0.push_back (0);
+        Cluster cluster;
+        new_find_cl.clust.push_back (cluster);
+    }
+    for (int i = 0; i < full_p.size (); i++) {
+        r.push_back (v0);
+    }
+    for (int i = 0; i < k; i++) {
+        double elem_11 = 0, elem_12 = 0, elem_21 = 0, elem_22 = 0;
+        cout << "mu2: " << mu[i][0] << endl;
+        for (int j = 0; j < full_p.size (); j++) {
+            elem_11 += (full_p[j].x - mu[i][0]) * (full_p[j].x - mu[i][0]);
+            elem_12 += (full_p[j].x - mu[i][0]) * (full_p[j].y - mu[i][1]);
+            elem_21 += (full_p[j].y - mu[i][1]) * (full_p[j].x - mu[i][0]);
+            elem_22 += (full_p[j].y - mu[i][1]) * (full_p[j].y - mu[i][1]);
+        }
+        //cout << elem_11 << " " << elem_12 << " " << elem_21 << " " << elem_22 << endl;
+        Sigm[i][0] = elem_11 / full_p.size ();
+        Sigm[i][1] = elem_12 / full_p.size ();
+        Sigm[i][2] = elem_21 / full_p.size ();
+        Sigm[i][3] = elem_22 / full_p.size ();
+    }
+    bool sw_em;
+    int step = 0;
+    do {
+        step++;
+        sw_em = true;
+        //E-step
+        double s = 0;
+        vector<double> sum;
+        for (int i = 0; i < full_p.size (); i++) {
+            s = 0;
+            for (int c = 0; c < k; c++) {
+                s += pi[c] * N (full_p[i], mu[c], Sigm[c]);
+            }
+            sum.push_back (s);
+        }
+        for (int i = 0; i < full_p.size (); i++) {
+            for (int c = 0; c < k; c++) {
+                if (((r[i][c] - pi[c] * N (full_p[i], mu[c], Sigm[c]) / sum[i]) > EPS)
+                    || ((r[i][c] - pi[c] * N (full_p[i], mu[c], Sigm[c]) / sum[i]) < -EPS)) {
+                    sw_em = false;
+                }
+                r[i][c] = pi[c] * N (full_p[i], mu[c], Sigm[c]) / sum[i];
+                //cout << "r1: " << r[i][c] << endl;
+                //r[i][c] = pi[c]*N(full_p[i], &mu[c], &Sigm[c])/sum[i];
+            }
+        }
+        //M-step
+        double m_c;
+        for (int c = 0; c < k; c++) {
+            m_c = 0;
+            mu[c][0] = 0;
+            mu[c][1] = 0;
+            for (int i = 0; i < full_p.size (); i++) {
+                m_c += r[i][c];
+                //cout << "r: " << r[i][c] << endl;
+            }
+            for (int i = 0; i < full_p.size (); i++) {
+                mu[c][0] += full_p[i].x * r[i][c] / m_c;
+                mu[c][1] += full_p[i].y * r[i][c] / m_c;
+            }
+            //cout << mu[c][0] << " " << mu[c][1] << endl;
+            double elem_11 = 0, elem_12 = 0, elem_21 = 0, elem_22 = 0;
+            for (int i = 0; i < full_p.size (); i++) {
+                elem_11 += r[i][c] * (full_p[i].x - mu[c][0]) * (full_p[i].x - mu[c][0]);
+                elem_12 += r[i][c] * (full_p[i].x - mu[c][0]) * (full_p[i].y - mu[c][1]);
+                elem_21 += r[i][c] * (full_p[i].y - mu[c][1]) * (full_p[i].x - mu[c][0]);
+                elem_22 += r[i][c] * (full_p[i].y - mu[c][1]) * (full_p[i].y - mu[c][1]);
+            }
+            cout << "Covarience matrix " << c << ":" << endl;
+            Sigm[c][0] = elem_11 / m_c;
+            cout << Sigm[c][0] << " ";
+            Sigm[c][1] = elem_12 / m_c;
+            cout << Sigm[c][1] << endl;
+            Sigm[c][2] = elem_21 / m_c;
+            cout << Sigm[c][2] << " ";
+            Sigm[c][3] = elem_22 / m_c;
+            cout << Sigm[c][3] << endl << endl;
+            pi[c] = m_c / full_p.size ();
+            //cout << "covar " << c << ": " << Sigm[c][2] << endl;
+            cout << "mu " << c << ": " << mu[c][0] << " " << mu[c][1] << endl;
+        }
+        //cout << "step" << endl;
+        stepForGifOfEM (step, Sigm, mu, r, k);
+    } while (sw_em == false);
+    for (int i = 0; i < full_p.size (); i++) {
+        int ind = 0;
+        for (int c = 1; c < k; c++) {
+            if (r[i][c] > r[i][ind]) { ind = c; }
+        }
+        new_find_cl.clust[ind].addPointToCluster (full_p[i].x, full_p[i].y);
+    }
+    find_clust.push_back (new_find_cl);
+}
+*/
+#define EPS 0.01
+
+Cluster_Search Cluster_Search::em_enhanced (int clusters_number) {
+    vector<vector<double>> sigma;
+    vector<vector<double>> mu;
+    vector<vector<double>> r;
+    vector<double> pi;
+    vector<double> v0;
+    // filling mu sigma and pi vectors
+    for (int i = 0; i < clusters_number; ++i) {
+        vector<vector<double> > v22;
+        vector<double> v4;
+        vector<double> v2;
+        for (int j = 0; j < 4; j++) {
+            v4.push_back (0);
+        }
+        for (int j = 0; j < 2; j++) {
+            v2.push_back (0);
+        };
+        sigma.push_back (v4);
+        mu.push_back (v2);
+        // mu looks like to be randomly set
+        mu[i][0] = Point::get_by_id (i + 1)->x ();
+        mu[i][1] = Point::get_by_id (i + 1)->y ();
+        pi.push_back ((double) 1 / clusters_number);
+        v0.push_back (0);
+        //possibly here should be created all the clusters
+    }
+    for (int i = 0; i < Point::quantity (); ++i) {
+        r.push_back (v0);
+    }
+    for (int i = 0; i < clusters_number; ++i) {
+        vector<vector<double>> a (2, vector<double> (2, 0));
+        for (int j = 0; j < Point::quantity (); ++j) {
+            a[0][0] += (Point::get_by_id (j + 1)->x () - mu[i][0]) * (Point::get_by_id (j + 1)->x () - mu[i][0]);
+            a[0][1] += (Point::get_by_id (j + 1)->x () - mu[i][0]) * (Point::get_by_id (j + 1)->y () - mu[i][1]);
+            a[1][0] += (Point::get_by_id (j + 1)->y () - mu[i][1]) * (Point::get_by_id (j + 1)->x () - mu[i][0]);
+            a[1][1] += (Point::get_by_id (j + 1)->y () - mu[i][1]) * (Point::get_by_id (j + 1)->y () - mu[i][1]);
+        }
+        sigma[i][0] = a[0][0] / Point::quantity ();
+        sigma[i][1] = a[0][1] / Point::quantity ();
+        sigma[i][2] = a[1][0] / Point::quantity ();
+        sigma[i][3] = a[1][1] / Point::quantity ();
+    }
+    bool sw_em;
+    int iteration = 0;
+    do {
+        iteration++;
+        sw_em = true;
+        
+        // E step
+        // I have no idea what all that stuff do
+        double s = 0;
+        vector<double> sum;
+        for (int i = 0; i < Point::quantity (); ++i) {
+            s = 0;
+            for (int c = 0; c < clusters_number; ++c) {
+                s += pi[c] * N (Point::get_by_id (i + 1), mu[c], sigma[c]);
+            }
+            sum.push_back (s);
+        }
+        for (int i = 0; i < Point::quantity (); ++i) {
+            for (int c = 0; c < clusters_number; ++c) {
+                if (((r[i][c] - pi[c] * N (Point::get_by_id (i + 1), mu[c], sigma[c]) / sum[i]) > EPS)
+                    || ((r[i][c] - pi[c] * N (Point::get_by_id (i + 1), mu[c], sigma[c]) / sum[i]) < -EPS)) {
+                    sw_em = false;
+                }
+                r[i][c] = pi[c] * N (Point::get_by_id (i + 1), mu[c], sigma[c]) / sum[i];
+            }
+        }
+        
+        // M step
+        double m_c;
+        for (int c = 0; c < clusters_number; ++c) {
+            m_c = 0;
+            mu[c][0] = 0;
+            mu[c][1] = 0;
+            for (int i = 0; i < Point::quantity (); ++i) {
+                m_c += r[i][c];
+            }
+            for (int i = 0; i < Point::quantity (); ++i) {
+                mu[c][0] += Point::get_by_id (i + 1)->x () * r[i][c] / m_c;
+                mu[c][1] += Point::get_by_id (i + 1)->y () * r[i][c] / m_c;
+            }
+            vector<vector<double>> a (2, vector<double> (2, 0));
+            for (int i = 0; i < Point::quantity (); ++i) {
+                a[0][0] += r[i][c] * (Point::get_by_id (i + 1)->x () - mu[c][0])
+                    * (Point::get_by_id (i + 1)->x () - mu[c][0]);
+                a[0][1] += r[i][c] * (Point::get_by_id (i + 1)->x () - mu[c][0])
+                    * (Point::get_by_id (i + 1)->y () - mu[c][1]);
+                a[1][0] += r[i][c] * (Point::get_by_id (i + 1)->y () - mu[c][1])
+                    * (Point::get_by_id (i + 1)->x () - mu[c][0]);
+                a[1][1] += r[i][c] * (Point::get_by_id (i + 1)->y () - mu[c][1])
+                    * (Point::get_by_id (i + 1)->y () - mu[c][1]);
+            }
+            sigma[c][0] = a[0][0] / m_c;
+            sigma[c][1] = a[0][1] / m_c;
+            sigma[c][2] = a[1][0] / m_c;
+            sigma[c][3] = a[1][1] / m_c;
+            pi[c] = m_c / Point::quantity ();
+        }
+        em_fprintf_enh (iteration, sigma, mu, r, clusters_number);
+    } while (!sw_em);
+    // creating cluster
+    return *this;
+}
+
+void Cluster_Search::em_fprintf_enh (int iteration,
+                                     vector<vector<double> > sgm,
+                                     vector<vector<double> > m,
+                                     vector<vector<double> > r,
+                                     int clusters_number) {
+    ofstream out ("em/em" + to_string (iteration) + ".txt");
+    for (int p = 0; p < Point::quantity (); ++p) {
+        int ind = 0;
+        for (int c = 0; c < clusters_number; ++c) {
+            if (r[p][c] > r[p][ind]) {
+                ind = c;
+            }
+        }
+        out << Point::get_by_id (p + 1)->x () << " " << Point::get_by_id (p + 1)->y () << " " << ind << endl;
+    }
+    ofstream ellipsis ("em/ellipse" + to_string (iteration) + ".txt");
+    for (int c = 0; c < clusters_number; ++c) {
+        double discr, angle;
+        vector<double> lambda;
+        vector<double> v;
+        discr = (sgm[c][0] + sgm[c][3]) * (sgm[c][0] + sgm[c][3]) - 4 * (sgm[c][0] * sgm[c][3] - sgm[c][1] * sgm[c][2]);
+        if (discr >= 0) {
+            lambda.push_back ((sgm[c][0] + sgm[c][3] - sqrt (discr)) / 2);
+            lambda.push_back ((sgm[c][0] + sgm[c][3] + sqrt (discr)) / 2);
+        }
+        v.push_back (sgm[c][0] - lambda[0]);
+        v.push_back (sgm[c][1]);
+        if (v[1] < 0) {
+            v[0] *= -1;
+            v[1] *= -1;
+        }
+        angle = acos (v[0] / sqrt (v[0] * v[0] + v[1] * v[1]));
+        angle *= 180;
+        angle /= M_PI;
+        ellipsis << m[c][0] << " " << m[c][1] << " " << 200 * lambda[0] << " " << 200 * lambda[1] << " " << angle
+                 << endl;
+    }
+}
+

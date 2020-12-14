@@ -55,6 +55,7 @@ const TreeNode<T> *TreeNode<T>::brother () const {
 template<class T>
 TreeNode<T> *TreeNode<T>::last_child_ () {
     // returns pointer to last child
+    // works only if there is first child
     TreeNode<T> *curr = first_child_;
     while (curr->brother () != nullptr) {
         curr = curr->brother_;
@@ -65,13 +66,14 @@ TreeNode<T> *TreeNode<T>::last_child_ () {
 template<class T>
 const TreeNode<T> *TreeNode<T>::last_child () const {
     // returns pointer to last child as to const
+    // works only if there is first child
     return last_child_ ();
 }
 
 template<class T>
 const TreeNode<T> *TreeNode<T>::add_child (TreeNode<T> *t) {
     // adds child to node. Returns pointer to it
-    //i'm not sure but there are possible problems with linking
+    // i'm not sure but there are possible problems with linking
     if (first_child () != nullptr) {
         last_child_ ()->brother_ = t;
     } else {

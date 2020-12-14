@@ -30,6 +30,7 @@ class Point {
   static const Point * get_by_id (int id);
   static double dist (const Point *A, const Point *B);
   static int quantity ();
+  void set (double x, double y);
 };
 
 #endif //INTERFACE4__POINT_H_

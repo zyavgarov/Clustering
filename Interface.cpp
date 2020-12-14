@@ -287,7 +287,17 @@ int Interface::manager (const string &cur_command) {
         }
     } else if (main == "HA") {
         show ("Clustering...");
-        int err = cc->hierarchical_algorithm();
+        int err = cc->hierarchical_algorithm ();
+        if (err == 0) {
+            show ("Field is clustered");
+        } else if (err == -1) {
+            show ("Check field state. Type MATRIX to set it to readonly");
+        } else if (err == -2) {
+            show ("Field doesn't exist. Type GC to create the clouds");
+        }
+    } else if (main == "FOREL") {
+        show ("Clustering...");
+        int err = cc->forel ();
         if (err == 0) {
             show ("Field is clustered");
         } else if (err == -1) {

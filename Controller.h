@@ -34,6 +34,7 @@ class Controller {
   vector<int> s_tree () const;
   int k_means_cores (int clusters_number, int cores_number);
   int hierarchical_algorithm ();
+  int forel ();
 };
 
 #endif //INTERFACE4__CONTROLLER_H_

@@ -27,6 +27,7 @@ class Field {
   int k_means_cores (int clusters_number, int cores_number);
   int em (int clusters_number);
   int hieararchical_algorithm ();
+  int forel ();
  private:
   Field &operator= (Field const &f);
   Field (Field const &f);
