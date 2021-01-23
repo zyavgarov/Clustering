@@ -1,6 +1,7 @@
 #include "Cluster_Search.h"
 #include "Field.h"
 #include <utility>
+#define EPS 0.01
 
 Cluster_Search::Cluster::Cluster (vector<const Point *> vec) : points (vec) {
 }
@@ -358,281 +359,11 @@ void Cluster_Search::kmeans_core_fprintf (const vector<int> &nearest_cluster,
     }
 }
 
-Cluster_Search Cluster_Search::em (int clusters_number) {
-    
-    /* realises EM-clustering algorithm
-     */
-    
-    bool changed = true;
-    vector<Point> means (clusters_number); // centers of Gauss distributions
-    for (auto &mean : means) {
-        mean = Point ((double) (rand ()) / RAND_MAX - 0.5, (double) (rand ()) / RAND_MAX - 0.5, 0);
-    }
-    
-    vector<vector<double>>
-        posteriors (Point::quantity (), vector<double> (clusters_number, (double) 1 / clusters_number));
-    // point with id i+1 has probability posteriors[i][j] that it is contained to cluster number j
-    // e.g. P(c | x_i)
-    
-    vector<vector<double>> another_probabilty_vector (Point::quantity (),
-                                                      vector<double> (clusters_number,
-                                                                      (double) 1 / Point::quantity ()));
-    // P(x_i | c)
-    
-    
-    vector<vector<vector<double>>>
-        covariants (clusters_number, vector<vector<double>> (2, vector<double> (2, 0)));
-    // covariances matrices, the first number shows to which cluster it's related, the others are for points
-    for (auto &cov_matrix : covariants) {
-        for (int i = 0; i < 2; ++i) {
-            cov_matrix[i][i] = 1;
-        }
-    }
-    
-    vector<double> priors (clusters_number);
-    // vector of P(c)
-    for (int i = 0; i < priors.size (); ++i) {
-        priors[i] = em_get_prior (i, posteriors);
-    }
-    
-    int iteration = 0;
-    while (changed && iteration < 20) {
-        em_fprintf (posteriors, iteration, covariants, means);
-        changed = false;
-        
-        // updating P(x_i | c)
-        for (int p = 0; p < another_probabilty_vector.size (); ++p) {
-            for (int c = 0; c < another_probabilty_vector[c].size (); ++c) {
-                another_probabilty_vector[p][c] = em_get_probability_cluster_similarity (p, c, means, covariants[c]);
-            }
-        }
-        
-        // recompute posteriors
-        for (int p = 0; p < Point::quantity (); ++p) {
-            for (int i = 0; i < posteriors[p].size (); ++i) {
-                if (isnan (em_get_posterior (i, p, means, priors, covariants, another_probabilty_vector))) {
-                    double r = 0;
-                }
-                double t = em_get_posterior (i, p, means, priors, covariants, another_probabilty_vector);
-                if (abs (t - posteriors[p][i]) > EM_LIMITATION) {
-                    changed = true;
-                }
-                posteriors[p][i] = t;
-            }
-        }
-        
-        // searching weights
-        vector<vector<double>> weights (Point::quantity (), vector<double> (clusters_number, 0));
-        /*for (int p = 0; p < weights.size (); ++p) {
-            for (int i = 0; i < weights[p].size (); ++i) {
-                double sum = 0;
-                for (int j = 0; j < Point::quantity (); ++j) {
-                    sum += posteriors[p][j];
-                }
-                weights[p][i] = posteriors[p][i] / sum;
-            }
-        }*/
-        for (int c = 0; c < clusters_number; ++c) {
-            for (int i = 0; i < Point::quantity (); ++i) {
-                double sum = 0;
-                for (int j = 0; j < Point::quantity (); ++j) {
-                    sum += posteriors[j][c];
-                }
-                weights[i][c] = posteriors[i][c] / sum;
-            }
-        }
-        
-        //recomputing means
-        for (int i = 0; i < clusters_number; ++i) {
-            double sum_x = 0;
-            double sum_y = 0;
-            for (int p = 0; p < Point::quantity (); ++p) {
-                sum_x += Point::get_by_id (p + 1)->x () * weights[p][i];
-                sum_y += Point::get_by_id (p + 1)->y () * weights[p][i];
-            }
-            means[i] = Point (sum_x, sum_y, 0);
-        }
-        
-        // recomputing covariance matrix
-        for (int c = 0; c < covariants.size (); ++c) {
-            for (int i = 0; i < 2; ++i) {
-                for (int j = 0; j < 2; ++j) {
-                    double sum = 0;
-                    for (int p = 0; p < Point::quantity (); ++p) {
-                        sum += weights[p][c] * pow (Point::get_by_id (p + 1)->x () - means[c].x (), 1 - i)
-                            * pow (Point::get_by_id (p + 1)->x () - means[c].x (), 1 - j)
-                            * pow (Point::get_by_id (p + 1)->y () - means[c].y (), i)
-                            * pow (Point::get_by_id (p + 1)->y () - means[c].y (), j);
-                    }
-                    covariants[c][i][j] = sum;
-                }
-            }
-        }
-        iteration++;
-    }
-    clusters.clear ();
-    vector<vector<int>> clusters_to_set (clusters_number);
-    for (int p = 0; p < Point::quantity (); ++p) {
-        int max_i = 0;
-        for (int i = 1; i < clusters_number; ++i) {
-            if (posteriors[p][i] > posteriors[p][max_i]) {
-                max_i = i;
-            }
-        }
-        clusters_to_set[max_i].push_back (p);
-    }
-    for (int i = 0; i < clusters_number; ++i) {
-        clusters.emplace_back (clusters_to_set[i]);
-    }
-    return *this;
-}
-
-double Cluster_Search::em_get_probability_cluster_similarity (int point,
-                                                              int cluster,
-                                                              const vector<Point> &means,
-                                                              const vector<vector<double>> &matrix) {
-    /* function computes the probability that some point in cluster is that specific point from parameters
-     * In other words we return P(x_i | c)
-     */
-    auto *p = Point::get_by_id (point + 1);
-    // using formula of inverted matrix 2*2
-    vector<vector<double>> inverted_matrix (2, vector<double> (2));
-    double det_m = matrix[0][0] * matrix[1][1] - matrix[1][0] * matrix[0][1];
-    for (int i = 0; i < 2; ++i) {
-        for (int j = 0; j < 2; ++j) {
-            inverted_matrix[i][j] = matrix[1 - i][1 - j] / det_m;
-        }
-    }
-    // we have x^T * S^(-1) * x. We are doing that step-by-step
-    // let x^T * S^(-1) = (r_x, r_y), so:
-    /*double r_x = inverted_matrix[0][0] * (p->x () - means[cluster].x ())
-        + inverted_matrix[1][0] * (p->y () - means[cluster].y ());
-    double r_y = inverted_matrix[0][1] * (p->x () - means[cluster].x ())
-        + inverted_matrix[1][1] * (p->y () - means[cluster].y ());
-    // searching q = r * x
-    double q = r_x * (p->x () - means[cluster].x ()) + r_y * (p->y () - means[cluster].y ());*/
-    double q = 0;
-    for (int i = 0; i < 2; ++i) {
-        for (int j = 0; j < 2; ++j) {
-            q += (Point::get_by_id (point + 1)->x () - means[cluster].x ()) * inverted_matrix[i][j]
-                * (Point::get_by_id (point + 1)->y () - means[cluster].y ());
-        }
-    }
-    return 1 / sqrt (2 * M_PI * det_m) * exp (-0.5 * q);
-}
-
-double Cluster_Search::em_get_prior (int cluster, const vector<vector<double>> &posteriors) {
-    /*the function returns the probability of being random point in cluster
-     * e.g. P(c)
-     */
-    double sum = 0;
-    for (int i = 0; i < Point::quantity (); ++i) {
-        sum += posteriors[i][cluster]; // check if correct
-    }
-    return sum / Point::quantity ();
-}
-
-double Cluster_Search::em_get_posterior (int cluster,
-                                         int point,
-                                         const vector<Point> &means,
-                                         const vector<double> &priors,
-                                         const vector<vector<vector<double>>> &covariants,
-                                         const vector<vector<double>> &another_vector_of_probabilities) {
-    /* the function returns the probability of being selected point in cluster
-     * e.g. P(c | x_i)
-     */
-    
-    // computing denominator of fraction
-    double denominator_of_fraction = 0;
-    for (int c = 0; c < means.size (); ++c) {
-        denominator_of_fraction += another_vector_of_probabilities[point][c] * priors[c];
-    }
-    return another_vector_of_probabilities[point][cluster] * priors[cluster] / denominator_of_fraction;
-}
-
-void Cluster_Search::em_fprintf (vector<vector<double>> &posteriors,
-                                 int iteration,
-                                 vector<vector<vector<double>>> &cov_matrix, vector<Point> &means) {
-    ofstream out ("em/em" + to_string (iteration) + ".txt");
-    vector<vector<int>> clusters (means.size ());
-    for (int p = 0; p < Point::quantity (); ++p) {
-        int max_i = 0;
-        for (int i = 1; i < posteriors[0].size (); ++i) {
-            if (posteriors[p][i] > posteriors[p][max_i]) {
-                max_i = i;
-            }
-        }
-        clusters[max_i].push_back (p);
-        out << Point::get_by_id (p + 1)->x () << " " << Point::get_by_id (p + 1)->y () << " " << max_i << endl;
-    }
-    vector<vector<double>> ellipses (means.size (), vector<double> (3));
-    // here's e_1, e_2 and angle
-    double l_1, l_2, angle;
-    double min_dist;
-    double max_dist;
-    for (int i = 0; i < clusters.size (); ++i) {
-        if (clusters[i].empty ()) {
-            continue;
-        }
-        min_dist = Point::dist (Point::get_by_id (clusters[i][0] + 1), Point::get_by_id (clusters[i][1] + 1));
-        int min_p = 0;
-        int min_q = 0;
-        max_dist = Point::dist (Point::get_by_id (clusters[i][0] + 1), Point::get_by_id (clusters[i][1] + 1));
-        //possible sigegv while cluster has only one element
-        int max_p = 0;
-        int max_q = 0;
-        for (int p = 0; p < clusters[i].size (); ++p) {
-            for (int q = p + 1; q < clusters[i].size (); ++q) {
-                double distance = Point::dist (Point::get_by_id (clusters[i][p] + 1),
-                                               Point::get_by_id (clusters[i][q] + 1));
-                if (distance == 0) {
-                    double t = 0;
-                }
-                if (distance < min_dist) {
-                    min_p = p;
-                    min_q = q;
-                    min_dist = distance;
-                } else if (distance > max_dist) {
-                    max_p = p;
-                    max_q = q;
-                    max_dist = distance;
-                }
-            }
-        }
-    }
-    for (auto &mean : means) {
-        out << mean.x () << " " << mean.y () << " -1" << endl;
-    }
-    // printing ellipses
-    ofstream ellipse ("em/ellipse" + to_string (iteration) + ".txt");
-    int i = 0;
-    for (auto &c : cov_matrix) {
-        //searching eigenvectors
-        double a = pow (c[0][0] - c[1][1], 2);
-        double b = 4 * c[0][1] * c[1][0];
-        double discriminant = sqrt (pow (c[0][0] - c[1][1], 2) + 4 * c[0][1] * c[1][0]);
-        double e_1 = 0.5 * (c[1][1] + c[0][0] + discriminant);
-        double e_2 = 0.5 * (c[1][1] + c[0][0] - discriminant);
-        //searching the angle
-        double angle;
-        if (pow (c[0][1], 2) + pow (c[0][0] - e_1, 2) == 0) {
-            angle = 0;
-        } else if (c[0][0] >= e_1) {
-            angle = acos (-c[0][1] / sqrt (pow (c[0][1], 2) + pow (c[0][0] - e_1, 2))) * 180 / M_PI;
-        } else {
-            angle = acos (c[0][1] / sqrt (pow (c[0][1], 2) + pow (c[0][0] - e_1, 2))) * 180 / M_PI;
-        }
-        double e_1_n = e_1 / sqrt (pow (e_1, 2) + (e_2, 2)) * max_dist;
-        double e_2_n = e_2 / sqrt (pow (e_1, 2) + (e_2, 2)) * min_dist;
-        ellipse << means[i].x () << " " << means[i].y () << " " << e_1_n << " " << e_2 << " " << angle << endl;
-        i++;
-    }
-}
-
 Cluster_Search Cluster_Search::hierarchical_algorithm () {
     int tree_number = Point::quantity ();
     vector<TreeNode<const Point *> *> tree_nodes;
     tree_nodes.reserve (Point::quantity ());
+    ofstream tree ("ha_tree.txt");
     for (int p = 0; p < Point::quantity (); ++p) {
         tree_nodes.push_back (new TreeNode<const Point *> (Point::get_by_id (p + 1)));
     }
@@ -642,7 +373,7 @@ Cluster_Search Cluster_Search::hierarchical_algorithm () {
         Point old_1 (tree_nodes[a]->value ()->x (), tree_nodes[a]->value ()->y (), 0);
         Point old_2 (tree_nodes[b]->value ()->x (), tree_nodes[b]->value ()->y (), 0);
         ha_merge_nodes (a, b, tree_nodes);
-        ha_fprintf (tree_nodes, Point::quantity () - tree_nodes.size (), old_1, old_2);
+        ha_fprintf (tree_nodes, Point::quantity () - tree_nodes.size (), old_1, old_2, tree);
     }
     tree_root_ = tree_nodes[0];
     return *this;
@@ -652,7 +383,7 @@ void Cluster_Search::ha_get_closest_nodes (int &a, int &b, const vector<TreeNode
     // searches for closest nodes writes its numbers to a and b
     double min_dist = field_->dist ()[0][1];
     int min_a = 0;
-    int min_b = 0;
+    int min_b = 1;
     for (a = 0; a < tree_node.size (); ++a) {
         for (b = a + 1; b < tree_node.size (); ++b) {
             double distance = Point::dist (tree_node[a]->value (), tree_node[b]->value ());
@@ -726,13 +457,21 @@ void Cluster_Search::ha_get_node_sum (TreeNode<const Point *> *&node, double &su
 void Cluster_Search::ha_fprintf (const vector<TreeNode<const Point *> *> &tree_nodes,
                                  int iteration,
                                  const Point &old_1,
-                                 const Point &old_2) {
+                                 const Point &old_2,
+                                 ofstream &tree) {
+    if (tree_nodes.size () < 3) {
+        double a;
+    }
     ofstream out ("ha/ha" + to_string (iteration) + ".txt");
     for (auto tree_node : tree_nodes) {
         out << tree_node->value ()->x () << " " << tree_node->value ()->y () << " " << 0 << endl;
     }
     out << old_1.x () << " " << old_1.y () << " " << 1 << endl;
     out << old_2.x () << " " << old_2.y () << " " << 1 << endl;
+    tree << old_1.x() << " " << old_1.y() << endl;
+    tree << tree_nodes.back()->value()->x() << " " << tree_nodes.back()->value()->y() << endl << endl;
+    tree << old_2.x() << " " << old_2.y() << endl;
+    tree << tree_nodes.back()->value()->x() << " " << tree_nodes.back()->value()->y() << endl << endl;
 }
 
 const TreeNode<const Point *> *Cluster_Search::tree_root () {
@@ -881,24 +620,6 @@ void Cluster_Search::frl_fprintf_e (int print_num,
         }
     }
 }
-/*
-Cluster_Search Cluster_Search::forel_enhanced(){
-    vector<TreeNode<Point>*> centers_nodes;
-    while (centers_nodes.size() > 1){
-        vector<TreeNode<Point>*> new_centers_nodes;
-    }
-}*/
-
-
-
-
-
-
-
-
-
-
-#include <iostream>
 
 double Cluster_Search::N (const Point *a, vector<double> m, vector<double> Sgm) {
     double det = Sgm[0] * Sgm[3] - Sgm[1] * Sgm[2];
@@ -912,172 +633,8 @@ double Cluster_Search::N (const Point *a, vector<double> m, vector<double> Sgm) 
         + (b_s[1][0] + b_s[0][1]) * (a->x () - m[0]) * (a->y () - m[1])
         + b_s[1][1] * (a->y () - m[1]) * (a->y () - m[1])) / 2) / (sqrt (2 * M_PI * det));
 }
-/*
-void Field::stepForGifOfEM (int step,
-                            vector<vector<double> > sgm,
-                            vector<vector<double> > m,
-                            vector<vector<double> > r,
-                            int k) {
-    char p[30];
-    sprintf (p, "EM points of %d step.txt", step);
-    ofstream step_points (p);
-    for (int i = 0; i < full_p.size (); i++) {
-        int ind = 0;
-        for (int c = 0; c < k; c++) {
-            if (r[i][c] > r[i][ind]) { ind = c; }
-        }
-        step_points << full_p[i].x << " " << full_p[i].y << " " << ind << endl;
-    }
-    step_points.close ();
-    char ell[31];
-    sprintf (ell, "EM step_ellipses of %d step.txt", step);
-    ofstream step_ellipses (ell);
-    for (int c = 0; c < k; c++) {
-        double discr, angle;
-        vector<double> lumbd, v;
-        discr = (sgm[c][0] + sgm[c][3]) * (sgm[c][0] + sgm[c][3]) - 4 * (sgm[c][0] * sgm[c][3] - sgm[c][1] * sgm[c][2]);
-        if (discr >= 0) {
-            lumbd.push_back ((sgm[c][0] + sgm[c][3] + sqrt (discr)) / 2);
-            lumbd.push_back ((sgm[c][0] + sgm[c][3] - sqrt (discr)) / 2);
-        }
-        v.push_back (sgm[c][0] - lumbd[0]);
-        v.push_back (sgm[c][1]);
-        if (v[1] < 0) {
-            v[0] *= -1;
-            v[1] *= -1;
-        }
-        angle = acos (v[0] / sqrt (v[0] * v[0] + v[1] * v[1]));
-        angle *= 180;
-        angle /= PI;
-        step_ellipses << m[c][0] << " " << m[c][1] << " " << 3 * lumbd[1] << " " << 3 * lumbd[0] << " " << angle
-                      << endl;
-    }
-    step_ellipses.close ();
-}
 
-void Field::EMAlgorithm (int k) {
-    Cluster_Search new_find_cl;
-    vector<vector<double> > mu, r, Sigm;
-    vector<double> pi, v0;
-    // counting sum of all points
-    double s_x = 0, s_y = 0;
-    for (int i = 0; i < full_p.size (); i++) {
-        s_x += full_p[i].x;
-        s_y += full_p[i].y;
-    }
-    for (int i = 0; i < k; i++) {
-        vector<vector<double> > v22;
-        vector<double> v4, v2;
-        for (int j = 0; j < 4; j++) {
-            v4.push_back (0);
-        }
-        for (int j = 0; j < 2; j++) {
-            v2.push_back (0);
-        };
-        Sigm.push_back (v4);
-        mu.push_back (v2);
-        mu[i][0] = full_p[i].x;
-        mu[i][1] = full_p[i].y;
-        pi.push_back ((double) 1 / k);
-        v0.push_back (0);
-        Cluster cluster;
-        new_find_cl.clust.push_back (cluster);
-    }
-    for (int i = 0; i < full_p.size (); i++) {
-        r.push_back (v0);
-    }
-    for (int i = 0; i < k; i++) {
-        double elem_11 = 0, elem_12 = 0, elem_21 = 0, elem_22 = 0;
-        cout << "mu2: " << mu[i][0] << endl;
-        for (int j = 0; j < full_p.size (); j++) {
-            elem_11 += (full_p[j].x - mu[i][0]) * (full_p[j].x - mu[i][0]);
-            elem_12 += (full_p[j].x - mu[i][0]) * (full_p[j].y - mu[i][1]);
-            elem_21 += (full_p[j].y - mu[i][1]) * (full_p[j].x - mu[i][0]);
-            elem_22 += (full_p[j].y - mu[i][1]) * (full_p[j].y - mu[i][1]);
-        }
-        //cout << elem_11 << " " << elem_12 << " " << elem_21 << " " << elem_22 << endl;
-        Sigm[i][0] = elem_11 / full_p.size ();
-        Sigm[i][1] = elem_12 / full_p.size ();
-        Sigm[i][2] = elem_21 / full_p.size ();
-        Sigm[i][3] = elem_22 / full_p.size ();
-    }
-    bool sw_em;
-    int step = 0;
-    do {
-        step++;
-        sw_em = true;
-        //E-step
-        double s = 0;
-        vector<double> sum;
-        for (int i = 0; i < full_p.size (); i++) {
-            s = 0;
-            for (int c = 0; c < k; c++) {
-                s += pi[c] * N (full_p[i], mu[c], Sigm[c]);
-            }
-            sum.push_back (s);
-        }
-        for (int i = 0; i < full_p.size (); i++) {
-            for (int c = 0; c < k; c++) {
-                if (((r[i][c] - pi[c] * N (full_p[i], mu[c], Sigm[c]) / sum[i]) > EPS)
-                    || ((r[i][c] - pi[c] * N (full_p[i], mu[c], Sigm[c]) / sum[i]) < -EPS)) {
-                    sw_em = false;
-                }
-                r[i][c] = pi[c] * N (full_p[i], mu[c], Sigm[c]) / sum[i];
-                //cout << "r1: " << r[i][c] << endl;
-                //r[i][c] = pi[c]*N(full_p[i], &mu[c], &Sigm[c])/sum[i];
-            }
-        }
-        //M-step
-        double m_c;
-        for (int c = 0; c < k; c++) {
-            m_c = 0;
-            mu[c][0] = 0;
-            mu[c][1] = 0;
-            for (int i = 0; i < full_p.size (); i++) {
-                m_c += r[i][c];
-                //cout << "r: " << r[i][c] << endl;
-            }
-            for (int i = 0; i < full_p.size (); i++) {
-                mu[c][0] += full_p[i].x * r[i][c] / m_c;
-                mu[c][1] += full_p[i].y * r[i][c] / m_c;
-            }
-            //cout << mu[c][0] << " " << mu[c][1] << endl;
-            double elem_11 = 0, elem_12 = 0, elem_21 = 0, elem_22 = 0;
-            for (int i = 0; i < full_p.size (); i++) {
-                elem_11 += r[i][c] * (full_p[i].x - mu[c][0]) * (full_p[i].x - mu[c][0]);
-                elem_12 += r[i][c] * (full_p[i].x - mu[c][0]) * (full_p[i].y - mu[c][1]);
-                elem_21 += r[i][c] * (full_p[i].y - mu[c][1]) * (full_p[i].x - mu[c][0]);
-                elem_22 += r[i][c] * (full_p[i].y - mu[c][1]) * (full_p[i].y - mu[c][1]);
-            }
-            cout << "Covarience matrix " << c << ":" << endl;
-            Sigm[c][0] = elem_11 / m_c;
-            cout << Sigm[c][0] << " ";
-            Sigm[c][1] = elem_12 / m_c;
-            cout << Sigm[c][1] << endl;
-            Sigm[c][2] = elem_21 / m_c;
-            cout << Sigm[c][2] << " ";
-            Sigm[c][3] = elem_22 / m_c;
-            cout << Sigm[c][3] << endl << endl;
-            pi[c] = m_c / full_p.size ();
-            //cout << "covar " << c << ": " << Sigm[c][2] << endl;
-            cout << "mu " << c << ": " << mu[c][0] << " " << mu[c][1] << endl;
-        }
-        //cout << "step" << endl;
-        stepForGifOfEM (step, Sigm, mu, r, k);
-    } while (sw_em == false);
-    for (int i = 0; i < full_p.size (); i++) {
-        int ind = 0;
-        for (int c = 1; c < k; c++) {
-            if (r[i][c] > r[i][ind]) { ind = c; }
-        }
-        new_find_cl.clust[ind].addPointToCluster (full_p[i].x, full_p[i].y);
-    }
-    find_clust.push_back (new_find_cl);
-}
-*/
-#define EPS 0.01
-
-Cluster_Search Cluster_Search::em_enhanced (int clusters_number) {
+Cluster_Search Cluster_Search::em (int clusters_number) {
     vector<vector<double>> sigma;
     vector<vector<double>> mu;
     vector<vector<double>> r;
@@ -1176,17 +733,17 @@ Cluster_Search Cluster_Search::em_enhanced (int clusters_number) {
             sigma[c][3] = a[1][1] / m_c;
             pi[c] = m_c / Point::quantity ();
         }
-        em_fprintf_enh (iteration, sigma, mu, r, clusters_number);
+        em_fprintf (iteration, sigma, mu, r, clusters_number);
     } while (!sw_em);
     // creating cluster
     return *this;
 }
 
-void Cluster_Search::em_fprintf_enh (int iteration,
-                                     vector<vector<double> > sgm,
-                                     vector<vector<double> > m,
-                                     vector<vector<double> > r,
-                                     int clusters_number) {
+void Cluster_Search::em_fprintf (int iteration,
+                                 vector<vector<double> > sgm,
+                                 vector<vector<double> > m,
+                                 vector<vector<double> > r,
+                                 int clusters_number) {
     ofstream out ("em/em" + to_string (iteration) + ".txt");
     for (int p = 0; p < Point::quantity (); ++p) {
         int ind = 0;
@@ -1199,13 +756,13 @@ void Cluster_Search::em_fprintf_enh (int iteration,
     }
     ofstream ellipsis ("em/ellipse" + to_string (iteration) + ".txt");
     for (int c = 0; c < clusters_number; ++c) {
-        double discr, angle;
+        double discr, angle; // discriminant
         vector<double> lambda;
         vector<double> v;
         discr = (sgm[c][0] + sgm[c][3]) * (sgm[c][0] + sgm[c][3]) - 4 * (sgm[c][0] * sgm[c][3] - sgm[c][1] * sgm[c][2]);
         if (discr >= 0) {
-            lambda.push_back ((sgm[c][0] + sgm[c][3] - sqrt (discr)) / 2);
             lambda.push_back ((sgm[c][0] + sgm[c][3] + sqrt (discr)) / 2);
+            lambda.push_back ((sgm[c][0] + sgm[c][3] - sqrt (discr)) / 2);
         }
         v.push_back (sgm[c][0] - lambda[0]);
         v.push_back (sgm[c][1]);
@@ -1216,8 +773,20 @@ void Cluster_Search::em_fprintf_enh (int iteration,
         angle = acos (v[0] / sqrt (v[0] * v[0] + v[1] * v[1]));
         angle *= 180;
         angle /= M_PI;
-        ellipsis << m[c][0] << " " << m[c][1] << " " << 200 * lambda[0] << " " << 200 * lambda[1] << " " << angle
+        ellipsis << m[c][0] << " " << m[c][1] << " " << 100 * lambda[0] << " " << 100 * lambda[1] << " " << angle
                  << endl;
     }
 }
 
+void Cluster_Search::ha_fprintf_tree (const TreeNode<const Point *> *tree_node, ofstream &out) {
+    auto *pointer = tree_node->first_child ();
+    while (pointer != nullptr) {
+        out << tree_node->value ()->x () << " " << tree_node->value ()->y () << endl;
+        out << pointer->value ()->x () << " " << pointer->value ()->y () << endl;
+    }
+    pointer = tree_node->first_child ();
+    while (pointer != nullptr) {
+        ha_fprintf_tree (pointer, out);
+        pointer = pointer->brother ();
+    }
+}

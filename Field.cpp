@@ -330,7 +330,7 @@ int Field::em (int clusters_number) {
         return -1;
     }
     searches_.emplace_back (this);
-    searches_.back ().em_enhanced(clusters_number);
+    searches_.back ().em (clusters_number);
     return 0;
 }
 

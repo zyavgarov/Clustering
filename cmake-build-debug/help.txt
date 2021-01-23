@@ -46,10 +46,3 @@ PRINTF {string file_name}
     Prints the content of the field to file called file_name
 WAVE {int id}
     Searches clusters in the field using wave-clustering algorithm using incidences in search numbered id
-
-Coming soon:
-infoclustersearch
-dbscan
-s-tree
-hdbscan
-k-means

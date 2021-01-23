@@ -31,11 +31,10 @@ class Cluster_Search {
   Cluster_Search wave ();
   Cluster_Search dbscan (int density);
   Cluster_Search k_means (int clusters_number);
-  Cluster_Search em (int clusters_number);
   Cluster_Search k_means_cores (int clusters_number, int cores_number);
   Cluster_Search hierarchical_algorithm ();
   Cluster_Search forel ();
-  Cluster_Search em_enhanced (int clusters_number);
+  Cluster_Search em (int clusters_number);
  private:
   Field *field_;
   vector<vector<bool>> edges_;
@@ -44,22 +43,6 @@ class Cluster_Search {
   static void kmeans_core_fprintf (const vector<int> &nearest_cluster,
                                    const vector<vector<Point>> &cores,
                                    int iteration);
-  static double em_get_probability_cluster_similarity (int point,
-                                                       int cluster,
-                                                       const vector<Point> &means,
-                                                       const vector<vector<double>> &matrix);
-  static double em_get_prior (int cluster,
-                              const vector<vector<double>> &posteriors);
-  static double em_get_posterior (int cluster,
-                                  int point,
-                                  const vector<Point> &means,
-                                  const vector<double> &priors,
-                                  const vector<vector<vector<double>>> &covariants,
-                                  const vector<vector<double>> &another_vector_of_probabilities);
-  static void em_fprintf (vector<vector<double>> &posteriors,
-                          int iteration,
-                          vector<vector<vector<double>>> &cov_matrix,
-                          vector<Point> &means);
   void ha_get_closest_nodes (int &a, int &b, const vector<TreeNode<const Point *> *> &tree_node);
   void ha_merge_nodes (int a, int b, vector<TreeNode<const Point *> *> &tree_nodes);
   Point *ha_get_new_node_center (TreeNode<const Point *> *&first, TreeNode<const Point *> *&second);
@@ -67,7 +50,8 @@ class Cluster_Search {
   static void ha_fprintf (const vector<TreeNode<const Point *> *> &tree_nodes,
                           int iteration,
                           const Point &old_1,
-                          const Point &old_2);
+                          const Point &old_2,
+                          ofstream &tree);
   TreeNode<const Point *> *tree_root_;
   TreeNode<const Point *> *&ha_get_node_by_coords (int a,
                                                    vector<TreeNode<const Point *> *> &tree_node,
@@ -89,7 +73,8 @@ class Cluster_Search {
                       double R,
                       Point center);
   double N (const Point *a, vector<double> m, vector<double> Sgm);
-  void em_fprintf_enh (int iteration, vector<vector<double>> sgm, vector<vector<double>> m, vector<vector<double>> r, int clusters_number);
+  static void em_fprintf (int iteration, vector<vector<double>> sgm, vector<vector<double>> m, vector<vector<double>> r, int clusters_number);
+  void ha_fprintf_tree (const TreeNode<const Point *> *tree_node, ofstream& out);
 };
 
 #endif //INTERFACE4__CLUSTER_SEARCH_H_
