@@ -15,9 +15,8 @@ Point::Point (double x, double y, int id) : x_ (x), y_ (y) {
         id_pointers.push_back (this);
     }
 }
-
+/*
 Point::Point (Point const &c) : x_ (c.x ()), y_ (c.y ()) {
-    id_pointers.push_back (this);
     if (c.id () == 0) {
         id_ = 0;
     } else {
@@ -27,7 +26,7 @@ Point::Point (Point const &c) : x_ (c.x ()), y_ (c.y ()) {
         }
         id_pointers.push_back (this);
     }
-}
+}*/
 
 double Point::x () const {
     return x_;
@@ -116,6 +115,18 @@ Point &Point::operator= (const Point &p) {
 void Point::set (double x, double y) {
     x_ = x;
     y_ = y;
+}
+
+Point::Point (const Point &c, int id) : x_ (c.x ()), y_ (c.y ()) {
+    if (id != -1 || c.id () == 0) {
+        id_ = 0;
+    } else {
+        id_ = ++quantity_;
+        if (id_pointers.empty ()) {
+            id_pointers.push_back (nullptr);
+        }
+        id_pointers.push_back (this);
+    }
 }
 
 vector<Point *> Point::id_pointers;

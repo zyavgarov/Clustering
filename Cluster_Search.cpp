@@ -162,8 +162,8 @@ Cluster_Search &Cluster_Search::operator= (const Cluster_Search &cs) {
 }
 
 void Cluster_Search::dbscan_fprintf_type (const vector<int> &state) {
-    ofstream core ("core.txt");
-    ofstream peripherical ("peripherical.txt");
+    ofstream core ("gnuplot/dbscan/core.txt");
+    ofstream peripherical ("gnuplot/dbscan/peripherical.txt");
     for (int i = 0; i < state.size (); ++i) {
         if (state[i] == 2) {
             core << Point::get_by_id (i + 1)->x () << " " << Point::get_by_id (i + 1)->y () << endl;
@@ -225,7 +225,7 @@ Cluster_Search Cluster_Search::k_means (int clusters_number) {
 }
 
 void Cluster_Search::kmeans_fprintf (vector<int> &nearest_cluster, vector<Point> &cores, int iteration) {
-    ofstream out ("kmeans/km" + to_string (iteration) + ".txt");
+    ofstream out ("gnuplot/kmeans/km" + to_string (iteration) + ".txt");
     for (int i = 0; i < Point::quantity (); ++i) {
         out << Point::get_by_id (i + 1)->x () << " " << Point::get_by_id (i + 1)->y () << " " << nearest_cluster[i]
             << endl;
@@ -347,7 +347,7 @@ Cluster_Search Cluster_Search::k_means_cores (int clusters_number, int cores_num
 void Cluster_Search::kmeans_core_fprintf (const vector<int> &nearest_cluster,
                                           const vector<vector<Point>> &cores,
                                           int iteration) {
-    ofstream out ("kmeans/km" + to_string (iteration) + ".txt");
+    ofstream out ("gnuplot/kmcores/km" + to_string (iteration) + ".txt");
     for (int i = 0; i < Point::quantity (); ++i) {
         out << Point::get_by_id (i + 1)->x () << " " << Point::get_by_id (i + 1)->y () << " " << nearest_cluster[i]
             << endl;
@@ -363,7 +363,7 @@ Cluster_Search Cluster_Search::hierarchical_algorithm () {
     int tree_number = Point::quantity ();
     vector<TreeNode<const Point *> *> tree_nodes;
     tree_nodes.reserve (Point::quantity ());
-    ofstream tree ("ha_tree.txt");
+    ofstream tree ("gnuplot/ha/ha_tree.txt");
     for (int p = 0; p < Point::quantity (); ++p) {
         tree_nodes.push_back (new TreeNode<const Point *> (Point::get_by_id (p + 1)));
     }
@@ -462,7 +462,7 @@ void Cluster_Search::ha_fprintf (const vector<TreeNode<const Point *> *> &tree_n
     if (tree_nodes.size () < 3) {
         double a;
     }
-    ofstream out ("ha/ha" + to_string (iteration) + ".txt");
+    ofstream out ("gnuplot/ha/ha" + to_string (iteration) + ".txt");
     for (auto tree_node : tree_nodes) {
         out << tree_node->value ()->x () << " " << tree_node->value ()->y () << " " << 0 << endl;
     }
@@ -481,7 +481,7 @@ const TreeNode<const Point *> *Cluster_Search::tree_root () {
 Cluster_Search Cluster_Search::forel () {
     // realises the forel algorithm
     vector<TreeNode<Point> *> center_nodes;
-    double R = 0.4;
+    double R = 0.05;
     for (int p = 0; p < Point::quantity (); ++p) {
         auto *temp = new TreeNode<Point> (Point (Point::get_by_id (p + 1)->x (), Point::get_by_id (p + 1)->y (), 0));
         center_nodes.push_back (temp);
@@ -562,7 +562,7 @@ void Cluster_Search::frl_fprintf (int print_number,
                                   vector<bool> in_circle,
                                   double R,
                                   const Point &circle_center) {
-    ofstream out ("forel/frl" + to_string (print_number) + ".txt");
+    ofstream out ("gnuplot/forel/frl" + to_string (print_number) + ".txt");
     for (int i = 0; i < center_nodes.size (); ++i) {
         if (!clustered[i] && !in_circle[i]) {
             out << center_nodes[i]->value ().x () << " " << center_nodes[i]->value ().y () << " -2" << endl;
@@ -596,8 +596,8 @@ void Cluster_Search::frl_fprintf_e (int print_num,
                                     vector<bool> in_circle,
                                     double R,
                                     Point center) {
-    ofstream out ("forel/frl" + to_string (print_num) + ".txt");
-    ofstream circle ("forel/circle" + to_string (print_num) + ".txt");
+    ofstream out ("gnuplot/forel/frl" + to_string (print_num) + ".txt");
+    ofstream circle ("gnuplot/forel/circle" + to_string (print_num) + ".txt");
     for (int i = 0; i < new_centers_node.size (); ++i) {
         circle << new_centers_node[i]->value ().x () << " " << new_centers_node[i]->value ().y () << " " << R << endl;
         auto *pointer = new_centers_node[i]->first_child ();
@@ -744,7 +744,7 @@ void Cluster_Search::em_fprintf (int iteration,
                                  vector<vector<double> > m,
                                  vector<vector<double> > r,
                                  int clusters_number) {
-    ofstream out ("em/em" + to_string (iteration) + ".txt");
+    ofstream out ("gnuplot/em/em" + to_string (iteration) + ".txt");
     for (int p = 0; p < Point::quantity (); ++p) {
         int ind = 0;
         for (int c = 0; c < clusters_number; ++c) {
@@ -754,7 +754,7 @@ void Cluster_Search::em_fprintf (int iteration,
         }
         out << Point::get_by_id (p + 1)->x () << " " << Point::get_by_id (p + 1)->y () << " " << ind << endl;
     }
-    ofstream ellipsis ("em/ellipse" + to_string (iteration) + ".txt");
+    ofstream ellipsis ("gnuplot/em/ellipse" + to_string (iteration) + ".txt");
     for (int c = 0; c < clusters_number; ++c) {
         double discr, angle; // discriminant
         vector<double> lambda;

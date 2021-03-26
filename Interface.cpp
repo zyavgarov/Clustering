@@ -305,6 +305,17 @@ int Interface::manager (const string &cur_command) {
         } else if (err == -2) {
             show ("Field doesn't exist. Type GC to create the clouds");
         }
+    } else if (main == "DELAUNAY") {
+        int err = cc->delaunay ();
+        if (err == 0) {
+            show ("Field is triangulated");
+        } else if (err == -1) {
+            show ("Check field state. Type MATRIX to set it to readonly");
+        } else if (err == -2) {
+            show ("Field doesn't exist. Type GC to create the clouds");
+        } else if (err == -3) {
+            show ("Not enough points for triangulation");
+        }
     } else if (main == "#") {
         // doing nothing, that's comment
     } else {

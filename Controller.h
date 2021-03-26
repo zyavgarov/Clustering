@@ -35,6 +35,7 @@ class Controller {
   int k_means_cores (int clusters_number, int cores_number);
   int hierarchical_algorithm ();
   int forel ();
+  int delaunay ();
 };
 
 #endif //INTERFACE4__CONTROLLER_H_

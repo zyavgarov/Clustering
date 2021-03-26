@@ -7,6 +7,9 @@ Cloud::Cloud (int length, double disp_x, double disp_y) {
     //from length points with center in (0,0)
     //and radius 0.5
     //disp_x and disp_y - coefficients of Gauss distribution
+    
+    srand (time (nullptr));
+    //srand(3);
     for (int i = 0; i < length; ++i) {
         double x, y;
         x = y = 0;
@@ -24,9 +27,15 @@ Cloud::Cloud (int length, double disp_x, double disp_y) {
     }
 }
 
+Cloud::Cloud (const vector<Point> &points) {
+    for (const auto &point : points) {
+        point_.push_back (new Point (point.x(), point.y()));
+    }
+}
+
 Cloud &Cloud::operator= (Cloud const &c) {
     if (this != &c) {
-        for (auto &p: point_){
+        for (auto &p: point_) {
             delete p;
         }
         point_.clear ();
@@ -39,7 +48,7 @@ Cloud &Cloud::operator= (Cloud const &c) {
 
 Cloud::Cloud (Cloud const &c) {
     //Copy constructor
-    for (auto &p: point_){
+    for (auto &p: point_) {
         delete p;
     }
     point_.clear ();
@@ -48,8 +57,8 @@ Cloud::Cloud (Cloud const &c) {
     }
 }
 
-Cloud::~Cloud (){
-    for (auto &p: point_){
+Cloud::~Cloud () {
+    for (auto &p: point_) {
         delete p;
     }
 }

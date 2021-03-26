@@ -14,6 +14,8 @@ BUFFER {string operation}
         Zooms buffer to coefficient k from its center
     operation = "mirror"
         Reflects the cloud like in mirror
+DELAUNAY
+    Creates Delaunay triangulation on the field
 DBSCAN {int id} {int k}
         Searches clusters in the field using dbscan algorithm with parameter k using incidences in search numbered id
 EM {int clusters}
@@ -26,7 +28,7 @@ GC {double cx} {double cy} {double dx} {double dy} {int len}
 	Generates cloud on the field. Center of the cloud is cx cy, dispersion of the cloud is dx and dy by x and y.
 	The number of points in the cloud is len
 HA
-    Runs hieararchical algorithm on the field
+    Runs hierarchical algorithm on the field
 HISTOGRAM {int p}
     Saves to histogram_x.txt and histogram_y.txt histogram of distribution the points in cloud.
     p is number of pieces in histogram
@@ -44,5 +46,7 @@ MATRIX
     Sets field to state readonly and prepares it to be analyzed
 PRINTF {string file_name}
     Prints the content of the field to file called file_name
+STREE
+    Searches minimal spanning tree for algorithm
 WAVE {int id}
     Searches clusters in the field using wave-clustering algorithm using incidences in search numbered id

@@ -19,4 +19,5 @@ int main () {
  * - k-means with multiple cores
  * - error in file should throw user to manual input
  * - kmeans should be separated to little functions
+ * - add final image to all fprintf functions and gnuplot scripts
  */

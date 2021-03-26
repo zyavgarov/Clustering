@@ -5,6 +5,8 @@
 const int M = 100;
 
 class Cloud {
+  Cloud (const vector<Point> &points);
+  
   friend class Field;
   
   friend class Controller;

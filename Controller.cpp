@@ -147,7 +147,7 @@ int Controller::buffer_unload () const {
     if (field_->readonly ()) {
         return -1;
     }
-    field_->add (&field_->buf.cloud);
+    field_->add (field_->buf.unload());
     return 0;
 }
 
@@ -368,6 +368,31 @@ int Controller::forel () {
         return err;
     } else if (err == -1) {
         log ("Field is not in readonly state");
+        return err;
+    }
+    return 0;
+}
+
+int Controller::delaunay () {
+    /*realises Delaunay triangulation
+     * Errors:
+     * -1 - Field is not in readonly mode
+     * -2 - Field doesn't exist
+     * -3 - Not enough points
+     */
+    if (field_ == nullptr) {
+        log ("Field doesn't exist");
+        return -2;
+    }
+    int err = field_->delaunay ();
+    if (err == 0) {
+        log ("Field is clustered");
+        return err;
+    } else if (err == -1) {
+        log ("Field is not in readonly state");
+        return err;
+    } else if (err == -2){
+        log ("Not enough points");
         return err;
     }
     return 0;
