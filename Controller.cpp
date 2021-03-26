@@ -147,7 +147,7 @@ int Controller::buffer_unload () const {
     if (field_->readonly ()) {
         return -1;
     }
-    field_->add (field_->buf.unload());
+    field_->add (field_->buf.unload ());
     return 0;
 }
 
@@ -391,7 +391,7 @@ int Controller::delaunay () {
     } else if (err == -1) {
         log ("Field is not in readonly state");
         return err;
-    } else if (err == -2){
+    } else if (err == -2) {
         log ("Not enough points");
         return err;
     }

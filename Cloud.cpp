@@ -1,5 +1,4 @@
 #include "Cloud.h"
-
 Cloud::Cloud () = default;
 
 Cloud::Cloud (int length, double disp_x, double disp_y) {
@@ -7,9 +6,8 @@ Cloud::Cloud (int length, double disp_x, double disp_y) {
     //from length points with center in (0,0)
     //and radius 0.5
     //disp_x and disp_y - coefficients of Gauss distribution
-    
-    srand (time (nullptr));
-    //srand(3);
+    int a = time (nullptr);
+    srand (a);
     for (int i = 0; i < length; ++i) {
         double x, y;
         x = y = 0;

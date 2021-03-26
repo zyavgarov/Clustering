@@ -468,10 +468,10 @@ void Cluster_Search::ha_fprintf (const vector<TreeNode<const Point *> *> &tree_n
     }
     out << old_1.x () << " " << old_1.y () << " " << 1 << endl;
     out << old_2.x () << " " << old_2.y () << " " << 1 << endl;
-    tree << old_1.x() << " " << old_1.y() << endl;
-    tree << tree_nodes.back()->value()->x() << " " << tree_nodes.back()->value()->y() << endl << endl;
-    tree << old_2.x() << " " << old_2.y() << endl;
-    tree << tree_nodes.back()->value()->x() << " " << tree_nodes.back()->value()->y() << endl << endl;
+    tree << old_1.x () << " " << old_1.y () << endl;
+    tree << tree_nodes.back ()->value ()->x () << " " << tree_nodes.back ()->value ()->y () << endl << endl;
+    tree << old_2.x () << " " << old_2.y () << endl;
+    tree << tree_nodes.back ()->value ()->x () << " " << tree_nodes.back ()->value ()->y () << endl << endl;
 }
 
 const TreeNode<const Point *> *Cluster_Search::tree_root () {

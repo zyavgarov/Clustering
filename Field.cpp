@@ -43,7 +43,7 @@ int Field::add (Cloud *addition) {
     return 0;
 }
 
-int Field::add (const vector<Point>& addition) {
+int Field::add (const vector<Point> &addition) {
     // The function adds vector of points to one cloud to the field together
     // returns -1 if readonly
     if (readonly ()) {
@@ -369,175 +369,6 @@ int Field::forel () {
     return 0;
 }
 
-/*
-int Field::delaunay_old () {
-    \/* Errors
-     * -1 field is not in readonly mode
-     * -2 not enough points
-     *\/
-    if (!readonly ()) {
-        return -1;
-    }
-    if (Point::quantity () < 3) {
-        return -2;
-    }
-    // Sorting all points by x coordinate
-    vector<int> points_sorted;
-    for (int i = 0; i < Point::quantity (); ++i) {
-        for (auto point_id : points_sorted) {
-            if (Point::get_by_id (point_id + 1)->x () < Point::get_by_id (i + 1)->x ()) {
-                points_sorted.insert (points_sorted.cbegin () + point_id, i);
-            }
-        }
-    }
-    vector<vector<bool>> connections (Point::quantity (), vector<bool> (Point::quantity (), false));
-    //creating the first triangle
-    connections[points_sorted[0]][points_sorted[1]] = connections[points_sorted[1]][points_sorted[0]]
-        = connections[points_sorted[0]][points_sorted[2]] = connections[points_sorted[2]][points_sorted[0]]
-        = connections[points_sorted[1]][points_sorted[2]] = connections[points_sorted[2]][points_sorted[1]] = true;
-    // processing the rest
-    for (int i = 3; i < points_sorted.size (); ++i) {
-        vector<int> viewable_row = delaunay_get_viewable_points (points_sorted, i, vector<vector<bool>> ());
-        for (int j = 0; j < viewable_row.size (); ++j) {
-            connections[points_sorted[i]][viewable_row[j]] = connections[points_sorted[j]][viewable_row[i]] = true;
-        }
-        // check if Delaunay condition is satisfied
-        bool finished = false;
-        for (int j = 0; j < viewable_row.size () - 1 && !finished; ++j) {
-            // getting doubtful polygons
-            for (int k = 0; k < connections[viewable_row[j]].size () && !finished; ++k) {
-                if (connections[viewable_row[j + 1]][k] && connections[viewable_row[j]][k]) {
-                    int common_point_id = k;
-                    // point k is connected both to j and j+1
-                    // Now analogically we search commons for j and k and j+1 and k
-                    for (int l = 0; l < connections[j].size (); ++l) {
-                        if (connections[j][l] && connections[l][k]) {
-                            // we have polygon of points viewable_row[j], viewable_row[j+1], k, l
-                            // we need to check the conditions
-                            delaunay_fix (viewable_row[j], viewable_row[j + 1], k, l, connections);
-                        }
-                        break;
-                    }
-                    for (int l = 0; l < connections[j].size (); ++l) {
-                        if (connections[j + 1][l] && connections[l][k]) {
-                            // we have polygon of points viewable_row[j], viewable_row[j+1], k, l
-                            // we need to check the conditions
-                            delaunay_fix (viewable_row[j], viewable_row[j + 1], k, l, connections);
-                        }
-                        break;
-                    }
-                }
-                finished = true;
-            }
-        }
-    }
-    return 0;
-}
-
-vector<int> Field::delaunay_get_viewable_points (vector<int> points_sorted, int i, vector<vector<bool>> connections) {
-    \/* returns points_sorted of points which can be seen from the current point
-     * returns points as a sequence list
-     *\/
-    // let's notice that last added point is points_sorted[i-1]
-    static vector<int> viewable_front;
-    // this is a list of points which _can_ be viewed from the points which are right to our vertical line
-    static vector<int> viewable_current;
-    // updating viewable_current knowing what points were touched
-    
-    // we possibly will need to optimize the algorithm here
-    // on the reason of different orders of sequence in viewable_front and viewable_current
-    
-    // searching for the first viewable_current point in viewable_front chain to get a start for updating
-    // the update will work as:   stuff - first touched point - last added point - -last touched point - stuff
-    int first_touched = -1;
-    int last_touched = -1;
-    int j = 0;
-    for (; j < viewable_front.size (); ++j) {
-        if (viewable_front[j] == viewable_current[0]) {
-            first_touched = j;
-            break;
-        }
-    }
-    for (; j < viewable_front.size (); ++j) {
-        if (viewable_front[j] == viewable_current[viewable_current.size () - 1]) {
-            last_touched = j;
-        }
-    }
-    // refactoring the viewable_front
-    // deleting the part between first_touched and last_touched in viewable_front
-    viewable_front.erase (viewable_front.begin () + first_touched + 1, viewable_front.begin () + last_touched);
-    // inserting new part
-    for (int k = viewable_current.size () - 2; k >= 0; ++k) {
-        // because viewable_current[viewable_current.size() - 1] is the last element
-        // and it's already put into the viewable_front we substract 2 in cycle condition
-        viewable_front.insert (viewable_front.begin () + first_touched + 1, viewable_current[k]);
-    }
-    
-    // all we need now is to update viewable_current. We shall use vector product here
-    const Point *main = Point::get_by_id (points_sorted[i]);
-    viewable_current.clear ();
-    for (int k = 0; k < viewable_front.size () - 1; ++k) {
-        const Point *first = Point::get_by_id (viewable_front[k]);
-        const Point *second = Point::get_by_id (viewable_front[k + 1]);
-        Point first_vec (first->x () - main->x (), first->y () - main->y (), 0);
-        Point second_vec (second->x () - main->x (), second->y () - main->y (), 0);
-        if (sgn_vec_product (first_vec, second_vec) > 0) {
-            if (viewable_current.empty ()) {
-                viewable_current.push_back (viewable_front[k]);
-            }
-            viewable_current.push_back (viewable_front[k + 1]);
-        }
-    }
-    return viewable_current;
-}
-
-void Field::delaunay_fix (int a, int b, int c, int d, vector<vector<bool>> connections) {
-    \/* checks delauney condition for polygon and fixes it if necessary
-     * runs itself recursively for neighbour points
-     *\/
-    // we look at triangle ABC and check if D is in its outcircle by angle condition
-    const Point *A = Point::get_by_id (a);
-    const Point *B = Point::get_by_id (b);
-    const Point *C = Point::get_by_id (c);
-    const Point *D = Point::get_by_id (d);
-    \/* old attempts for delaunay condition
-    double AD = sqrt (pow (D->x () - A->x (), 2) + pow (D->y () - A->y (), 2));
-    double CD = sqrt (pow (D->x () - C->x (), 2) + pow (D->y () - C->y (), 2));
-    double AB = sqrt (pow (B->x () - A->x (), 2) + pow (B->y () - A->y (), 2));
-    double BC = sqrt (pow (B->x () - C->x (), 2) + pow (B->y () - C->y (), 2));
-    double cos_a = (D->x () - A->x ()) * (D->x () - C->x ()) + (D->y () - A->y ()) * (D->y () - C->y ()) / (AD * CD);
-    double cos_b = (B->x () - A->x ()) * (B->x () - C->x ()) + (B->y () - A->y ()) * (B->y () - C->y ()) / (AB * BC);
-    double sin_a = (D->x () - A->x ()) * (D->y () - C->y ()) - (D->x () - C->x ()) * (D->y () - A->y ()) / (AD * CD);
-    double sin_b = (B->x () - A->x ()) * (B->y () - C->y ()) + (B->y () - A->y ()) * (B->x () - C->x ()) / (AB * BC);
-     *\/
-    if (((D->x () - A->x ()) * (D->y () - C->y ()) - (D->x () - C->x ()) * (D->y () - A->y ()))
-        * ((B->x () - A->x ()) * (B->x () - C->x ()) + (B->y () - A->y ()) * (B->y () - C->y ()))
-        + ((D->x () - A->x ()) * (D->x () - C->x ()) + (D->y () - A->y ()) * (D->y () - C->y ()))
-            * ((B->x () - A->x ()) * (B->x () - C->x ()) + (B->y () - A->y ()) * (B->y () - C->y ())) < 0) {
-        connections[a][d] = connections[d][a] = true;
-        connections[b][c] = connections[c][b] = false;
-        // determining new polygons for delaunay_fix. calling new algorithm
-        
-    }
-}
-
-int Field::sgn_vec_product (Point vec_1, Point vec_2) {
-    // absolute value of vector product
-    return 0;
-}
-
-int Field::delaunay_2 () {
-    struct Triangle;
-    struct Edge {
-      vector<Point *> nodes;
-      vector<Triangle *> triangles;
-    };
-    struct Triangle {
-      vector<Edge *> edges;
-    };
-    
-}
-*/
 int Field::delaunay () {
     // the worst algorithm can be done. it's here only because I have a deadline
     
@@ -546,8 +377,6 @@ int Field::delaunay () {
      * -2 not enough points
      */
     
-    // Good thing for the algorithm will be using the orientation of edges, added points and angles.
-    // It can really simplify some expressions there and will make more understandable behaviour here
     if (!readonly ()) {
         return -1;
     }
@@ -571,20 +400,7 @@ int Field::delaunay () {
     }
     vector<vector<bool>> edge (Point::quantity (), vector<bool> (Point::quantity (), false));
     // creating the first edge
-    // getting the closest points
-    /*
-    int min_i = 0;
-    int min_j = 1;
-    for (int i = 0; i < dist ().size (); ++i) {
-        for (int j = i + 1; j < dist ()[i].size (); ++j) {
-            if (dist ()[min_i][min_j] > dist ()[i][j]) {
-                min_i = i;
-                min_j = j;
-            }
-        }
-    }*/
-    
-    // another way to get the first edge is to find the line 
+    // getting the first edge is to find the line
     // which satisfies condition: all the field points are on one side 
     // we already have sorted points, so it's enough to check the most left and find pair for it
     // it means, we search the most vertical vector here
@@ -612,6 +428,7 @@ int Field::delaunay () {
     } else {
         baselines.emplace_back (Point::get_by_id (points_sorted[0] + 1), Point::get_by_id (points_sorted[min_i] + 1));
     }
+    edge[points_sorted[0]][points_sorted[min_i]] = edge[points_sorted[min_i]][points_sorted[0]] = true;
     vector<bool> points_done (Point::quantity (), false);
     int iteration = 0;
     delaunay_base_run (baselines, edge, points_done, iteration);
@@ -627,18 +444,6 @@ void Field::delaunay_base_run (vector<Edge> &baselines,
     int max_i;
     double max_angle;
     bool started = false;
-    // this cycle causes problems
-    /*
-    for (int i = 0; i < Point::quantity (); ++i) {
-        if (!(edge[i][baselines[0].a->id () - 1] && edge[i][baselines[0].b->id () - 1])
-            && baselines[0].b->id () != i + 1 && baselines[0].a->id () != i + 1) {
-            if (!started || delaunay_angle_to_edge (baselines[0], i) > max_angle) {
-                max_i = i;
-                max_angle = delaunay_angle_to_edge (baselines[0], i);
-                started = true;
-            }
-        }
-    }*/
     max_angle = 0;
     for (int i = 0; i < Point::quantity (); ++i) {
         //checking if the point is on the right side from edge
@@ -669,10 +474,7 @@ void Field::delaunay_base_run (vector<Edge> &baselines,
     }
     baselines.erase (baselines.cbegin ());
     delaunay_fprintf (edge, iteration);
-    iteration++;/*
-    if (iteration == 75) {
-        return;
-    }*/
+    iteration++;
     if (!baselines.empty ()) {
         delaunay_base_run (baselines, edge, points_done, iteration);
     }
@@ -684,9 +486,8 @@ double Field::delaunay_angle_to_edge (Edge &edge, int num) {
     Point vec_2 (edge.b->x () - m_point->x (), edge.b->y () - m_point->y (), 0);
     double dist_a = Point::dist (m_point, edge.a);
     double dist_b = Point::dist (m_point, edge.b);
-    double sc_product = abs (vec_1.x () * vec_2.x () + vec_1.y () * vec_2.y ());
+    double sc_product = vec_1.x () * vec_2.x () + vec_1.y () * vec_2.y ();
     double angle = 180 * acos (sc_product / dist_a / dist_b) / M_PI;
-    cout << angle << endl;
     if (isnan (angle)) {
         return 90;
     }
@@ -694,6 +495,7 @@ double Field::delaunay_angle_to_edge (Edge &edge, int num) {
 }
 
 void Field::delaunay_fprintf (vector<vector<bool>> &edge, int iteration) {
+    // prints algorithm's state
     ofstream edges ("gnuplot/delaunay/dl" + to_string (iteration) + ".txt");
     for (int i = 0; i < Point::quantity (); ++i) {
         for (int j = i + 1; j < Point::quantity (); ++j) {
