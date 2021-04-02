@@ -133,7 +133,6 @@ void Cluster_Search::db_clustering (const vector<int> &state) {
         }
     }
     dbscan_fprintf_type (state);
-    //fprintf_clusters();
 }
 
 Cluster_Search Cluster_Search::wave () {
@@ -412,8 +411,6 @@ void Cluster_Search::ha_merge_nodes (int a, int b, vector<TreeNode<const Point *
     TreeNode<const Point *> *&second = tree_nodes[b];
     Point *new_center = ha_get_new_node_center (first, second);
     auto *new_node = new TreeNode<const Point *> (new_center);
-    /* int min_i = min (i_1, i_2);
-    int max_i = max (i_1, i_2); */
     int min_i = min (a, b);
     int max_i = max (a, b);
     tree_nodes.erase (tree_nodes.begin () + max_i);

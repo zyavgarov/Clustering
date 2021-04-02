@@ -133,7 +133,7 @@ int Field::db_clustering (int search_id, int k) {
 }
 
 vector<int> Field::s_tree () {
-//searching minimum in dist matrix
+    //searching minimum in dist matrix
     int min_i = 0;
     int min_j = 0;
     double min_dist_all = dist ()[0][1];
@@ -422,7 +422,6 @@ int Field::delaunay () {
     }
     
     vector<Edge> baselines;
-    // baselines.emplace_back (Point::get_by_id (min_i + 1), Point::get_by_id (min_j + 1));
     if (Point::get_by_id (points_sorted[0] + 1)->y () > Point::get_by_id (points_sorted[min_i] + 1)->y ()) {
         baselines.emplace_back (Point::get_by_id (points_sorted[min_i] + 1), Point::get_by_id (points_sorted[0] + 1));
     } else {

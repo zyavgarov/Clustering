@@ -26,7 +26,6 @@ class Point {
   static vector<Point *> id_pointers; // vector of pointers because vector of references is not supported
  public:
   Point ();
-  //Point (Point const &c);
   Point (double x, double y, int id = -1);
   Point (Point const &c, int id = -1);
   Point &operator= (Point const &p);
