@@ -14,6 +14,8 @@ BUFFER {string operation}
         Zooms buffer to coefficient k from its center
     operation = "mirror"
         Reflects the cloud like in mirror
+    operation = "erase"
+        Deletes all points from the buffer
 DELAUNAY
     Creates Delaunay triangulation on the field
 DBSCAN {int id} {int k}

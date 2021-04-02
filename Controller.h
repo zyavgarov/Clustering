@@ -36,6 +36,7 @@ class Controller {
   int hierarchical_algorithm ();
   int forel ();
   int delaunay ();
+  int buffer_erase () const;
 };
 
 #endif //INTERFACE4__CONTROLLER_H_

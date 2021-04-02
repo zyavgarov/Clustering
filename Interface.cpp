@@ -185,6 +185,12 @@ int Interface::manager (const string &cur_command) {
             } else {
                 show ("Buffer reflected");
             }
+        } else if (operation == "ERASE") {
+            if (cc->buffer_erase () == -1) {
+                show ("Field in readonly mode");
+            } else {
+                show ("Buffer cleaned");
+            }
         } else {
             // something went wrong
             show ("Unknown buffer operation. Check your input and try again.");

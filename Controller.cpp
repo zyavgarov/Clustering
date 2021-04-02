@@ -251,6 +251,14 @@ int Controller::buffer_rotate (double angle) const {
     return 0;
 }
 
+int Controller::buffer_erase () const {
+    //clears the buffer
+    if (field_->readonly ()) {
+        return -1;
+    }
+    field_->buf.erase();
+    return 0;
+}
 int Controller::incidence_matrix (double delta) {
     /* creates incidence matrix in field
      * Errors:
