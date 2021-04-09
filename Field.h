@@ -15,7 +15,7 @@ class Field {
   int length () const;
   Buffer buf;
   const vector<vector<double>> &dist () const;
-  const vector<Cloud *> &cloud ();
+  const vector<Cloud *> &cloud () const;
   bool readonly () const;
   void create_dist_matrix ();
   const vector<Cluster_Search> &searches () const;
@@ -30,6 +30,7 @@ class Field {
   int forel ();
   int delaunay ();
   int add (const vector<Point> &addition);
+  void histogram (int pieces, vector<int> &x_distr, vector<int> &y_distr) const;
  private:
   Field &operator= (Field const &f);
   Field (Field const &f);
