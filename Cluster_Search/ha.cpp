@@ -22,7 +22,7 @@ Cluster_Search Cluster_Search::hierarchical_algorithm () {
 
 void Cluster_Search::ha_get_closest_nodes (int &a, int &b, const vector<TreeNode<const Point *> *> &tree_node) {
     // searches for closest nodes writes its numbers to a and b
-    double min_dist = field_->dist ()[0][1];
+    double min_dist = Field::dist ()[0][1];
     int min_a = 0;
     int min_b = 1;
     for (a = 0; a < tree_node.size (); ++a) {

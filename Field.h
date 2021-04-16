@@ -7,18 +7,17 @@
 class Field {
  public:
   friend class Buffer;
-  
   Field ();
   ~Field ();
-  int add (Cloud *addition);
-  int fprintf (ofstream &out) const;
-  int length () const;
-  Buffer buf;
-  const vector<vector<double>> &dist () const;
-  const vector<Cloud *> &cloud () const;
-  bool readonly () const;
-  void create_dist_matrix ();
-  const vector<Cluster_Search> &searches () const;
+  static int add (Cloud *addition);
+  static int fprintf (ofstream &out) ;
+  static int length () ;
+  static Buffer buf;
+  static const vector<vector<double>> &dist () ;
+  static const vector<Cloud *> &cloud () ;
+  static bool readonly () ;
+  static void create_dist_matrix ();
+  static const vector<Cluster_Search> &searches () ;
   void create_edges_matrix (double delta);
   int wave_clustering (int search_id);
   int db_clustering (int search_id, int k);
@@ -29,15 +28,15 @@ class Field {
   int hieararchical_algorithm ();
   int forel ();
   int delaunay ();
-  int add (const vector<Point> &addition);
+  static int add (const vector<Point> &addition);
   void histogram (int pieces, vector<int> &x_distr, vector<int> &y_distr) const;
  private:
   Field &operator= (Field const &f);
   Field (Field const &f);
-  vector<Cloud *> cloud_;
-  vector<vector<double>> dist_; // matrix of distances
-  vector<Cluster_Search> searches_;
-  bool readonly_{};
+  static vector<Cloud *> cloud_;
+  static vector<vector<double>> dist_; // matrix of distances
+  static vector<Cluster_Search> searches_;
+  static bool readonly_;
   int stree_add_closest_point (TreeNode<int> &node, vector<bool> &added);
   void stree_get_closest (TreeNode<int> &current,
                           vector<bool> &added,

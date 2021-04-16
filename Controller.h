@@ -16,7 +16,7 @@ class Controller {
   ~Controller ();
   int get_help (int id, string &file_name);
   int generate_cloud (int id, double center_x, double center_y, double disp_x, double disp_y, int c_length);
-  int fprintf (const string &file_name) const;
+  int fprintf (const string &file_name) ;
   void histogram (int pieces, vector<int> &x_distr, vector<int> &y_distr) const;
   int buffer_add_cloud (int id) const;
   int buffer_unload () const;

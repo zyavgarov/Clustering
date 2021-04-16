@@ -36,12 +36,12 @@ int Controller::generate_cloud (int id,
         field_ = new Field ();
         log ("Field initialized");
     }
-    if (field_->readonly ()) {
+    if (Field::readonly ()) {
         return -1;
     }
     auto *cloud = new Cloud (c_length, disp_x, disp_y);
     cloud->shift (center_x, center_y);
-    field_->add (cloud);
+    Field::add (cloud);
     log (to_string (id) + ": generated cloud (" + to_string (center_x) + ", " + to_string (center_y)
              + ") with dispersion (" + to_string (disp_x) + ";" + to_string (disp_y) + ")");
     return 0;
@@ -53,11 +53,11 @@ void Controller::log (const string &s) {
     }
 }
 
-int Controller::fprintf (const string &file_name) const {
+int Controller::fprintf (const string &file_name) {
     // prints field to file
     // -1 - file not found
     ofstream out (file_name);
-    field_->fprintf (out);
+    Field::fprintf (out);
     out.close ();
     return 0;
 }
@@ -73,12 +73,12 @@ int Controller::matrix () const {
     if (field_ == nullptr) {
         return -1;
     }
-    field_->create_dist_matrix ();
+    Field::create_dist_matrix ();
     return 0;
 }
 
 const vector<Cluster_Search> &Controller::info_cluster_search () const {
-    return field_->searches ();
+    return Field::searches ();
 }
 
 int Controller::incidence_matrix (double delta) {

@@ -1,5 +1,6 @@
 #include "Point.h"
 int Point::quantity_ = 0;
+vector<Point *> Point::id_pointers;
 
 Point::Point () : id_ (0), x_ (0), y_ (0) {
 }
@@ -127,5 +128,3 @@ Point::Point (const Point &c, int id) : x_ (c.x ()), y_ (c.y ()) {
         id_pointers.push_back (this);
     }
 }
-
-vector<Point *> Point::id_pointers;

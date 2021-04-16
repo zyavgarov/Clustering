@@ -34,7 +34,7 @@ void Cluster_Search::create_edges_matrix () {
         vector<vector<bool>> incidence (Point::quantity (), vector<bool> (Point::quantity (), false));
         for (int i = 0; i < Point::quantity (); ++i) {
             for (int j = i + 1; j < Point::quantity (); ++j) {
-                incidence[j][i] = incidence[i][j] = (field_->dist ()[i][j] < delta);
+                incidence[j][i] = incidence[i][j] = (Field::dist ()[i][j] < delta);
             }
         }
         edges_ = incidence;

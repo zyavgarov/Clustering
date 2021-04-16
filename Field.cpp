@@ -1,17 +1,20 @@
 #include "Field.h"
 #include <iostream>
+Buffer Field::buf;
+vector<Cloud *> Field::cloud_;
+vector<vector<double>> Field::dist_; // matrix of distances
+vector<Cluster_Search> Field::searches_;
+bool Field::readonly_ = false;
 
-Field::Field () : readonly_ (false) {
-}
-
+Field::Field () = default;
 Field &Field::operator= (Field const &f) {
     if (this != &f) {
         for (auto &c: cloud_) {
             delete c;
         }
         cloud_.clear ();
-        for (int i = 0; i < f.length (); ++i) {
-            cloud_.push_back (f.cloud_[i]);
+        for (int i = 0; i < Field::length (); ++i) {
+            cloud_.push_back (Field::cloud_[i]);
         }
     }
     return *this;
@@ -22,8 +25,8 @@ Field::Field (Field const &f) {
         delete c;
     }
     cloud_.clear ();
-    for (int i = 0; i < f.length (); ++i) {
-        cloud_[i] = f.cloud_[i];
+    for (int i = 0; i < Field::length (); ++i) {
+        cloud_[i] = Field::cloud_[i];
     }
 }
 
@@ -31,7 +34,7 @@ Field::~Field () {
     for (auto &i : cloud_) {
         delete i;
     }
-};
+}
 
 int Field::add (Cloud *addition) {
     // The function adds cloud to the field
@@ -54,7 +57,7 @@ int Field::add (const vector<Point> &addition) {
     return 0;
 }
 
-int Field::fprintf (ofstream &out) const {
+int Field::fprintf (ofstream &out) {
     //prints all the clouds to file out
     for (int i = 0; i < length (); ++i) {
         cloud_[i]->fprintf (out);
@@ -62,20 +65,20 @@ int Field::fprintf (ofstream &out) const {
     return 0;
 }
 
-int Field::length () const {
+int Field::length () {
     // returns the number of clouds in the field
     return cloud_.size ();
 }
 
-const vector<Cloud *> &Field::cloud () const {
+const vector<Cloud *> &Field::cloud () {
     return cloud_;
 }
 
-const vector<vector<double>> &Field::dist () const {
+const vector<vector<double>> &Field::dist () {
     return dist_;
 }
 
-bool Field::readonly () const {
+bool Field::readonly () {
     return readonly_;
 }
 
@@ -90,7 +93,7 @@ void Field::create_dist_matrix () {
     }
 }
 
-const vector<Cluster_Search> &Field::searches () const {
+const vector<Cluster_Search> &Field::searches () {
     return searches_;
 }
 
