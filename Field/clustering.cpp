@@ -1,17 +1,5 @@
 #include "../Field.h"
 
-int Field::k_means (int clusters_number) {
-    /* Errors
-     * -1 field is not in readonly mode
-     */
-    if (!readonly ()) {
-        return -1;
-    }
-    searches_.emplace_back (this);
-    searches_.back ().k_means (clusters_number);
-    return 0;
-}
-
 int Field::k_means_cores (int clusters_number, int cores_number) {
     /* Errors
      * -1 field is not in readonly mode

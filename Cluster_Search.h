@@ -2,7 +2,6 @@
 #define INTERFACE4__CLUSTER_SEARCH_H_
 #include "Cloud.h"
 #include "TreeNode.h"
-#define EM_LIMITATION 0.01
 
 class Field;
 
@@ -24,7 +23,6 @@ class Cluster_Search {
   vector<Cluster> clusters;
   void add (const Cluster &addition);
   void create_edges_matrix ();
-  Cluster_Search k_means (int clusters_number);
   Cluster_Search k_means_cores (int clusters_number, int cores_number);
   Cluster_Search hierarchical_algorithm ();
   Cluster_Search forel ();
@@ -32,7 +30,6 @@ class Cluster_Search {
  private:
   Field *field_;
   vector<vector<bool>> edges_;
-  void kmeans_fprintf (vector<int> &nearest_cluster, vector<Point> &cores, int iteration);
   static void kmeans_core_fprintf (const vector<int> &nearest_cluster,
                                    const vector<vector<Point>> &cores,
                                    int iteration);

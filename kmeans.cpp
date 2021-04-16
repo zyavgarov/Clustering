@@ -1,6 +1,22 @@
-#include "../Cluster_Search.h"
+#include "kmeans.h"
 
-Cluster_Search Cluster_Search::k_means (int clusters_number) {
+kmeans::kmeans (int clusters_number) : clusters_number (clusters_number) {
+    /* Errors
+     * -1 field is not in readonly mode
+     */
+    if (!Field::readonly ()) {
+        err_ = -1;
+        return;
+    }
+    auto *a = new Field ();
+    // That's temporary object.
+    // In the future I'm going to eliminate pointer to Field from the class, but till that time
+    // we're supposed to live our lifes with that thing
+    Field::searches_.emplace_back (a);
+    k_means ();
+}
+
+void kmeans::k_means () {
     bool changed = true;
     vector<Point> cores (clusters_number); // Pointers to core points
     vector<int> nearest_cluster (Point::quantity (), 0); // shows which element of cores is the nearest to that point
@@ -40,18 +56,18 @@ Cluster_Search Cluster_Search::k_means (int clusters_number) {
         kmeans_fprintf (nearest_cluster, cores, iteration);
         iteration++;
     }
-    clusters.clear ();
+    Field::searches_.back ().clusters.clear ();
     vector<vector<int>> clusters_to_set (clusters_number);
     for (int i = 0; i < nearest_cluster.size (); ++i) {
         clusters_to_set[nearest_cluster[i]].push_back (i);
     }
     for (int i = 0; i < clusters_number; ++i) {
-        clusters.emplace_back (clusters_to_set[i]);
+        Field::searches_.back ().clusters.emplace_back (clusters_to_set[i]);
     }
-    return *this;
+    err_ = 0;
 }
 
-void Cluster_Search::kmeans_fprintf (vector<int> &nearest_cluster, vector<Point> &cores, int iteration) {
+void kmeans::kmeans_fprintf (vector<int> &nearest_cluster, vector<Point> &cores, int iteration) {
     ofstream out ("gnuplot/kmeans/km" + to_string (iteration) + ".txt");
     for (int i = 0; i < Point::quantity (); ++i) {
         out << Point::get_by_id (i + 1)->x () << " " << Point::get_by_id (i + 1)->y () << " " << nearest_cluster[i]
@@ -61,4 +77,8 @@ void Cluster_Search::kmeans_fprintf (vector<int> &nearest_cluster, vector<Point>
         out << core.x () << " " << core.y () << " " << -1
             << endl;
     }
+}
+
+int kmeans::err () const {
+    return err_;
 }

@@ -19,7 +19,6 @@ class Field {
   static void create_dist_matrix ();
   static const vector<Cluster_Search> &searches () ;
   void create_edges_matrix (double delta);
-  int k_means (int clusters_number);
   vector<int> s_tree ();
   int k_means_cores (int clusters_number, int cores_number);
   int em (int clusters_number);

@@ -4,6 +4,7 @@
 #include "Cluster_Search.h"
 #include "dbscan.h"
 #include "wave.h"
+#include "kmeans.h"
 #include <iostream>
 
 class Controller {

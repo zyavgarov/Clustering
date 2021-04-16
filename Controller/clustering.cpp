@@ -67,7 +67,8 @@ int Controller::k_means (int clusters_number) {
         log ("Field doesn't exist");
         return -2;
     }
-    int err = field_->k_means (clusters_number);
+    kmeans x(clusters_number);
+    int err = x.err();
     if (err == 0) {
         log ("Field is clustered");
         return err;
