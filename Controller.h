@@ -5,6 +5,7 @@
 #include "dbscan.h"
 #include "wave.h"
 #include "kmeans.h"
+#include "em.h"
 #include <iostream>
 
 class Controller {

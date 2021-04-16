@@ -12,18 +12,6 @@ int Field::k_means_cores (int clusters_number, int cores_number) {
     return 0;
 }
 
-int Field::em (int clusters_number) {
-    /* Errors
-     * -1 field is not in readonly mode
-     */
-    if (!readonly ()) {
-        return -1;
-    }
-    searches_.emplace_back (this);
-    searches_.back ().em (clusters_number);
-    return 0;
-}
-
 int Field::hieararchical_algorithm () {
     /* Errors
      * -1 field is not in readonly mode

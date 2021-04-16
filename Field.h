@@ -21,7 +21,6 @@ class Field {
   void create_edges_matrix (double delta);
   vector<int> s_tree ();
   int k_means_cores (int clusters_number, int cores_number);
-  int em (int clusters_number);
   int hieararchical_algorithm ();
   int forel ();
   int delaunay ();

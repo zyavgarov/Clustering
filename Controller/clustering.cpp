@@ -12,7 +12,7 @@ int Controller::dbscan (int search_id, int k) { // 1) what if field is not reado
         return -2;
     }
     class dbscan x (search_id, k);
-    int err = x.err();
+    int err = x.err ();
     if (err == 0) {
         log ("Field is clustered");
         return err;
@@ -37,8 +37,8 @@ int Controller::wave (int search_id) {
         log ("Field doesn't exist");
         return -2;
     }
-    class wave x(search_id);
-    int err = x.err();
+    class wave x (search_id);
+    int err = x.err ();
     if (err == 0) {
         log ("Field is clustered");
         return err;
@@ -51,7 +51,6 @@ int Controller::wave (int search_id) {
     }
     return 0;
 }
-
 
 vector<int> Controller::s_tree () const {
     return field_->s_tree ();
@@ -67,8 +66,8 @@ int Controller::k_means (int clusters_number) {
         log ("Field doesn't exist");
         return -2;
     }
-    kmeans x(clusters_number);
-    int err = x.err();
+    kmeans x (clusters_number);
+    int err = x.err ();
     if (err == 0) {
         log ("Field is clustered");
         return err;
@@ -110,7 +109,9 @@ int Controller::em (int clusters_number) {
         log ("Field doesn't exist");
         return -2;
     }
-    int err = field_->em (clusters_number);
+    /*int err = field_->em (clusters_number);*/
+    class em x (clusters_number);
+    int err = x.err ();
     if (err == 0) {
         log ("Field is clustered");
         return err;

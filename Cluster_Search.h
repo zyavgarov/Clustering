@@ -26,7 +26,6 @@ class Cluster_Search {
   Cluster_Search k_means_cores (int clusters_number, int cores_number);
   Cluster_Search hierarchical_algorithm ();
   Cluster_Search forel ();
-  Cluster_Search em (int clusters_number);
  private:
   Field *field_;
   vector<vector<bool>> edges_;
@@ -55,8 +54,6 @@ class Cluster_Search {
                     vector<bool> in_circle,
                     double R,
                     const Point& center);
-  double N (const Point *a, vector<double> m, vector<double> Sgm);
-  static void em_fprintf (int iteration, vector<vector<double>> sgm, vector<vector<double>> m, vector<vector<double>> r, int clusters_number);
   void ha_fprintf_tree (const TreeNode<const Point *> *tree_node, ofstream& out);
 };
 

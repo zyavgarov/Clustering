@@ -1,20 +1,15 @@
-#include "../Cluster_Search.h"
-#define EPS 0.01
+#include "em.h"
 
-double Cluster_Search::N (const Point *a, vector<double> m, vector<double> Sgm) {
-    double det = Sgm[0] * Sgm[3] - Sgm[1] * Sgm[2];
-    vector<vector<double>> b_s (2, vector<double> (2));
-    b_s[0][0] = Sgm[3] / det;
-    b_s[0][1] = -Sgm[1] / det;
-    b_s[1][0] = -Sgm[2] / det;
-    b_s[1][1] = Sgm[0] / det;
-    if (det < 0) { det = -det; }
-    return exp (-(b_s[0][0] * (a->x () - m[0]) * (a->x () - m[0])
-        + (b_s[1][0] + b_s[0][1]) * (a->x () - m[0]) * (a->y () - m[1])
-        + b_s[1][1] * (a->y () - m[1]) * (a->y () - m[1])) / 2) / (sqrt (2 * M_PI * det));
-}
-
-Cluster_Search Cluster_Search::em (int clusters_number) {
+em::em (int clusters_number) : clusters_number (clusters_number) {
+    /* Errors
+     * -1 field is not in readonly mode
+     */
+    if (!Field::readonly ()) {
+        err_ = -1;
+        return;
+    }
+    auto *temp_field = new Field ();
+    Field::searches_.emplace_back (temp_field);
     vector<vector<double>> sigma;
     vector<vector<double>> mu;
     vector<vector<double>> r;
@@ -25,9 +20,11 @@ Cluster_Search Cluster_Search::em (int clusters_number) {
         vector<vector<double> > v22;
         vector<double> v4;
         vector<double> v2;
+        v4.reserve (4);
         for (int j = 0; j < 4; j++) {
             v4.push_back (0);
         }
+        v2.reserve (2);
         for (int j = 0; j < 2; j++) {
             v2.push_back (0);
         };
@@ -113,17 +110,32 @@ Cluster_Search Cluster_Search::em (int clusters_number) {
             sigma[c][3] = a[1][1] / m_c;
             pi[c] = m_c / Point::quantity ();
         }
-        em_fprintf (iteration, sigma, mu, r, clusters_number);
+        em_fprintf (iteration, sigma, mu, r);
     } while (!sw_em);
-    // creating cluster
-    return *this;
+    err_ = 0;
 }
 
-void Cluster_Search::em_fprintf (int iteration,
-                                 vector<vector<double> > sgm,
-                                 vector<vector<double> > m,
-                                 vector<vector<double> > r,
-                                 int clusters_number) {
+int em::err () const {
+    return err_;
+}
+
+double em::N (const Point *a, vector<double> m, vector<double> Sgm) {
+    double det = Sgm[0] * Sgm[3] - Sgm[1] * Sgm[2];
+    vector<vector<double>> b_s (2, vector<double> (2));
+    b_s[0][0] = Sgm[3] / det;
+    b_s[0][1] = -Sgm[1] / det;
+    b_s[1][0] = -Sgm[2] / det;
+    b_s[1][1] = Sgm[0] / det;
+    if (det < 0) { det = -det; }
+    return exp (-(b_s[0][0] * (a->x () - m[0]) * (a->x () - m[0])
+        + (b_s[1][0] + b_s[0][1]) * (a->x () - m[0]) * (a->y () - m[1])
+        + b_s[1][1] * (a->y () - m[1]) * (a->y () - m[1])) / 2) / (sqrt (2 * M_PI * det));
+}
+
+void em::em_fprintf (int iteration,
+                     vector<vector<double> > sgm,
+                     vector<vector<double> > m,
+                     vector<vector<double> > r) const {
     ofstream out ("gnuplot/em/em" + to_string (iteration) + ".txt");
     for (int p = 0; p < Point::quantity (); ++p) {
         int ind = 0;
@@ -157,4 +169,3 @@ void Cluster_Search::em_fprintf (int iteration,
                  << endl;
     }
 }
-
