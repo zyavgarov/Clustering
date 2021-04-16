@@ -1,6 +1,20 @@
-#include "../Cluster_Search.h"
+#include "wave.h"
 
-void Cluster_Search::wave_clustering () {
+wave::wave (int search_id) : search_id (search_id) {
+    // if not readonly state returns -1
+    // if readonly - clustering
+    /* Errors
+     * -1 field is not in readonly mode
+     * -3 There is no such Cluster_Search
+     */
+    if (!Field::readonly ()) {
+        err_ = -1;
+        return;
+    }
+    if (search_id >= Field::searches ().size ()) {
+        err_ = -3;
+        return;
+    }
     vector<bool> burnt (Point::quantity (), false);
     // that cycle checks if point in marked cluster and if not creates new one
     for (int m = 0; m < Point::quantity (); ++m) {
@@ -15,7 +29,7 @@ void Cluster_Search::wave_clustering () {
         while (!curr_wave.empty ()) {
             for (int i : curr_wave) {
                 for (int j = m + 1; j < Point::quantity (); ++j) {
-                    if (edges ()[i][j] && !burnt[j]) {
+                    if (Field::searches ()[search_id].edges ()[i][j] && !burnt[j]) {
                         next_wave.push_back (j);
                     }
                 }
@@ -27,11 +41,13 @@ void Cluster_Search::wave_clustering () {
             }
             next_wave.clear ();
         }
-        add (Cluster_Search::Cluster (curr_cluster));
+        Field::searches_[search_id].add (Cluster_Search::Cluster (curr_cluster));
     }
+    ofstream output("gnuplot/wave/wave.txt");
+    Field::fprintf (output);
+    err_ = 0;
 }
 
-Cluster_Search Cluster_Search::wave () {
-    wave_clustering ();
-    return *this;
+int wave::err () const {
+    return err_;
 }

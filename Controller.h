@@ -3,6 +3,7 @@
 #include "Field.h"
 #include "Cluster_Search.h"
 #include "dbscan.h"
+#include "wave.h"
 #include <iostream>
 
 class Controller {

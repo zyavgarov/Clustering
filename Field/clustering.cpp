@@ -1,22 +1,5 @@
 #include "../Field.h"
 
-int Field::wave_clustering (int search_id) {
-    // if not readonly state returns -1
-    // if readonly - clustering
-    /* Errors
-     * -1 field is not in readonly mode
-     * -3 There is no such Cluster_Search
-     */
-    if (!readonly ()) {
-        return -1;
-    }
-    if (search_id >= searches ().size ()) {
-        return -3;
-    }
-    searches_[search_id].wave ();
-    return 0;
-}
-
 int Field::k_means (int clusters_number) {
     /* Errors
      * -1 field is not in readonly mode

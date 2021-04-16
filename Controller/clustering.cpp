@@ -11,8 +11,6 @@ int Controller::dbscan (int search_id, int k) { // 1) what if field is not reado
         log ("Field doesn't exist");
         return -2;
     }
-    /*
-    int err = field_->db_clustering (search_id, k);*/
     class dbscan x (search_id, k);
     int err = x.err();
     if (err == 0) {
@@ -39,7 +37,8 @@ int Controller::wave (int search_id) {
         log ("Field doesn't exist");
         return -2;
     }
-    int err = field_->wave_clustering (search_id);
+    class wave x(search_id);
+    int err = x.err();
     if (err == 0) {
         log ("Field is clustered");
         return err;

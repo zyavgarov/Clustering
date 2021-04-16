@@ -24,8 +24,6 @@ class Cluster_Search {
   vector<Cluster> clusters;
   void add (const Cluster &addition);
   void create_edges_matrix ();
-  void wave_clustering ();
-  Cluster_Search wave ();
   Cluster_Search k_means (int clusters_number);
   Cluster_Search k_means_cores (int clusters_number, int cores_number);
   Cluster_Search hierarchical_algorithm ();
