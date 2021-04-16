@@ -20,7 +20,6 @@ class Field {
   static const vector<Cluster_Search> &searches () ;
   void create_edges_matrix (double delta);
   int wave_clustering (int search_id);
-  int db_clustering (int search_id, int k);
   int k_means (int clusters_number);
   vector<int> s_tree ();
   int k_means_cores (int clusters_number, int cores_number);
@@ -30,12 +29,12 @@ class Field {
   int delaunay ();
   static int add (const vector<Point> &addition);
   void histogram (int pieces, vector<int> &x_distr, vector<int> &y_distr) const;
+  static vector<Cluster_Search> searches_;
  private:
   Field &operator= (Field const &f);
   Field (Field const &f);
   static vector<Cloud *> cloud_;
   static vector<vector<double>> dist_; // matrix of distances
-  static vector<Cluster_Search> searches_;
   static bool readonly_;
   int stree_add_closest_point (TreeNode<int> &node, vector<bool> &added);
   void stree_get_closest (TreeNode<int> &current,

@@ -2,6 +2,7 @@
 #define INTERFACE4__CONTROLLER_H_
 #include "Field.h"
 #include "Cluster_Search.h"
+#include "dbscan.h"
 #include <iostream>
 
 class Controller {
