@@ -57,20 +57,13 @@ class Cluster_Search {
                                                    int &i,
                                                    double x,
                                                    double y);
-  static void frl_fprintf (int print_number,
-                           const vector<TreeNode<struct Point> *> &center_nodes,
-                           const vector<TreeNode<struct Point> *> &new_center_nodes,
-                            vector<bool> clustered,
-                            vector<bool> in_circle,
-                           double R,
-                           const Point& circle_center);
-  void frl_fprintf_e (int print_num,
-                      vector<TreeNode<Point> *> center_nodes,
-                      vector<TreeNode<Point> *> new_centers_node,
-                      vector<bool> clustered,
-                      vector<bool> in_circle,
-                      double R,
-                      Point center);
+  static void frl_fprintf (int print_num,
+                    vector<TreeNode<Point> *> center_nodes,
+                    vector<TreeNode<Point> *> new_centers_node,
+                    vector<bool> clustered,
+                    vector<bool> in_circle,
+                    double R,
+                    const Point& center);
   double N (const Point *a, vector<double> m, vector<double> Sgm);
   static void em_fprintf (int iteration, vector<vector<double>> sgm, vector<vector<double>> m, vector<vector<double>> r, int clusters_number);
   void ha_fprintf_tree (const TreeNode<const Point *> *tree_node, ofstream& out);

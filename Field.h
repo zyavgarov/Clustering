@@ -51,9 +51,6 @@ class Field {
   void stree_fprintf_tree (const string &file_name, TreeNode<int> *root);
   void stree_fprintf_node (TreeNode<int> *node, ofstream *out);
   static void fprintf_incidence_graph (const Cluster_Search &search, int id);
-  vector<int> delaunay_get_viewable_points (vector<int> points_sorted, int i, vector<vector<bool>> connections);
-  void delaunay_fix (int a, int b, int c, int d, vector<vector<bool>> connections);
-  int sgn_vec_product (Point vec_1, Point vec_2);
   
   struct Edge {
     const Point *a, *b;
