@@ -1,14 +1,14 @@
-#include "../Field.h"
+#include "stree.h"
 
-vector<int> Field::s_tree () {
+stree::stree () {
     //searching minimum in dist matrix
     int min_i = 0;
     int min_j = 0;
-    double min_dist_all = dist ()[0][1];
+    double min_dist_all = Field::dist ()[0][1];
     vector<bool> added (Point::quantity (), false);
     for (int i = 0; i < Point::quantity (); ++i) {
         for (int j = i + 1; j < Point::quantity (); ++j) {
-            if (dist ()[i][j] < min_dist_all) {
+            if (Field::dist ()[i][j] < min_dist_all) {
                 min_i = i;
                 min_j = j;
             }
@@ -22,11 +22,10 @@ vector<int> Field::s_tree () {
         closest = stree_add_closest_point (root, added);
     } while (closest >= 0);
     stree_fprintf_tree ("gnuplot/stree/tree.txt", &root);
-    vector<int> histogram = stree_create_histogram (root, 30);
-    return histogram;
+    tree_ =  stree_create_histogram (root, 30);
 }
 
-int Field::stree_add_closest_point (TreeNode<int> &node, vector<bool> &added) {
+int stree::stree_add_closest_point (TreeNode<int> &node, vector<bool> &added) {
     // searches for closest point to tree and adds it
     // returns number of the point
     // point which has closest neighbour out of tree
@@ -43,7 +42,7 @@ int Field::stree_add_closest_point (TreeNode<int> &node, vector<bool> &added) {
     }
 }
 
-void Field::stree_get_closest (TreeNode<int> &current,
+void stree::stree_get_closest (TreeNode<int> &current,
                                vector<bool> &added,
                                double &min_dist,
                                TreeNode<int> *&tree_node,
@@ -62,10 +61,10 @@ void Field::stree_get_closest (TreeNode<int> &current,
         stree_get_closest (*current.brother_, added, min_dist, tree_node, out_node);
     }
     for (int i = 0; i < Point::quantity (); ++i) {
-        double a = dist ()[current.value ()][i];
+        double a = Field::dist ()[current.value ()][i];
         bool b = (min_dist == -1) || (a < min_dist);
         if (b && !added[i] && (i != current.value ())) {
-            min_dist = dist ()[current.value ()][i];
+            min_dist = Field::dist ()[current.value ()][i];
             tree_node = &current;
             delete out_node;
             out_node = new TreeNode<int> (i);
@@ -73,12 +72,12 @@ void Field::stree_get_closest (TreeNode<int> &current,
     }
 }
 
-vector<int> Field::stree_create_histogram (TreeNode<int> &root, int pieces) {
+vector<int> stree::stree_create_histogram (TreeNode<int> &root, int pieces) {
     // creates a histogram of distances in minimal spanning tree made previously
     // root is a root of tree. pieces is a pieces of histogram
     
     // searching the max and min distance in tree
-    double max_dist = dist ()[root.value ()][root.first_child ()->value ()];
+    double max_dist = Field::dist ()[root.value ()][root.first_child ()->value ()];
     double min_dist = max_dist;
     TreeNode<int> *root_pointer = &root;
     stree_get_tree_range (root_pointer, min_dist, max_dist);
@@ -89,9 +88,9 @@ vector<int> Field::stree_create_histogram (TreeNode<int> &root, int pieces) {
     return histogram;
 }
 
-void Field::stree_get_tree_range (TreeNode<int> *&node, double &min_dist, double &max_dist) {
+void stree::stree_get_tree_range (TreeNode<int> *&node, double &min_dist, double &max_dist) {
     if (node->first_child () != nullptr) {
-        double dist_to_child = dist ()[node->value ()][node->first_child ()->value ()];
+        double dist_to_child = Field::dist ()[node->value ()][node->first_child ()->value ()];
         if (dist_to_child > max_dist) {
             max_dist = dist_to_child;
         } else if (dist_to_child < min_dist) {
@@ -100,7 +99,7 @@ void Field::stree_get_tree_range (TreeNode<int> *&node, double &min_dist, double
         stree_get_tree_range (node->first_child_, min_dist, max_dist);
     }
     if (node->brother () != nullptr) {
-        double dist_to_brother = dist ()[node->value ()][node->brother ()->value ()];
+        double dist_to_brother = Field::dist ()[node->value ()][node->brother ()->value ()];
         if (dist_to_brother > max_dist) {
             max_dist = dist_to_brother;
         } else if (dist_to_brother < min_dist) {
@@ -110,25 +109,25 @@ void Field::stree_get_tree_range (TreeNode<int> *&node, double &min_dist, double
     }
 }
 
-void Field::stree_picking_histogram (TreeNode<int> *node, double min_dist, double max_dist, vector<int> &histogram) {
+void stree::stree_picking_histogram (TreeNode<int> *node, double min_dist, double max_dist, vector<int> &histogram) {
     if (node->brother () != nullptr) {
         stree_picking_histogram (node->brother_, min_dist, max_dist, histogram);
         stree_put_value_to_histogram (histogram,
                                       min_dist,
                                       max_dist,
-                                      dist ()[node->value ()][node->brother ()->value ()]);
+                                      Field::dist ()[node->value ()][node->brother ()->value ()]);
     }
     if (node->first_child () != nullptr) {
         stree_picking_histogram (node->first_child_, min_dist, max_dist, histogram);
         stree_put_value_to_histogram (histogram,
                                       min_dist,
                                       max_dist,
-                                      dist ()[node->value ()][node->first_child ()->value ()]);
+                                      Field::dist ()[node->value ()][node->first_child ()->value ()]);
     }
     
 }
 
-void Field::stree_put_value_to_histogram (vector<int> &histogram,
+void stree::stree_put_value_to_histogram (vector<int> &histogram,
                                           double min_dist,
                                           double max_dist,
                                           double distance) {
@@ -141,12 +140,12 @@ void Field::stree_put_value_to_histogram (vector<int> &histogram,
     histogram[i]++;
 }
 
-void Field::stree_fprintf_tree (const string &file_name, TreeNode<int> *root) {
+void stree::stree_fprintf_tree (const string &file_name, TreeNode<int> *root) {
     ofstream out (file_name);
     stree_fprintf_node (root, &out);
 }
 
-void Field::stree_fprintf_node (TreeNode<int> *node, ofstream *out) {
+void stree::stree_fprintf_node (TreeNode<int> *node, ofstream *out) {
     if (node->brother () != nullptr) {
         stree_fprintf_node (node->brother_, out);
     }
@@ -164,3 +163,6 @@ void Field::stree_fprintf_node (TreeNode<int> *node, ofstream *out) {
     }
 }
 
+vector<int> stree::tree () {
+    return tree_;
+}

@@ -53,7 +53,8 @@ int Controller::wave (int search_id) {
 }
 
 vector<int> Controller::s_tree () const {
-    return field_->s_tree ();
+    stree x;
+    return x.tree ();
 }
 
 int Controller::k_means (int clusters_number) {

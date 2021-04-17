@@ -5,7 +5,7 @@
 
 template<class T>
 class TreeNode {
-  friend class Field;
+  friend class stree;
   friend class Cluster_Search;
  
  public:

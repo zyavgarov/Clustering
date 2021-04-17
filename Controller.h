@@ -4,6 +4,7 @@
 #include "Cluster_Search.h"
 #include "dbscan.h"
 #include "wave.h"
+#include "stree.h"
 #include "kmeans.h"
 #include "em.h"
 #include <iostream>
