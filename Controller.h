@@ -6,6 +6,7 @@
 #include "wave.h"
 #include "stree.h"
 #include "kmeans.h"
+#include "kmcores.h"
 #include "em.h"
 #include <iostream>
 
@@ -36,7 +37,7 @@ class Controller {
   int k_means (int clusters_number);
   int em (int clusters_number);
   const vector<Cluster_Search> &info_cluster_search () const;
-  vector<int> s_tree () const;
+  static vector<int> s_tree () ;
   int k_means_cores (int clusters_number, int cores_number);
   int hierarchical_algorithm ();
   int forel ();

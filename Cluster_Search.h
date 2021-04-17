@@ -23,15 +23,11 @@ class Cluster_Search {
   vector<Cluster> clusters;
   void add (const Cluster &addition);
   void create_edges_matrix ();
-  Cluster_Search k_means_cores (int clusters_number, int cores_number);
   Cluster_Search hierarchical_algorithm ();
   Cluster_Search forel ();
  private:
   Field *field_;
   vector<vector<bool>> edges_;
-  static void kmeans_core_fprintf (const vector<int> &nearest_cluster,
-                                   const vector<vector<Point>> &cores,
-                                   int iteration);
   void ha_get_closest_nodes (int &a, int &b, const vector<TreeNode<const Point *> *> &tree_node);
   void ha_merge_nodes (int a, int b, vector<TreeNode<const Point *> *> &tree_nodes);
   Point *ha_get_new_node_center (TreeNode<const Point *> *&first, TreeNode<const Point *> *&second);

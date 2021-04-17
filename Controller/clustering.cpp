@@ -52,7 +52,7 @@ int Controller::wave (int search_id) {
     return 0;
 }
 
-vector<int> Controller::s_tree () const {
+vector<int> Controller::s_tree () {
     stree x;
     return x.tree ();
 }
@@ -89,7 +89,9 @@ int Controller::k_means_cores (int clusters_number, int cores_number) {
         log ("Field doesn't exist");
         return -2;
     }
-    int err = field_->k_means_cores (clusters_number, cores_number);
+    /*int err = field_->k_means_cores (clusters_number, cores_number);*/
+    kmcores x (clusters_number, cores_number);
+    int err = x.err ();
     if (err == 0) {
         log ("Field is clustered");
         return err;
