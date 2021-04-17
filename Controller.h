@@ -10,6 +10,7 @@
 #include "em.h"
 #include "ha.h"
 #include "forel.h"
+#include "delaunay.h"
 #include <iostream>
 
 class Controller {

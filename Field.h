@@ -7,17 +7,18 @@
 class Field {
  public:
   friend class Buffer;
+  
   Field ();
   ~Field ();
   static int add (Cloud *addition);
-  static int fprintf (ofstream &out) ;
-  static int length () ;
+  static int fprintf (ofstream &out);
+  static int length ();
   static Buffer buf;
-  static const vector<vector<double>> &dist () ;
-  static const vector<Cloud *> &cloud () ;
-  static bool readonly () ;
+  static const vector<vector<double>> &dist ();
+  static const vector<Cloud *> &cloud ();
+  static bool readonly ();
   static void create_dist_matrix ();
-  static const vector<Cluster_Search> &searches () ;
+  static const vector<Cluster_Search> &searches ();
   void create_edges_matrix (double delta);
   int delaunay ();
   static int add (const vector<Point> &addition);
@@ -31,20 +32,6 @@ class Field {
   static bool readonly_;
   static void fprintf_incidence_graph (const Cluster_Search &search, int id);
   
-  struct Edge {
-    const Point *a, *b;
-    
-    Edge (const Point *a, const Point *b) : a (a), b (b) {
-    };
-  };
-  
-  static void delaunay_base_run (vector<Edge> &baselines,
-                                 vector<vector<bool>> &edge,
-                                 vector<bool> &points_done,
-                                 int iteration);
-  
-  static double delaunay_angle_to_edge (Edge &edge, int num);
-  static void delaunay_fprintf (vector<vector<bool>> &edge, int iteration);
 };
 
 #endif //INTERFACE4__FIELD_H_

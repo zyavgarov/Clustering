@@ -178,7 +178,8 @@ int Controller::delaunay () {
         log ("Field doesn't exist");
         return -2;
     }
-    int err = field_->delaunay ();
+    class delaunay x;
+    int err = x.err();
     if (err == 0) {
         log ("Field is clustered");
         return err;

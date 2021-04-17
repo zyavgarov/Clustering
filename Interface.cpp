@@ -312,6 +312,7 @@ int Interface::manager (const string &cur_command) {
             show ("Field doesn't exist. Type GC to create the clouds");
         }
     } else if (main == "DELAUNAY") {
+        show ("Clustering...");
         int err = cc->delaunay ();
         if (err == 0) {
             show ("Field is triangulated");

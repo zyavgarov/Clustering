@@ -1,6 +1,6 @@
-#include "../Field.h"
+#include "delaunay.h"
 
-int Field::delaunay () {
+delaunay::delaunay () {
     // the worst algorithm can be done. it's here only because I have a deadline
     
     /* Errors
@@ -8,11 +8,13 @@ int Field::delaunay () {
      * -2 not enough points
      */
     
-    if (!readonly ()) {
-        return -1;
+    if (!Field::readonly ()) {
+        err_ = -1;
+        return;
     }
     if (Point::quantity () < 3) {
-        return -2;
+        err_ = -2;
+        return;
     }
     // Sorting all points by x coordinate
     vector<int> points_sorted;
@@ -62,13 +64,13 @@ int Field::delaunay () {
     vector<bool> points_done (Point::quantity (), false);
     int iteration = 0;
     delaunay_base_run (baselines, edge, points_done, iteration);
-    return 0;
+    err_ = 0;
 }
 
-void Field::delaunay_base_run (vector<Edge> &baselines,
-                               vector<vector<bool>> &edge,
-                               vector<bool> &points_done,
-                               int iteration) {
+void delaunay::delaunay_base_run (vector<Edge> &baselines,
+                                  vector<vector<bool>> &edge,
+                                  vector<bool> &points_done,
+                                  int iteration) {
     // The function has no mechanics for cases when there is no satisfying points
     
     int max_i;
@@ -110,7 +112,7 @@ void Field::delaunay_base_run (vector<Edge> &baselines,
     }
 }
 
-double Field::delaunay_angle_to_edge (Edge &edge, int num) {
+double delaunay::delaunay_angle_to_edge (Edge &edge, int num) {
     const Point *m_point = Point::get_by_id (num + 1);
     Point vec_1 (edge.a->x () - m_point->x (), edge.a->y () - m_point->y (), 0);
     Point vec_2 (edge.b->x () - m_point->x (), edge.b->y () - m_point->y (), 0);
@@ -124,7 +126,7 @@ double Field::delaunay_angle_to_edge (Edge &edge, int num) {
     return angle;
 }
 
-void Field::delaunay_fprintf (vector<vector<bool>> &edge, int iteration) {
+void delaunay::delaunay_fprintf (vector<vector<bool>> &edge, int iteration) {
     // prints algorithm's state
     ofstream edges ("gnuplot/delaunay/dl" + to_string (iteration) + ".txt");
     for (int i = 0; i < Point::quantity (); ++i) {
@@ -139,4 +141,8 @@ void Field::delaunay_fprintf (vector<vector<bool>> &edge, int iteration) {
     for (int i = 0; i < Point::quantity (); ++i) {
         points << Point::get_by_id (i + 1)->x () << " " << Point::get_by_id (i + 1)->y () << endl;
     }
+}
+
+int delaunay::err () const {
+    return err_;
 }
