@@ -64,7 +64,7 @@ int Controller::fprintf (const string &file_name) {
 
 void Controller::histogram (int pieces, vector<int> &x_distr, vector<int> &y_distr) const {
     // makes a vector histogram of distribution of dots on the field
-    field_->histogram (pieces, x_distr, y_distr);
+    class histogram x(pieces, x_distr, y_distr);
 }
 
 int Controller::matrix () const {

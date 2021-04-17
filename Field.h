@@ -20,9 +20,7 @@ class Field {
   static void create_dist_matrix ();
   static const vector<Cluster_Search> &searches ();
   void create_edges_matrix (double delta);
-  int delaunay ();
   static int add (const vector<Point> &addition);
-  void histogram (int pieces, vector<int> &x_distr, vector<int> &y_distr) const;
   static vector<Cluster_Search> searches_;
  private:
   Field &operator= (Field const &f);

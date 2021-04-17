@@ -11,6 +11,7 @@
 #include "ha.h"
 #include "forel.h"
 #include "delaunay.h"
+#include "histogram.h"
 #include <iostream>
 
 class Controller {
