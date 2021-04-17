@@ -1,6 +1,6 @@
-#include "../Cluster_Search.h"
+#include "forel.h"
 
-Cluster_Search Cluster_Search::forel () {
+void forel::forel_clustering () {
     // realises the forel algorithm
     vector<TreeNode<Point> *> center_nodes;
     double R = 0.03;
@@ -74,15 +74,14 @@ Cluster_Search Cluster_Search::forel () {
         center_nodes = new_center_nodes;
         R *= 2;
     }
-    return *this;
 }
 
-void Cluster_Search::frl_fprintf (int print_num,
-                                  vector<TreeNode<Point> *> center_nodes, vector<TreeNode<Point> *> new_centers_node,
-                                  vector<bool> clustered,
-                                  vector<bool> in_circle,
-                                  double R,
-                                  const Point& center) {
+void forel::frl_fprintf (int print_num,
+                         vector<TreeNode<Point> *> center_nodes, vector<TreeNode<Point> *> new_centers_node,
+                         vector<bool> clustered,
+                         vector<bool> in_circle,
+                         double R,
+                         const Point &center) {
     ofstream out ("gnuplot/forel/frl" + to_string (print_num) + ".txt");
     ofstream circle ("gnuplot/forel/circle" + to_string (print_num) + ".txt");
     for (int i = 0; i < new_centers_node.size (); ++i) {
@@ -106,4 +105,22 @@ void Cluster_Search::frl_fprintf (int print_num,
             out << center_nodes[i]->value ().x () << " " << center_nodes[i]->value ().y () << " " << "-2" << endl;
         }
     }
+}
+
+int forel::err () const {
+    return err_;
+}
+
+forel::forel () {
+    /* Errors
+     * -1 field is not in readonly mode
+     */
+    if (!Field::readonly ()) {
+        err_ = -1;
+        return;
+    }
+    auto *f = new Field;
+    Field::searches_.emplace_back (f);
+    forel_clustering ();
+    err_ = 0;
 }

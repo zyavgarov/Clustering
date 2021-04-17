@@ -23,18 +23,10 @@ class Cluster_Search {
   vector<Cluster> clusters;
   void add (const Cluster &addition);
   void create_edges_matrix ();
-  Cluster_Search forel ();
   TreeNode<const Point *> *tree_root_;
  private:
   Field *field_;
   vector<vector<bool>> edges_;
-  static void frl_fprintf (int print_num,
-                    vector<TreeNode<Point> *> center_nodes,
-                    vector<TreeNode<Point> *> new_centers_node,
-                    vector<bool> clustered,
-                    vector<bool> in_circle,
-                    double R,
-                    const Point& center);
 };
 
 #endif //INTERFACE4__CLUSTER_SEARCH_H_

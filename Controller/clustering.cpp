@@ -89,7 +89,6 @@ int Controller::k_means_cores (int clusters_number, int cores_number) {
         log ("Field doesn't exist");
         return -2;
     }
-    /*int err = field_->k_means_cores (clusters_number, cores_number);*/
     kmcores x (clusters_number, cores_number);
     int err = x.err ();
     if (err == 0) {
@@ -112,7 +111,6 @@ int Controller::em (int clusters_number) {
         log ("Field doesn't exist");
         return -2;
     }
-    /*int err = field_->em (clusters_number);*/
     class em x (clusters_number);
     int err = x.err ();
     if (err == 0) {
@@ -135,8 +133,6 @@ int Controller::hierarchical_algorithm () {
         log ("Field doesn't exist");
         return -2;
     }
-    /*
-    int err = field_->hieararchical_algorithm ();*/
     ha x;
     int err = x.err();
     if (err == 0) {
@@ -159,7 +155,8 @@ int Controller::forel () {
         log ("Field doesn't exist");
         return -2;
     }
-    int err = field_->forel ();
+    class forel x;
+    int err = x.err();
     if (err == 0) {
         log ("Field is clustered");
         return err;

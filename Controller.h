@@ -9,6 +9,7 @@
 #include "kmcores.h"
 #include "em.h"
 #include "ha.h"
+#include "forel.h"
 #include <iostream>
 
 class Controller {
