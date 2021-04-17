@@ -1,6 +1,6 @@
 #ifndef INTERFACE4__KMCORES_H_
 #define INTERFACE4__KMCORES_H_
-#include "Field.h"
+#include "../Field.h"
 class kmcores {
   int err_;
   int clusters_number;

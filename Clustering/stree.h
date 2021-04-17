@@ -1,6 +1,6 @@
 #ifndef INTERFACE4__STREE_H_
 #define INTERFACE4__STREE_H_
-#include "Field.h"
+#include "../Field.h"
 
 class stree {
   vector<int> tree_;

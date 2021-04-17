@@ -1,6 +1,6 @@
 #ifndef INTERFACE4__EM_H_
 #define INTERFACE4__EM_H_
-#include "Field.h"
+#include "../Field.h"
 #define EPS 0.01
 class em {
   int err_;

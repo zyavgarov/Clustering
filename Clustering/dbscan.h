@@ -1,6 +1,6 @@
 #ifndef INTERFACE4__DBSCAN_H_
 #define INTERFACE4__DBSCAN_H_
-#include "Field.h"
+#include "../Field.h"
 
 class dbscan {
   int search_id;

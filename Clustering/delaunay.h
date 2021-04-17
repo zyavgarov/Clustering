@@ -1,6 +1,6 @@
 #ifndef INTERFACE4__DELAUNAY_H_
 #define INTERFACE4__DELAUNAY_H_
-#include "Field.h"
+#include "../Field.h"
 class delaunay {
   struct Edge {
     const Point *a, *b;

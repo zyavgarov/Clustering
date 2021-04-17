@@ -1,6 +1,6 @@
 #ifndef INTERFACE4__FOREL_H_
 #define INTERFACE4__FOREL_H_
-#include "Field.h"
+#include "../Field.h"
 class forel {
   int err_;
  public:

@@ -2,16 +2,16 @@
 #define INTERFACE4__CONTROLLER_H_
 #include "Field.h"
 #include "Cluster_Search.h"
-#include "dbscan.h"
-#include "wave.h"
-#include "stree.h"
-#include "kmeans.h"
-#include "kmcores.h"
-#include "em.h"
-#include "ha.h"
-#include "forel.h"
-#include "delaunay.h"
-#include "histogram.h"
+#include "Clustering/dbscan.h"
+#include "Clustering/wave.h"
+#include "Clustering/stree.h"
+#include "Clustering/kmeans.h"
+#include "Clustering/kmcores.h"
+#include "Clustering/em.h"
+#include "Clustering/ha.h"
+#include "Clustering/forel.h"
+#include "Clustering/delaunay.h"
+#include "Clustering/histogram.h"
 #include <iostream>
 
 class Controller {
