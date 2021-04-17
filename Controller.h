@@ -8,6 +8,7 @@
 #include "kmeans.h"
 #include "kmcores.h"
 #include "em.h"
+#include "ha.h"
 #include <iostream>
 
 class Controller {

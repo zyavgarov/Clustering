@@ -19,7 +19,6 @@ class Field {
   static void create_dist_matrix ();
   static const vector<Cluster_Search> &searches () ;
   void create_edges_matrix (double delta);
-  int hieararchical_algorithm ();
   int forel ();
   int delaunay ();
   static int add (const vector<Point> &addition);

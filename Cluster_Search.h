@@ -23,26 +23,11 @@ class Cluster_Search {
   vector<Cluster> clusters;
   void add (const Cluster &addition);
   void create_edges_matrix ();
-  Cluster_Search hierarchical_algorithm ();
   Cluster_Search forel ();
+  TreeNode<const Point *> *tree_root_;
  private:
   Field *field_;
   vector<vector<bool>> edges_;
-  void ha_get_closest_nodes (int &a, int &b, const vector<TreeNode<const Point *> *> &tree_node);
-  void ha_merge_nodes (int a, int b, vector<TreeNode<const Point *> *> &tree_nodes);
-  Point *ha_get_new_node_center (TreeNode<const Point *> *&first, TreeNode<const Point *> *&second);
-  void ha_get_node_sum (TreeNode<const Point *> *&node, double &sum_x, double &sum_y, int &points);
-  static void ha_fprintf (const vector<TreeNode<const Point *> *> &tree_nodes,
-                          int iteration,
-                          const Point &old_1,
-                          const Point &old_2,
-                          ofstream &tree);
-  TreeNode<const Point *> *tree_root_;
-  TreeNode<const Point *> *&ha_get_node_by_coords (int a,
-                                                   vector<TreeNode<const Point *> *> &tree_node,
-                                                   int &i,
-                                                   double x,
-                                                   double y);
   static void frl_fprintf (int print_num,
                     vector<TreeNode<Point> *> center_nodes,
                     vector<TreeNode<Point> *> new_centers_node,
@@ -50,7 +35,6 @@ class Cluster_Search {
                     vector<bool> in_circle,
                     double R,
                     const Point& center);
-  void ha_fprintf_tree (const TreeNode<const Point *> *tree_node, ofstream& out);
 };
 
 #endif //INTERFACE4__CLUSTER_SEARCH_H_

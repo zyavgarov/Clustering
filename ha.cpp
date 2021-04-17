@@ -1,7 +1,28 @@
-#include "../Cluster_Search.h"
-#include "../Field.h"
+//
+// Created by pierre on 17/04/2021.
+//
 
-Cluster_Search Cluster_Search::hierarchical_algorithm () {
+#include "ha.h"
+
+int ha::err () {
+    return 0;
+}
+
+ha::ha () {
+    /* Errors
+     * -1 field is not in readonly mode
+     */
+    if (!Field::readonly ()) {
+        err_ = -1;
+        return;
+    }
+    auto * s = new Field;
+    Field::searches_.emplace_back (s);
+    hierarchical_algorithm ();
+    err_ = 0;
+}
+
+void ha::hierarchical_algorithm () {
     vector<TreeNode<const Point *> *> tree_nodes;
     tree_nodes.reserve (Point::quantity ());
     ofstream tree ("gnuplot/ha/ha_tree.txt");
@@ -16,11 +37,10 @@ Cluster_Search Cluster_Search::hierarchical_algorithm () {
         ha_merge_nodes (a, b, tree_nodes);
         ha_fprintf (tree_nodes, Point::quantity () - tree_nodes.size (), old_1, old_2, tree);
     }
-    tree_root_ = tree_nodes[0];
-    return *this;
+    Field::searches_.back().tree_root_ = tree_nodes[0];
 }
 
-void Cluster_Search::ha_get_closest_nodes (int &a, int &b, const vector<TreeNode<const Point *> *> &tree_node) {
+void ha::ha_get_closest_nodes (int &a, int &b, const vector<TreeNode<const Point *> *> &tree_node) {
     // searches for closest nodes writes its numbers to a and b
     double min_dist = Field::dist ()[0][1];
     int min_a = 0;
@@ -39,7 +59,7 @@ void Cluster_Search::ha_get_closest_nodes (int &a, int &b, const vector<TreeNode
     b = min_b;
 }
 
-void Cluster_Search::ha_merge_nodes (int a, int b, vector<TreeNode<const Point *> *> &tree_nodes) {
+void ha::ha_merge_nodes (int a, int b, vector<TreeNode<const Point *> *> &tree_nodes) {
     
     /* there are that steps:
      * get center of new node
@@ -60,7 +80,7 @@ void Cluster_Search::ha_merge_nodes (int a, int b, vector<TreeNode<const Point *
     tree_nodes.push_back (new_node);
 }
 
-TreeNode<const Point *> *&Cluster_Search::ha_get_node_by_coords (int a,
+TreeNode<const Point *> *&ha::ha_get_node_by_coords (int a,
                                                                  vector<TreeNode<const Point *> *> &tree_node,
                                                                  int &i, double x, double y) {
     for (i = 0; i < tree_node.size (); ++i) {
@@ -72,7 +92,7 @@ TreeNode<const Point *> *&Cluster_Search::ha_get_node_by_coords (int a,
     return tree_node[0];
 }
 
-Point *Cluster_Search::ha_get_new_node_center (TreeNode<const Point *> *&first, TreeNode<const Point *> *&second) {
+Point *ha::ha_get_new_node_center (TreeNode<const Point *> *&first, TreeNode<const Point *> *&second) {
     double sum_x = 0;
     double sum_y = 0;
     int points = 0;
@@ -81,7 +101,7 @@ Point *Cluster_Search::ha_get_new_node_center (TreeNode<const Point *> *&first, 
     return new Point (sum_x / points, sum_y / points, 0);
 }
 
-void Cluster_Search::ha_get_node_sum (TreeNode<const Point *> *&node, double &sum_x, double &sum_y, int &points) {
+void ha::ha_get_node_sum (TreeNode<const Point *> *&node, double &sum_x, double &sum_y, int &points) {
     if (node->first_child () != nullptr) {
         ha_get_node_sum (node->first_child_, sum_x, sum_y, points);
     }
@@ -93,7 +113,7 @@ void Cluster_Search::ha_get_node_sum (TreeNode<const Point *> *&node, double &su
     points++;
 }
 
-void Cluster_Search::ha_fprintf (const vector<TreeNode<const Point *> *> &tree_nodes,
+void ha::ha_fprintf (const vector<TreeNode<const Point *> *> &tree_nodes,
                                  int iteration,
                                  const Point &old_1,
                                  const Point &old_2,
@@ -113,7 +133,7 @@ void Cluster_Search::ha_fprintf (const vector<TreeNode<const Point *> *> &tree_n
     tree << tree_nodes.back ()->value ()->x () << " " << tree_nodes.back ()->value ()->y () << endl << endl;
 }
 
-void Cluster_Search::ha_fprintf_tree (const TreeNode<const Point *> *tree_node, ofstream &out) {
+void ha::ha_fprintf_tree (const TreeNode<const Point *> *tree_node, ofstream &out) {
     auto *pointer = tree_node->first_child ();
     while (pointer != nullptr) {
         out << tree_node->value ()->x () << " " << tree_node->value ()->y () << endl;

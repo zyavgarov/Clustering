@@ -135,7 +135,10 @@ int Controller::hierarchical_algorithm () {
         log ("Field doesn't exist");
         return -2;
     }
-    int err = field_->hieararchical_algorithm ();
+    /*
+    int err = field_->hieararchical_algorithm ();*/
+    ha x;
+    int err = x.err();
     if (err == 0) {
         log ("Field is clustered");
         return err;
