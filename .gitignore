@@ -19,3 +19,5 @@
 /cmake-build-debug/gnuplot/stree/
 /cmake-build-debug/gnuplot/wave/
 /cmake-build-debug/CMakeFiles/
+/CMakeLists.txt
+/.idea
