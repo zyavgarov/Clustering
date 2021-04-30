@@ -4,9 +4,10 @@ int main () {
     Controller CC;
 }
 
-/* to do list:
+/* To be done:
  * - fix disconnect
  * - add Field
  * - fix connections
  * - add terminal interface
+ * - fix logs
  */

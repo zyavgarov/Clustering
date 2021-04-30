@@ -1,6 +1,8 @@
 #include "Controller.h"
 bool Controller::working_ = false;
 queue<pair<int, string>> Controller::actions;
+Field *Controller::field_;
+ofstream Controller::logger;
 
 Controller::Controller () {
     int err = Administrator::prepare ();
@@ -15,8 +17,8 @@ Controller::Controller () {
         exit (EXIT_FAILURE);
     }
     working_ = true;
-    thread manage_th(manager);
-    manage_th.detach();
+    thread manage_th (manager);
+    manage_th.detach ();
     err = Administrator::run ();
 }
 
@@ -33,8 +35,13 @@ string Controller::do_command (const string &command) {
     for (auto &c: main) c = toupper (c);
     if (main == "END") {
         working_ = false;
-    } else {
-        return "answer"; //temporary thing just for test
+    } else if (main == "GC") {
+        // generation of cloud(s)
+        double x, y, disp_x, disp_y;
+        int dots = 0;
+        ss >> x >> y >> disp_x >> disp_y >> dots;
+        generate_cloud (x, y, disp_x, disp_y, dots);
+        return "Cloud created";
     }
     return "";
 }
@@ -54,4 +61,34 @@ void Controller::manager () {
 
 bool Controller::working () {
     return working_;
+}
+
+int Controller::generate_cloud (double center_x = 0,
+                                double center_y = 0,
+                                double disp_x = 1,
+                                double disp_y = 1,
+                                int cloud_size = 1000) {
+    // generates cloud with center on the field with dispersions by x and y
+    // -1 if readonly
+    if (field_ == nullptr) {
+        field_ = new Field ();
+        log ("Field initialized");
+    }
+    if (Field::readonly ()) {
+        return -1;
+    }
+    auto *cloud = new Cloud (cloud_size, disp_x, disp_y);
+    cloud->shift (center_x, center_y);
+    Field::add (cloud);
+    return 0;
+}
+
+void Controller::log (const string &s) {
+    logger << s << endl;
+}
+
+void Controller::show (const string &s) {
+    // writes s to console and to log file
+    cout << s << endl;
+    log ("< " + s);
 }
