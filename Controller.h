@@ -5,6 +5,17 @@
 #include <iostream>
 #include <fstream>
 #include "Field.h"
+#include "Cluster_Search.h"
+#include "Clustering/dbscan.h"
+#include "Clustering/wave.h"
+#include "Clustering/stree.h"
+#include "Clustering/kmeans.h"
+#include "Clustering/kmcores.h"
+#include "Clustering/em.h"
+#include "Clustering/ha.h"
+#include "Clustering/forel.h"
+#include "Clustering/delaunay.h"
+#include "Clustering/histogram.h"
 
 class Controller {
   static queue<pair<int, string>> actions; // ordered list of commands which should be done
@@ -29,6 +40,15 @@ class Controller {
   static int buffer_rotate (double angle);
   static int buffer_erase ();
   static int matrix ();
+  static int wave (int search_id);
+  static int dbscan (int search_id, int k);
+  static vector<int> s_tree ();
+  int k_means (int clusters_number);
+  static int k_means_cores (int clusters_number, int cores_number);
+  static int em (int clusters_number);
+  static int hierarchical_algorithm ();
+  static int forel ();
+  static int delaunay ();
 };
 
 #endif //SERVER__CONTROLLER_H_

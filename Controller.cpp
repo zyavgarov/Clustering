@@ -52,65 +52,91 @@ string Controller::do_command (const string &command, int fd) {
         for (auto &c: operation) c = toupper (c);
         if (operation == "UNLOAD") {
             if (Controller::buffer_unload () == -1) {
-                show ("Field in readonly mode");
+                return "Field in readonly mode";
             } else {
-                show ("Buffer unloaded to the field");
+                return "Buffer unloaded to the field";
             }
         } else if (operation == "ADD") {
             int cloud_id;
             ss >> cloud_id;
             if (Controller::buffer_add_cloud (cloud_id) == -1) {
-                show ("Field in readonly mode");
+                return "Field in readonly mode";
             } else {
-                show ("Cloud №" + to_string (cloud_id) + " added to buffer");
+                return "Cloud №" + to_string (cloud_id) + " added to buffer";
             }
         } else if (operation == "ROTATE") {
             double angle;
             ss >> angle;
             if (Controller::buffer_rotate (angle) == -1) {
-                show ("Field in readonly mode");
+                return "Field in readonly mode";
             } else {
-                show ("Buffer rotated");
+                return "Buffer rotated";
             }
         } else if (operation == "ZOOM") {
             double k;
             ss >> k;
             if (Controller::buffer_zoom (k) == -1) {
-                show ("Field in readonly mode");
+                return "Field in readonly mode";
             } else {
-                show ("Buffer zoomed");
+                return "Buffer zoomed";
             }
         } else if (operation == "SHIFT") {
             double x, y;
             ss >> x >> y;
             if (Controller::buffer_shift (x, y) == -1) {
-                show ("Field in readonly mode");
+                return "Field in readonly mode";
             } else {
-                show ("Buffer shifted");
+                return "Buffer shifted";
             }
         } else if (operation == "MIRROR") {
             if (Controller::buffer_mirror () == -1) {
-                show ("Field in readonly mode");
+                return "Field in readonly mode";
             } else {
-                show ("Buffer reflected");
+                return "Buffer reflected";
             }
         } else if (operation == "ERASE") {
             if (Controller::buffer_erase () == -1) {
-                show ("Field in readonly mode");
+                return "Field in readonly mode";
             } else {
-                show ("Buffer cleaned");
+                return "Buffer cleaned";
             }
         } else {
             // something went wrong
-            show ("Unknown buffer operation. Check your input and try again.");
-            show ("Type HELP to see the list of supported commands");
+            return "Unknown buffer operation. Check your input and try again. Type HELP to see the list of supported commands"; // possibly there will be wrap and two packages of sending
         }
     } else if (main == "MATRIX") {
         if (Controller::matrix () == -1) {
-            show ("Field not found");
+            return "Field not found";
         } else {
-            show ("Field is readonly now. You can analyze it.");
-            show ("Type HELP to see what you can do");
+            return "Field is readonly now. You can analyze it. Type HELP to see what you can do"; //needed wrap
+        }
+    } else if (main == "WAVE") {
+        int search_id;
+        ss >> search_id;
+        int err = Controller::wave (search_id);
+        if (err == 0) {
+            return "Field is clustered";
+        } else if (err == -1) {
+            return "Check field state. Type MATRIX to set it to readonly";
+        } else if (err == -2) {
+            return "Field doesn't exist. Type GC to create the clouds";
+        } else if (err == -3) {
+            return "No search with such id. Type INFOCS to see accessible searches";
+        }
+    } else if (main == "DBSCAN") {
+        int k;
+        int search_id;
+        ss >> search_id >> k;
+        show ("Clustering...");
+        int err = Controller::dbscan (search_id, k);
+        if (err == 0) {
+            return "Field is clustered";
+        } else if (err == -1) {
+            return "Check field state. Type MATRIX to set it to readonly";
+        } else if (err == -2) {
+            return "Field doesn't exist. Type GC to create the clouds";
+        } else if (err == -3) {
+            return "No search with such id. Type INFOCS to see accessible searches";
         }
     }
     return "";
