@@ -148,6 +148,64 @@ string Controller::do_command (const string &command, int fd) {
         } else if (err == -2) {
             return "Field not found";
         }
+    } else if (main == "KMEANS") {
+        int k;
+        ss >> k;
+        show ("Clustering...");
+        int err = Controller::k_means (k);
+        if (err == 0) {
+            return "Field is clustered";
+        } else if (err == -1) {
+            return "Check field state. Type MATRIX to set it to readonly";
+        } else if (err == -2) {
+            return "Field doesn't exist. Type GC to create the clouds";
+        }
+    } else if (main == "KMCORES") {
+        // K-means with cores
+        int clusters_number = 0;
+        int cores_number = 0;
+        ss >> clusters_number >> cores_number;
+        show ("Clustering...");
+        int err = Controller::k_means_cores (clusters_number, cores_number);
+        if (err == 0) {
+            return "Field is clustered";
+        } else if (err == -1) {
+            return "Check field state. Type MATRIX to set it to readonly";
+        } else if (err == -2) {
+            return "Field doesn't exist. Type GC to create the clouds";
+        }
+    } else if (main == "EM") {
+        int k;
+        ss >> k;
+        show ("Clustering...");
+        int err = Controller::em (k);
+        if (err == 0) {
+            return "Field is clustered";
+        } else if (err == -1) {
+            return "Check field state. Type MATRIX to set it to readonly";
+        } else if (err == -2) {
+            return "Field doesn't exist. Type GC to create the clouds";
+        }
+    } else if (main == "HA") {
+        show ("Clustering...");
+        int err = Controller::hierarchical_algorithm ();
+        if (err == 0) {
+            return "Field is clustered";
+        } else if (err == -1) {
+            return "Check field state. Type MATRIX to set it to readonly";
+        } else if (err == -2) {
+            return "Field doesn't exist. Type GC to create the clouds";
+        }
+    } else if (main == "FOREL") {
+        show ("Clustering...");
+        int err = Controller::forel ();
+        if (err == 0) {
+            return "Field is clustered";
+        } else if (err == -1) {
+            return "Check field state. Type MATRIX to set it to readonly";
+        } else if (err == -2) {
+            return "Field doesn't exist. Type GC to create the clouds";
+        }
     }
     return "";
 }

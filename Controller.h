@@ -43,7 +43,7 @@ class Controller {
   static int wave (int search_id);
   static int dbscan (int search_id, int k);
   static vector<int> s_tree ();
-  int k_means (int clusters_number);
+  static int k_means (int clusters_number);
   static int k_means_cores (int clusters_number, int cores_number);
   static int em (int clusters_number);
   static int hierarchical_algorithm ();
