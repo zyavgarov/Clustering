@@ -27,7 +27,7 @@ void Controller::add_next (int fd, const string &command) {
     actions.push (pair<int, string> (fd, command));
 }
 
-string Controller::do_command (const string &command) {
+string Controller::do_command (const string &command, int fd) {
     // figures out what to do with client's command
     stringstream ss (command);
     string main;
@@ -35,6 +35,7 @@ string Controller::do_command (const string &command) {
     for (auto &c: main) c = toupper (c);
     if (main == "END") {
         working_ = false;
+        // there should be something more accurate
     } else if (main == "GC") {
         // generation of cloud(s)
         double x, y, disp_x, disp_y;
@@ -42,6 +43,9 @@ string Controller::do_command (const string &command) {
         ss >> x >> y >> disp_x >> disp_y >> dots;
         generate_cloud (x, y, disp_x, disp_y, dots);
         return "Cloud created";
+    } else if (main == "HELP") {
+        thread help_writer (send_help, fd);
+        help_writer.join ();
     }
     return "";
 }
@@ -50,7 +54,7 @@ void Controller::manager () {
     // chooses the next action using infinite loop
     while (working ()) {
         if (!actions.empty ()) {
-            string result = do_command (actions.front ().second);
+            string result = do_command (actions.front ().second, actions.front ().first);
             Administrator::add_response (actions.front ().first, result);
             actions.pop ();
         }
@@ -91,4 +95,23 @@ void Controller::show (const string &s) {
     // writes s to console and to log file
     cout << s << endl;
     log ("< " + s);
+}
+
+void Controller::send_help (int fd) {
+    // sends to socket fd help.txt
+    ifstream help ("help.txt");
+    if (!help.is_open ()) {/*
+        show ("Manual file not found");
+        log ("$ " + manual);*/
+    } else {
+        string cur_line;
+        // log ("* file print:");
+        while (getline (help, cur_line)) {
+            /*
+            printf ("%s\n", cur_line.c_str ());
+            log ("< " + cur_line);*/
+            Administrator::add_response (fd, cur_line);
+        }
+        help.close ();
+    }
 }

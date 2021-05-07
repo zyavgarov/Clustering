@@ -120,7 +120,7 @@ bool Administrator::send_to_client (int fd, char *buf) {
     int nbytes;
     unsigned char *s;
     // ответ переводим в верхний регистр
-    for (s = (unsigned char *) buf; *s; s++) *s = toupper (*s);
+    // for (s = (unsigned char *) buf; *s; s++) *s = toupper (*s);
     // отправляем клиенту
     nbytes = write (fd, buf, strlen (buf) + 1);
     fprintf (stdout, "Write back: %s\nnbytes=%d\n", buf, nbytes);

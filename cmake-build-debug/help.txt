@@ -1,0 +1,4 @@
+This is the list of supported commands
+GC {double cx} {double cy} {double dx} {double dy} {int len}
+	Generates cloud on the field. Center of the cloud is cx cy, dispersion of the cloud is dx and dy by x and y.
+	The number of points in the cloud is len
