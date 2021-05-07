@@ -220,7 +220,7 @@ string Controller::do_command (const string &command, int fd) {
         }
     } else {
         // something went wrong
-        return "Unknown command. Check your input and try again." + "Type HELP to see the list of supported commands"; // needed wrap the line
+        return "Unknown command. Check your input and try again. Type HELP to see the list of supported commands"; // needed wrap the line
     }
 }
 
