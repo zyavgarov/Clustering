@@ -19,11 +19,21 @@ BUFFER {string operation}
         Deletes all points from the buffer
 DBSCAN {int id} {int k}
         Searches clusters in the field using dbscan algorithm with parameter k using incidences in search numbered id
+EM {int clusters}
+    Search clusters in the field using EM-algorithm
+FOREL
+    Realises FOREL-tree algorithm
 GC {double cx} {double cy} {double dx} {double dy} {int len}
 	Generates cloud on the field. Center of the cloud is cx cy, dispersion of the cloud is dx and dy by x and y.
 	The number of points in the cloud is len
+HA
+    Runs hierarchical algorithm on the field
 HELP
 	Shows the list of supported commands
+KMEANS {int clusters}
+    Search clusters in the field using k-means algorithm
+KMCORES {int clusters} {int coresnum}
+    Search clusters in the field using k-means algorithm with cores
 MATRIX
     Sets field to state readonly and prepares it to be analyzed
 WAVE {int id}
