@@ -46,6 +46,25 @@ string Controller::do_command (const string &command, int fd) {
     } else if (main == "HELP") {
         thread help_writer (send_help, fd);
         help_writer.join ();
+    } else if (main == "BUFFER") {
+        string operation;
+        ss >> operation;
+        for (auto &c: operation) c = toupper (c);
+        if (operation == "UNLOAD") {
+            if (Controller::buffer_unload () == -1) {
+                show ("Field in readonly mode");
+            } else {
+                show ("Buffer unloaded to the field");
+            }
+        } else if (operation == "ADD") {
+            int cloud_id;
+            ss >> cloud_id;
+            if (Controller::buffer_add_cloud (cloud_id) == -1) {
+                show ("Field in readonly mode");
+            } else {
+                show ("Cloud №" + to_string (cloud_id) + " added to buffer");
+            }
+        }
     }
     return "";
 }

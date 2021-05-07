@@ -20,6 +20,13 @@ class Controller {
   static int generate_cloud (double center_x, double center_y, double disp_x, double disp_y, int cloud_size);
   static void show (const string &s);
   static void send_help (int fd);
+  static int buffer_unload ();
+  static int buffer_add_cloud (int id);
+  static int buffer_shift (double x, double y);
+  static int buffer_zoom (double k);
+  static int buffer_mirror ();
+  static int buffer_rotate (double angle);
+  static int buffer_erase ();
 };
 
 #endif //SERVER__CONTROLLER_H_

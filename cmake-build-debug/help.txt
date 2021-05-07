@@ -1,4 +1,22 @@
 This is the list of supported commands
+BUFFER {string operation}
+    Doing operations over the cloud
+    operation = "unload"
+        Unloads buffer to field
+    operation = "add": {int id}
+        Adds cloud with id to buffer
+    operation = "rotate": {double angle}
+        Rotates buffer to angle
+    operation = "shift": {double x} {double y}
+        Shifts buffer to vector (x, y)
+    operation = "zoom": {double k}
+        Zooms buffer to coefficient k from its center
+    operation = "mirror"
+        Reflects the cloud like in mirror
+    operation = "erase"
+        Deletes all points from the buffer
 GC {double cx} {double cy} {double dx} {double dy} {int len}
 	Generates cloud on the field. Center of the cloud is cx cy, dispersion of the cloud is dx and dy by x and y.
 	The number of points in the cloud is len
+HELP
+	Shows the list of supported commands
