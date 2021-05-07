@@ -9,4 +9,10 @@ set style line 1 \
 do for [i=1:1000] {
 	plot 'ha/ha'.i.'.txt' u 1:2:3 with points linestyle 1 palette
 }
+set term png size 1080,1080
+set output "gifs/ha.png"
+set xrange[-0.5:0.5]
+set yrange[-0.5:0.5]
+set palette model RGB defined ( 0 'red', 1 'green', 2 'blue', 3 'black', 4 'pink', 5 'orange')
+plot 'ha/ha_fin.txt' u 1:2:3 with points linestyle 1 palette
  

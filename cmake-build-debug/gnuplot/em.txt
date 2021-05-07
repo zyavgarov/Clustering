@@ -10,3 +10,11 @@ do for [i=1:1000] {
 	plot 'em/em'.i.'.txt' u 1:2:3 with points linestyle 1 palette, \
 	'em/ellipse'.i.'.txt' using 1:2:3:4:5 with ellipses linestyle 1 palette
 }
+set term png size 1080,1080
+set output "gifs/em.png"
+set xrange[-0.5:0.5]
+set yrange[-0.5:0.5]
+set style line 1 \
+    linecolor rgb '#0060ad' \
+    linetype 1 linewidth 2 pointtype 7 pointsize 0.5
+plot 'em/em_fin.txt' u 1:2:3 with points linestyle 1 palette
