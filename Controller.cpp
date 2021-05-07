@@ -64,6 +64,46 @@ string Controller::do_command (const string &command, int fd) {
             } else {
                 show ("Cloud №" + to_string (cloud_id) + " added to buffer");
             }
+        } else if (operation == "ROTATE") {
+            double angle;
+            ss >> angle;
+            if (Controller::buffer_rotate (angle) == -1) {
+                show ("Field in readonly mode");
+            } else {
+                show ("Buffer rotated");
+            }
+        } else if (operation == "ZOOM") {
+            double k;
+            ss >> k;
+            if (Controller::buffer_zoom (k) == -1) {
+                show ("Field in readonly mode");
+            } else {
+                show ("Buffer zoomed");
+            }
+        } else if (operation == "SHIFT") {
+            double x, y;
+            ss >> x >> y;
+            if (Controller::buffer_shift (x, y) == -1) {
+                show ("Field in readonly mode");
+            } else {
+                show ("Buffer shifted");
+            }
+        } else if (operation == "MIRROR") {
+            if (Controller::buffer_mirror () == -1) {
+                show ("Field in readonly mode");
+            } else {
+                show ("Buffer reflected");
+            }
+        } else if (operation == "ERASE") {
+            if (Controller::buffer_erase () == -1) {
+                show ("Field in readonly mode");
+            } else {
+                show ("Buffer cleaned");
+            }
+        } else {
+            // something went wrong
+            show ("Unknown buffer operation. Check your input and try again.");
+            show ("Type HELP to see the list of supported commands");
         }
     } else if (main == "MATRIX") {
         if (Controller::matrix () == -1) {
