@@ -15,6 +15,8 @@ BUFFER {string operation}
         Reflects the cloud like in mirror
     operation = "erase"
         Deletes all points from the buffer
+DBSCAN {int id} {int k}
+        Searches clusters in the field using dbscan algorithm with parameter k using incidences in search numbered id
 GC {double cx} {double cy} {double dx} {double dy} {int len}
 	Generates cloud on the field. Center of the cloud is cx cy, dispersion of the cloud is dx and dy by x and y.
 	The number of points in the cloud is len
@@ -22,3 +24,5 @@ HELP
 	Shows the list of supported commands
 MATRIX
     Sets field to state readonly and prepares it to be analyzed
+WAVE {int id}
+    Searches clusters in the field using wave-clustering algorithm using incidences in search numbered id
