@@ -206,8 +206,22 @@ string Controller::do_command (const string &command, int fd) {
         } else if (err == -2) {
             return "Field doesn't exist. Type GC to create the clouds";
         }
+    } else if (main == "DELAUNAY") {
+        show ("Clustering...");
+        int err = Controller::delaunay ();
+        if (err == 0) {
+            return "Field is triangulated";
+        } else if (err == -1) {
+            return "Check field state. Type MATRIX to set it to readonly";
+        } else if (err == -2) {
+            return "Field doesn't exist. Type GC to create the clouds";
+        } else if (err == -3) {
+            return "Not enough points for triangulation";
+        }
+    } else {
+        // something went wrong
+        return "Unknown command. Check your input and try again." + "Type HELP to see the list of supported commands"; // needed wrap the line
     }
-    return "";
 }
 
 void Controller::manager () {
