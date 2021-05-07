@@ -5,6 +5,7 @@
 #include <iostream>
 #include <fstream>
 #include "Field.h"
+
 class Controller {
   static queue<pair<int, string>> actions; // ordered list of commands which should be done
   static bool working_;
@@ -13,7 +14,7 @@ class Controller {
   static Field *field_;
  public:
   Controller ();
-  static void add_next (int fd, const string& command);
+  static void add_next (int fd, const string &command);
   static string do_command (const string &command, int fd);
   static void manager ();
   static bool working ();
@@ -27,6 +28,7 @@ class Controller {
   static int buffer_mirror ();
   static int buffer_rotate (double angle);
   static int buffer_erase ();
+  static int matrix ();
 };
 
 #endif //SERVER__CONTROLLER_H_

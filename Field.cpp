@@ -7,6 +7,7 @@ vector<Cluster_Search> Field::searches_;
 bool Field::readonly_ = false;
 
 Field::Field () = default;
+
 Field &Field::operator= (Field const &f) {
     if (this != &f) {
         for (auto &c: cloud_) {

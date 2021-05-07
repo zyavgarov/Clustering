@@ -20,3 +20,5 @@ GC {double cx} {double cy} {double dx} {double dy} {int len}
 	The number of points in the cloud is len
 HELP
 	Shows the list of supported commands
+MATRIX
+    Sets field to state readonly and prepares it to be analyzed

@@ -65,6 +65,13 @@ string Controller::do_command (const string &command, int fd) {
                 show ("Cloud №" + to_string (cloud_id) + " added to buffer");
             }
         }
+    } else if (main == "MATRIX") {
+        if (Controller::matrix () == -1) {
+            show ("Field not found");
+        } else {
+            show ("Field is readonly now. You can analyze it.");
+            show ("Type HELP to see what you can do");
+        }
     }
     return "";
 }
@@ -133,4 +140,14 @@ void Controller::send_help (int fd) {
         }
         help.close ();
     }
+}
+
+int Controller::matrix () {
+    // sets field to readonly, creats matrix of distances
+    // if there is no field returns -1
+    if (field_ == nullptr) {
+        return -1;
+    }
+    Field::create_dist_matrix ();
+    return 0;
 }

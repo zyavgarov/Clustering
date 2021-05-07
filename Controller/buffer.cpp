@@ -10,7 +10,7 @@ int Controller::buffer_add_cloud (int id) {
     return 0;
 }
 
-int Controller::buffer_unload ()  {
+int Controller::buffer_unload () {
     // unloads buffer to field
     // returns -1 if field is readonly
     if (Field::readonly ()) {
@@ -20,8 +20,7 @@ int Controller::buffer_unload ()  {
     return 0;
 }
 
-
-int Controller::buffer_shift (double x, double y)  {
+int Controller::buffer_shift (double x, double y) {
     // shifts cloud in buffer to vector (x, y)
     if (Field::readonly ()) {
         return -1;
@@ -30,7 +29,7 @@ int Controller::buffer_shift (double x, double y)  {
     return 0;
 }
 
-int Controller::buffer_zoom (double k)  {
+int Controller::buffer_zoom (double k) {
     //zooms cloud in buffer to coefficient k
     if (Field::readonly ()) {
         return -1;
@@ -62,6 +61,6 @@ int Controller::buffer_erase () {
     if (Field::readonly ()) {
         return -1;
     }
-    Field::buf.erase();
+    Field::buf.erase ();
     return 0;
 }
