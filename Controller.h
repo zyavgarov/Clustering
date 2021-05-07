@@ -49,6 +49,7 @@ class Controller {
   static int hierarchical_algorithm ();
   static int forel ();
   static int delaunay ();
+  static int incidence_matrix (double delta);
 };
 
 #endif //SERVER__CONTROLLER_H_

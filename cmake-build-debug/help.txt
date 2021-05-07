@@ -1,4 +1,6 @@
 This is the list of supported commands
+BINARY {double delta}
+    Creates matrix of incidences for delta
 BUFFER {string operation}
     Doing operations over the cloud
     operation = "unload"

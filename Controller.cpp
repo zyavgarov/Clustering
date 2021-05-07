@@ -138,6 +138,16 @@ string Controller::do_command (const string &command, int fd) {
         } else if (err == -3) {
             return "No search with such id. Type INFOCS to see accessible searches";
         }
+    } else if (main == "BINARY") {
+        //creating matrix of incidences
+        double delta;
+        ss >> delta;
+        int err = Controller::incidence_matrix (delta);
+        if (err == 0) {
+            return "Incidence matrix is created. Now you can run clustering";
+        } else if (err == -2) {
+            return "Field not found";
+        }
     }
     return "";
 }
@@ -215,5 +225,18 @@ int Controller::matrix () {
         return -1;
     }
     Field::create_dist_matrix ();
+    return 0;
+}
+
+int Controller::incidence_matrix (double delta) {
+    /* creates incidence matrix in field
+     * Errors:
+     * -2 - Field not found
+     */
+    if (field_ == nullptr) {
+        log ("Field not found");
+        return -2;
+    }
+    field_->create_edges_matrix (delta);
     return 0;
 }
