@@ -135,13 +135,17 @@ void kmcores::kmeans_core_fprintf (const vector<int> &nearest_cluster,
                                           const vector<vector<Point>> &cores,
                                           int iteration) {
     ofstream out ("gnuplot/kmcores/km" + to_string (iteration) + ".txt");
+    ofstream final("gnuplot/kmcores/km_final.txt");
     for (int i = 0; i < Point::quantity (); ++i) {
         out << Point::get_by_id (i + 1)->x () << " " << Point::get_by_id (i + 1)->y () << " " << nearest_cluster[i]
+            << endl;
+        final << Point::get_by_id (i + 1)->x () << " " << Point::get_by_id (i + 1)->y () << " " << nearest_cluster[i]
             << endl;
     }
     for (auto &cluster : cores) {
         for (auto &core:cluster) {
             out << core.x () << " " << core.y () << " " << -1 << endl;
+            final << core.x () << " " << core.y () << " " << -1 << endl;
         }
     }
 }

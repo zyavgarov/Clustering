@@ -137,6 +137,7 @@ void em::em_fprintf (int iteration,
                      vector<vector<double> > m,
                      vector<vector<double> > r) const {
     ofstream out ("gnuplot/em/em" + to_string (iteration) + ".txt");
+    ofstream final ("gnuplot/em/em_fin.txt");
     for (int p = 0; p < Point::quantity (); ++p) {
         int ind = 0;
         for (int c = 0; c < clusters_number; ++c) {
@@ -145,6 +146,7 @@ void em::em_fprintf (int iteration,
             }
         }
         out << Point::get_by_id (p + 1)->x () << " " << Point::get_by_id (p + 1)->y () << " " << ind << endl;
+        final << Point::get_by_id (p + 1)->x () << " " << Point::get_by_id (p + 1)->y () << " " << ind << endl;
     }
     ofstream ellipsis ("gnuplot/em/ellipse" + to_string (iteration) + ".txt");
     for (int c = 0; c < clusters_number; ++c) {

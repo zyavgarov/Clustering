@@ -218,6 +218,8 @@ string Controller::do_command (const string &command, int fd) {
         } else if (err == -3) {
             return "Not enough points for triangulation";
         }
+    } else if (main == "PREDICT") {
+    
     } else {
         // something went wrong
         return "Unknown command. Check your input and try again. Type HELP to see the list of supported commands"; // needed wrap the line

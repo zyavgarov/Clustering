@@ -36,5 +36,7 @@ KMCORES {int clusters} {int coresnum}
     Search clusters in the field using k-means algorithm with cores
 MATRIX
     Sets field to state readonly and prepares it to be analyzed
+PREDICT {double x, double y}
+    Predicts the value of point by neighbours. value of neighbours is f(x,y), f determined before compilation
 WAVE {int id}
     Searches clusters in the field using wave-clustering algorithm using incidences in search numbered id

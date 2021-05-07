@@ -129,17 +129,22 @@ double delaunay::delaunay_angle_to_edge (Edge &edge, int num) {
 void delaunay::delaunay_fprintf (vector<vector<bool>> &edge, int iteration) {
     // prints algorithm's state
     ofstream edges ("gnuplot/delaunay/dl" + to_string (iteration) + ".txt");
+    ofstream final_edges ("gnuplot/delaunay/dl_fin.txt");
     for (int i = 0; i < Point::quantity (); ++i) {
         for (int j = i + 1; j < Point::quantity (); ++j) {
             if (edge[i][j]) {
                 edges << Point::get_by_id (i + 1)->x () << " " << Point::get_by_id (i + 1)->y () << endl;
+                final_edges << Point::get_by_id (i + 1)->x () << " " << Point::get_by_id (i + 1)->y () << endl;
                 edges << Point::get_by_id (j + 1)->x () << " " << Point::get_by_id (j + 1)->y () << endl << endl;
+                final_edges << Point::get_by_id (j + 1)->x () << " " << Point::get_by_id (j + 1)->y () << endl << endl;
             }
         }
     }
     ofstream points ("gnuplot/delaunay/pts" + to_string (iteration) + ".txt");
+    ofstream final_points ("gnuplot/delaunay/pt_fin.txt");
     for (int i = 0; i < Point::quantity (); ++i) {
         points << Point::get_by_id (i + 1)->x () << " " << Point::get_by_id (i + 1)->y () << endl;
+        final_points << Point::get_by_id (i + 1)->x () << " " << Point::get_by_id (i + 1)->y () << endl;
     }
 }
 

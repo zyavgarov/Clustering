@@ -69,13 +69,16 @@ void kmeans::k_means () {
 
 void kmeans::kmeans_fprintf (vector<int> &nearest_cluster, vector<Point> &cores, int iteration) {
     ofstream out ("gnuplot/kmeans/km" + to_string (iteration) + ".txt");
+    ofstream final ("gnuplot/kmeans/km_fin.txt");
     for (int i = 0; i < Point::quantity (); ++i) {
         out << Point::get_by_id (i + 1)->x () << " " << Point::get_by_id (i + 1)->y () << " " << nearest_cluster[i]
             << endl;
+        final << Point::get_by_id (i + 1)->x () << " " << Point::get_by_id (i + 1)->y () << " " << nearest_cluster[i]
+              << endl;
     }
     for (auto &core : cores) {
-        out << core.x () << " " << core.y () << " " << -1
-            << endl;
+        out << core.x () << " " << core.y () << " " << -1 << endl;
+        final << core.x () << " " << core.y () << " " << -1 << endl;
     }
 }
 
