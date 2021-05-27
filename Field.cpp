@@ -100,7 +100,7 @@ const vector<Cluster_Search> &Field::searches () {
 
 void Field::create_edges_matrix (double delta) {
     // creating incidence matrix, saving incidence graph to file
-    searches_.emplace_back (this, delta);
+    searches_.emplace_back (delta);
     fprintf_incidence_graph (searches ().back (), searches ().size () - 1);
 }
 
@@ -115,4 +115,12 @@ void Field::fprintf_incidence_graph (const Cluster_Search &search, int id) {
             }
         }
     }
+}
+
+void Field::new_search (vector<vector<bool>> edges) {
+    searches_.emplace_back (edges);
+}
+
+void Field::add_search (const Cluster_Search &search) {
+    searches_.push_back (search);
 }

@@ -1,6 +1,7 @@
 #ifndef INTERFACE4__KMEANS_H_
 #define INTERFACE4__KMEANS_H_
 #include "../Field.h"
+
 class kmeans {
   int clusters_number;
   int err_;

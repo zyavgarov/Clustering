@@ -14,7 +14,10 @@ class Cluster_Search {
     vector<const Point *> points; //It's never read, but really works to save the points
   };
   
-  explicit Cluster_Search (Field *field, double delta = 0, int k = 0);
+  explicit Cluster_Search (double delta = 0, int k = 0);
+  explicit Cluster_Search (vector<vector<bool>> edges);
+  explicit Cluster_Search (const vector<vector<int>> &points_by_clusters);
+  explicit Cluster_Search (TreeNode<const Point *> *tree_nodes);
   Cluster_Search (Cluster_Search const &cs);
   Cluster_Search &operator= (Cluster_Search const &cs);
   const vector<vector<bool>> &edges () const;
@@ -25,7 +28,6 @@ class Cluster_Search {
   void create_edges_matrix ();
   TreeNode<const Point *> *tree_root_;
  private:
-  Field *field_;
   vector<vector<bool>> edges_;
 };
 

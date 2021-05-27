@@ -74,6 +74,7 @@ void forel::forel_clustering () {
         center_nodes = new_center_nodes;
         R *= 2;
     }
+    // this is the place where we possibly could push writing the clusters
 }
 
 void forel::frl_fprintf (int print_num,
@@ -119,8 +120,8 @@ forel::forel () {
         err_ = -1;
         return;
     }
-    auto *f = new Field;
-    Field::searches_.emplace_back (f);
+    // auto *f = new Field;
+    // Field::searches_.emplace_back (f);
     forel_clustering ();
     err_ = 0;
 }

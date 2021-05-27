@@ -16,12 +16,14 @@
 #include "Clustering/forel.h"
 #include "Clustering/delaunay.h"
 #include "Clustering/histogram.h"
+#include "Clustering/predictions.h"
 
 class Controller {
   static queue<pair<int, string>> actions; // ordered list of commands which should be done
   static bool working_;
   static ofstream logger;
   static void log (const string &s);
+  static void log (const string &s, int fd);
   static Field *field_;
  public:
   Controller ();
@@ -50,6 +52,7 @@ class Controller {
   static int forel ();
   static int delaunay ();
   static int incidence_matrix (double delta);
+  static double predict (int &err, double x, double y);
 };
 
 #endif //SERVER__CONTROLLER_H_

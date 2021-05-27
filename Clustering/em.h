@@ -2,6 +2,7 @@
 #define INTERFACE4__EM_H_
 #include "../Field.h"
 #define EPS 0.01
+
 class em {
   int err_;
   int clusters_number;

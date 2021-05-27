@@ -18,7 +18,7 @@ class stree {
                           TreeNode<int> *&out_node);
   int stree_add_closest_point (TreeNode<int> &node, vector<bool> &added);
   void stree_fprintf_tree (const string &file_name, TreeNode<int> *root);
-  stree();
+  stree ();
 };
 
 #endif //INTERFACE4__STREE_H_

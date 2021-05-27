@@ -3,13 +3,13 @@
 void Buffer::add (Cloud *c) {
     //adds cloud to buffer
     for (int i = 0; i < c->length (); ++i) {
-        points.emplace_back(*c->point ()[i], 0);
+        points.emplace_back (*c->point ()[i], 0);
     }
 }
 
 void Buffer::add (Point *p) {
     // adds point to buffer
-    points.emplace_back(*p);
+    points.emplace_back (*p);
 }
 
 int Buffer::length () const {
@@ -49,8 +49,8 @@ void Buffer::rotate (double angle) {
         double old_x = points[i].x ();
         double old_y = points[i].y ();
         points[i] = Point (old_x * cos (angle) - old_y * sin (angle),
-                               old_x * sin (angle) + old_y * cos (angle),
-                               0);
+                           old_x * sin (angle) + old_y * cos (angle),
+                           0);
     }
     shift (-shift_x, -shift_y);
 }

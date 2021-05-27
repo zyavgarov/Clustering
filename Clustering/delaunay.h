@@ -1,6 +1,7 @@
 #ifndef INTERFACE4__DELAUNAY_H_
 #define INTERFACE4__DELAUNAY_H_
 #include "../Field.h"
+
 class delaunay {
   struct Edge {
     const Point *a, *b;
@@ -8,10 +9,11 @@ class delaunay {
     Edge (const Point *a, const Point *b) : a (a), b (b) {
     };
   };
+  
   int err_;
   static void delaunay_fprintf (vector<vector<bool>> &edge, int iteration);
  public:
-  delaunay();
+  delaunay ();
   int err () const;
   void delaunay_base_run (vector<Edge> &baselines,
                           vector<vector<bool>> &edge,

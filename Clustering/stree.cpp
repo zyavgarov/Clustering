@@ -22,7 +22,7 @@ stree::stree () {
         closest = stree_add_closest_point (root, added);
     } while (closest >= 0);
     stree_fprintf_tree ("gnuplot/stree/tree.txt", &root);
-    tree_ =  stree_create_histogram (root, 30);
+    tree_ = stree_create_histogram (root, 30);
 }
 
 int stree::stree_add_closest_point (TreeNode<int> &node, vector<bool> &added) {

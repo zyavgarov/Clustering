@@ -8,8 +8,8 @@ em::em (int clusters_number) : clusters_number (clusters_number) {
         err_ = -1;
         return;
     }
-    auto *temp_field = new Field ();
-    Field::searches_.emplace_back (temp_field);
+    //auto *temp_field = new Field ();
+    //Field::searches_.emplace_back (temp_field);
     vector<vector<double>> sigma;
     vector<vector<double>> mu;
     vector<vector<double>> r;
@@ -17,7 +17,7 @@ em::em (int clusters_number) : clusters_number (clusters_number) {
     vector<double> v0;
     // filling mu sigma and pi vectors
     for (int i = 0; i < clusters_number; ++i) {
-        vector<vector<double> > v22;
+        vector<vector<double>> v22;
         vector<double> v4;
         vector<double> v2;
         v4.reserve (4);
@@ -112,6 +112,18 @@ em::em (int clusters_number) : clusters_number (clusters_number) {
         }
         em_fprintf (iteration, sigma, mu, r);
     } while (!sw_em);
+    vector<vector<int>> clusters_to_set (clusters_number, vector<int> (Point::quantity ()));
+    for (int p = 0; p < Point::quantity (); ++p) {
+        int ind = 0;
+        for (int c = 0; c < clusters_number; ++c) {
+            if (r[p][c] > r[p][ind]) {
+                ind = c;
+            }
+        }
+        clusters_to_set[ind][p];
+    }
+    Cluster_Search cs (clusters_to_set);
+    Field::add_search (cs);
     err_ = 0;
 }
 

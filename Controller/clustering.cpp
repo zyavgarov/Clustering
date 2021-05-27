@@ -134,7 +134,7 @@ int Controller::hierarchical_algorithm () {
         return -2;
     }
     ha x;
-    int err = x.err();
+    int err = x.err ();
     if (err == 0) {
         log ("Field is clustered");
         return err;
@@ -156,7 +156,7 @@ int Controller::forel () {
         return -2;
     }
     class forel x;
-    int err = x.err();
+    int err = x.err ();
     if (err == 0) {
         log ("Field is clustered");
         return err;
@@ -179,7 +179,7 @@ int Controller::delaunay () {
         return -2;
     }
     class delaunay x;
-    int err = x.err();
+    int err = x.err ();
     if (err == 0) {
         log ("Field is clustered");
         return err;
@@ -191,4 +191,35 @@ int Controller::delaunay () {
         return err;
     }
     return 0;
+}
+
+double Controller::predict (int &err, double x, double y) {
+/*realises Delaunay triangulation
+     * Errors:
+     * -1 - Field is not in readonly mode
+     * -2 - Field doesn't exist
+     * -3 - Not enough points
+     */
+    if (field_ == nullptr) {
+        log ("Field doesn't exist");
+        return -2;
+    }
+    class predictions pr;
+    double result = predictions::predict (x, y);
+    err = predictions::err ();
+    if (err == 0) {
+        log ("The value is predicted");
+        return result;
+    } else if (err == -1) {
+        log ("Field is not in readonly state");
+        return 0;
+    } else if (err == -2) {
+        log ("Point is not in cluster");
+        return 0;
+    }
+    return result;
+}
+
+void Controller::log (const string &s, int fd) {
+    log (to_string (fd) + ": " + s);
 }

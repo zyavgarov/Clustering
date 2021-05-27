@@ -8,11 +8,12 @@ kmeans::kmeans (int clusters_number) : clusters_number (clusters_number) {
         err_ = -1;
         return;
     }
-    auto *a = new Field ();
+    // auto *a = new Field ();
     // That's temporary object.
     // In the future I'm going to eliminate pointer to Field from the class, but till that time
     // we're supposed to live our lifes with that thing
-    Field::searches_.emplace_back (a);
+    // Field::searches_.emplace_back (a);
+    // Field::new_search ();
     k_means ();
 }
 
@@ -56,14 +57,17 @@ void kmeans::k_means () {
         kmeans_fprintf (nearest_cluster, cores, iteration);
         iteration++;
     }
-    Field::searches_.back ().clusters.clear ();
+    //Field::searches_.back ().clusters.clear ();
     vector<vector<int>> clusters_to_set (clusters_number);
     for (int i = 0; i < nearest_cluster.size (); ++i) {
         clusters_to_set[nearest_cluster[i]].push_back (i);
     }
+    Cluster_Search cs (clusters_to_set);
+    Field::add_search (cs);
+    /*
     for (int i = 0; i < clusters_number; ++i) {
         Field::searches_.back ().clusters.emplace_back (clusters_to_set[i]);
-    }
+    }*/
     err_ = 0;
 }
 

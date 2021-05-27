@@ -16,8 +16,8 @@ ha::ha () {
         err_ = -1;
         return;
     }
-    auto * s = new Field;
-    Field::searches_.emplace_back (s);
+    // auto * s = new Field;
+    // Field::searches_.emplace_back (s);
     hierarchical_algorithm ();
     err_ = 0;
 }
@@ -37,7 +37,8 @@ void ha::hierarchical_algorithm () {
         ha_merge_nodes (a, b, tree_nodes);
         ha_fprintf (tree_nodes, Point::quantity () - tree_nodes.size (), old_1, old_2, tree);
     }
-    Field::searches_.back().tree_root_ = tree_nodes[0];
+    Cluster_Search cs (tree_nodes[0]);
+    // Field::searches_.back().tree_root_ = tree_nodes[0];
 }
 
 void ha::ha_get_closest_nodes (int &a, int &b, const vector<TreeNode<const Point *> *> &tree_node) {
@@ -81,8 +82,8 @@ void ha::ha_merge_nodes (int a, int b, vector<TreeNode<const Point *> *> &tree_n
 }
 
 TreeNode<const Point *> *&ha::ha_get_node_by_coords (int a,
-                                                                 vector<TreeNode<const Point *> *> &tree_node,
-                                                                 int &i, double x, double y) {
+                                                     vector<TreeNode<const Point *> *> &tree_node,
+                                                     int &i, double x, double y) {
     for (i = 0; i < tree_node.size (); ++i) {
         if (tree_node[i]->value ()->x () == x && tree_node[i]->value ()->y () == y) {
             return tree_node[i];
@@ -114,10 +115,10 @@ void ha::ha_get_node_sum (TreeNode<const Point *> *&node, double &sum_x, double 
 }
 
 void ha::ha_fprintf (const vector<TreeNode<const Point *> *> &tree_nodes,
-                                 int iteration,
-                                 const Point &old_1,
-                                 const Point &old_2,
-                                 ofstream &tree) {
+                     int iteration,
+                     const Point &old_1,
+                     const Point &old_2,
+                     ofstream &tree) {
     if (tree_nodes.size () < 3) {
         double a;
     }

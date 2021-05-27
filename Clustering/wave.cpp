@@ -43,7 +43,7 @@ wave::wave (int search_id) : search_id (search_id) {
         }
         Field::searches_[search_id].add (Cluster_Search::Cluster (curr_cluster));
     }
-    ofstream output("gnuplot/wave/wave.txt");
+    ofstream output ("gnuplot/wave/wave.txt");
     Field::fprintf (output);
     err_ = 0;
 }

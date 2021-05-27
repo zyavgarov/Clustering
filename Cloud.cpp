@@ -27,7 +27,7 @@ Cloud::Cloud (int length, double disp_x, double disp_y) {
 
 Cloud::Cloud (const vector<Point> &points) {
     for (const auto &point : points) {
-        point_.push_back (new Point (point.x(), point.y()));
+        point_.push_back (new Point (point.x (), point.y ()));
     }
 }
 

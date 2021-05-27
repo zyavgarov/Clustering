@@ -34,7 +34,7 @@ class Administrator {
   static bool send_to_client (int fd, char buf[512]);
   static void disconnect (int fd);
   static void answer ();
-  static void add_response (int fd, const string& result);
+  static void add_response (int fd, const string &result);
 };
 
 #endif //SERVER__ADMINISTRATOR_H_

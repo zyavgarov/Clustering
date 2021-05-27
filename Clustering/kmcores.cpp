@@ -18,13 +18,13 @@ kmcores::kmcores (int clusters_number, int cores_number)
         err_ = -1;
         return;
     }
-    auto * f =  new Field;
-    Field::searches_.emplace_back (f);
+    // auto * f =  new Field;
+    // Field::searches_.emplace_back (f);
     k_means_cores ();
     err_ = 0;
 }
 
-void kmcores::k_means_cores () {
+void kmcores::k_means_cores () const {
     /* realises k-means withcores clustering
      * clusters_number shows how many clusters we'll get
      * cores_number shows how many cores each cluster contains
@@ -121,26 +121,28 @@ void kmcores::k_means_cores () {
         kmeans_core_fprintf (nearest_cluster, cores, iteration);
         iteration++;
     }
-    Field::searches_.back().clusters.clear ();
+    //Field::searches_.back().clusters.clear ();
     vector<vector<int>> clusters_to_set (clusters_number);
     for (int i = 0; i < nearest_cluster.size (); ++i) {
         clusters_to_set[nearest_cluster[i]].push_back (i);
     }
-    for (int i = 0; i < clusters_number; ++i) {
-        Field::searches_.back().clusters.emplace_back (clusters_to_set[i]);
-    }
+    Cluster_Search cs (clusters_to_set);
+    Field::add_search (cs);
+    // for (int i = 0; i < clusters_number; ++i) {
+//         Field::searches_.back().clusters.emplace_back (clusters_to_set[i]);
+    // }
 }
 
 void kmcores::kmeans_core_fprintf (const vector<int> &nearest_cluster,
-                                          const vector<vector<Point>> &cores,
-                                          int iteration) {
+                                   const vector<vector<Point>> &cores,
+                                   int iteration) {
     ofstream out ("gnuplot/kmcores/km" + to_string (iteration) + ".txt");
-    ofstream final("gnuplot/kmcores/km_final.txt");
+    ofstream final ("gnuplot/kmcores/km_final.txt");
     for (int i = 0; i < Point::quantity (); ++i) {
         out << Point::get_by_id (i + 1)->x () << " " << Point::get_by_id (i + 1)->y () << " " << nearest_cluster[i]
             << endl;
         final << Point::get_by_id (i + 1)->x () << " " << Point::get_by_id (i + 1)->y () << " " << nearest_cluster[i]
-            << endl;
+              << endl;
     }
     for (auto &cluster : cores) {
         for (auto &core:cluster) {

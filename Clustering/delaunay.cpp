@@ -64,6 +64,7 @@ delaunay::delaunay () {
     vector<bool> points_done (Point::quantity (), false);
     int iteration = 0;
     delaunay_base_run (baselines, edge, points_done, iteration);
+    Field::new_search (edge);
     err_ = 0;
 }
 

@@ -19,8 +19,10 @@ class Field {
   static bool readonly ();
   static void create_dist_matrix ();
   static const vector<Cluster_Search> &searches ();
-  void create_edges_matrix (double delta);
+  static void create_edges_matrix (double delta);
   static int add (const vector<Point> &addition);
+  static void new_search (vector<vector<bool>>);
+  static void add_search (const Cluster_Search &search);
   static vector<Cluster_Search> searches_;
  private:
   Field &operator= (Field const &f);

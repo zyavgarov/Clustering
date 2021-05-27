@@ -1,13 +1,14 @@
 #ifndef INTERFACE4__HA_H_
 #define INTERFACE4__HA_H_
 #include "../Field.h"
+
 class ha {
   int err_;
  public:
   int err ();
-  ha();
+  ha ();
   void hierarchical_algorithm ();
-  void ha_get_closest_nodes (int &a, int &b, const vector<TreeNode<const Point *> *> &tree_node);
+  static void ha_get_closest_nodes (int &a, int &b, const vector<TreeNode<const Point *> *> &tree_node);
   void ha_merge_nodes (int a, int b, vector<TreeNode<const Point *> *> &tree_nodes);
   TreeNode<const Point *> *&ha_get_node_by_coords (int a,
                                                    vector<TreeNode<const Point *> *> &tree_node,

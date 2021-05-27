@@ -21,7 +21,7 @@ void Cluster_Search::add (const Cluster_Search::Cluster &addition) {
     clusters.push_back (addition);
 }
 
-Cluster_Search::Cluster_Search (Field *field, double delta, int k) : field_ (field), delta (delta), k (k) {
+Cluster_Search::Cluster_Search (double delta, int k) : delta (delta), k (k) {
     if (delta != 0) {
         // a little defence for kmeans
         create_edges_matrix ();
@@ -42,16 +42,29 @@ void Cluster_Search::create_edges_matrix () {
 }
 
 Cluster_Search::Cluster_Search (const Cluster_Search &cs)
-    : delta (cs.delta), k (cs.k), field_ (cs.field_), clusters (cs.clusters), edges_ (cs.edges_) {
+    : delta (cs.delta), k (cs.k), clusters (cs.clusters), edges_ (cs.edges_) {
 }
 
 Cluster_Search &Cluster_Search::operator= (const Cluster_Search &cs) {
     if (this != &cs) {
         delta = cs.delta;
         k = cs.k;
-        field_ = cs.field_;
         clusters = cs.clusters;
         edges_ = cs.edges_;
     }
     return *this;
+}
+
+Cluster_Search::Cluster_Search (vector<vector<bool>> edges) {
+    edges_ = edges;
+}
+
+Cluster_Search::Cluster_Search (const vector<vector<int>> &points_by_clusters) {
+    for (auto &cluster : points_by_clusters) {
+        clusters.emplace_back (cluster);
+    }
+}
+
+Cluster_Search::Cluster_Search (TreeNode<const Point *> *tree_nodes) {
+    tree_root_ = tree_nodes;
 }

@@ -37,7 +37,7 @@ class Point {
   Point operator+ (const Point &a) const;
   Point operator* (const double &a) const;
   Point operator/ (const double &a) const;
-  static const Point * get_by_id (int id);
+  static const Point *get_by_id (int id);
   static double dist (const Point *A, const Point *B);
   static int quantity ();
   void set (double x, double y);

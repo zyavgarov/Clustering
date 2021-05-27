@@ -16,6 +16,7 @@ Point::Point (double x, double y, int id) : x_ (x), y_ (y) {
         id_pointers.push_back (this);
     }
 }
+
 /*
 Point::Point (Point const &c) : x_ (c.x ()), y_ (c.y ()) {
     if (c.id () == 0) {
