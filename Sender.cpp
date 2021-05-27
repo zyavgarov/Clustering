@@ -51,6 +51,7 @@ int Sender::connect_server () {
         perror ("Client:  connect_server failure");
         return -3;
     }
+    log ("Connected");
     cout << "Connection is ready" << endl;
     return 0;
 }
@@ -94,6 +95,7 @@ int Sender::send_to_server () {
             perror ("write");
             break;
         }
+        log ("sent: " + string (buf));
         if (strstr (buf, "stop")) return -1;
     }
     return 0;
@@ -129,6 +131,7 @@ void Sender::run () {
 }
 
 void Sender::manage_answer (const string &answer) {
+    log ("got: " + answer);
     cout << answer << endl; // to be done smth better and more valuable
 }
 

@@ -33,8 +33,8 @@ class Sender {
   static int send_to_server ();
   static void run ();
   static void get_from_server ();
-  static void manage_answer (const string& answer);
-  static bool working();
+  static void manage_answer (const string &answer);
+  static bool working ();
 };
 
 #endif //CLIENT__SENDER_H_
