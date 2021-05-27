@@ -1,3 +1,4 @@
+// Created by Zyavgarov Rustam
 #ifndef CLIENT__INTERFACE_H_
 #define CLIENT__INTERFACE_H_
 #include "Sender.h"

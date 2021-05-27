@@ -1,3 +1,4 @@
+// Created by Zyavgarov Rustam
 #include "Sender.h"
 int Sender::sock;
 bool Sender::write_log;

@@ -1,3 +1,4 @@
+// Created by Zyavgarov Rustam
 #include "Interface.h"
 int Interface::id_ = time (nullptr) * random ();
 

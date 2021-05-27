@@ -1,3 +1,4 @@
+// Created by Zyavgarov Rustam
 #ifndef CLIENT__SENDER_H_
 #define CLIENT__SENDER_H_
 #include <string>
