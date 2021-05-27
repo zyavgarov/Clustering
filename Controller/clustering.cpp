@@ -1,3 +1,4 @@
+// Created by Zyavgarov Rustam
 #include "../Controller.h"
 
 int Controller::dbscan (int search_id, int k) { // 1) what if field is not readonly 2) incidence matrix already created

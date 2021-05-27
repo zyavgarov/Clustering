@@ -1,3 +1,4 @@
+// Created by Zyavgarov Rustam
 #include "histogram.h"
 
 histogram::histogram (int pieces, vector<int> &x_distr, vector<int> &y_distr) {

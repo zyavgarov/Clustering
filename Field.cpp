@@ -1,3 +1,4 @@
+// Created by Zyavgarov Rustam
 #include "Field.h"
 #include <iostream>
 Buffer Field::buf;

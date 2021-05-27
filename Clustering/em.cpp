@@ -1,3 +1,4 @@
+// Created by Zyavgarov Rustam
 #include "em.h"
 
 em::em (int clusters_number) : clusters_number (clusters_number) {

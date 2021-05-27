@@ -1,3 +1,4 @@
+// Created by Zyavgarov Rustam
 #include "Administrator.h"
 #include "Controller.h"
 int Administrator::sock;

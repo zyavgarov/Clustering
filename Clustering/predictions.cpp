@@ -1,3 +1,4 @@
+// Created by Zyavgarov Rustam
 #include "predictions.h"
 Point predictions::new_point;
 int predictions::err_;

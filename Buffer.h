@@ -1,3 +1,4 @@
+// Created by Zyavgarov Rustam
 #ifndef INTERFACE4__BUFFER_H_
 #define INTERFACE4__BUFFER_H_
 //#include "Controller.h"

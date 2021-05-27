@@ -1,3 +1,4 @@
+// Created by Zyavgarov Rustam
 #ifndef INTERFACE4__KMEANS_H_
 #define INTERFACE4__KMEANS_H_
 #include "../Field.h"

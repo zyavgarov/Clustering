@@ -1,7 +1,4 @@
-//
-// Created by pierre on 17/04/2021.
-//
-
+// Created by Zyavgarov Rustam
 #include "ha.h"
 
 int ha::err () {

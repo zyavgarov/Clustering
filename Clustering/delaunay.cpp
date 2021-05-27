@@ -1,3 +1,5 @@
+// Created by Zyavgarov Rustam
+
 #include "delaunay.h"
 
 delaunay::delaunay () {

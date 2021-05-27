@@ -1,3 +1,4 @@
+// Created by Zyavgarov Rustam
 #ifndef INTERFACE4__CLOUD_H_
 #define INTERFACE4__CLOUD_H_
 #include "Point.h"

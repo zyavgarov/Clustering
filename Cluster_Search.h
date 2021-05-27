@@ -1,3 +1,4 @@
+// Created by Zyavgarov Rustam
 #ifndef INTERFACE4__CLUSTER_SEARCH_H_
 #define INTERFACE4__CLUSTER_SEARCH_H_
 #include "Cloud.h"

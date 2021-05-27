@@ -1,3 +1,4 @@
+// Created by Zyavgarov Rustam
 #ifndef INTERFACE4__EM_H_
 #define INTERFACE4__EM_H_
 #include "../Field.h"

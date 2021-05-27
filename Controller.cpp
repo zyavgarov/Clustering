@@ -1,3 +1,4 @@
+// Created by Zyavgarov Rustam
 #include "Controller.h"
 bool Controller::working_ = false;
 queue<pair<int, string>> Controller::actions;

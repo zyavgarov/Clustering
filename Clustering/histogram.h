@@ -1,3 +1,4 @@
+// Created by Zyavgarov Rustam
 #ifndef INTERFACE4__HISTOGRAM_H_
 #define INTERFACE4__HISTOGRAM_H_
 #include "../Field.h"

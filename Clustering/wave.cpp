@@ -1,3 +1,4 @@
+// Created by Zyavgarov Rustam
 #include "wave.h"
 
 wave::wave (int search_id) : search_id (search_id) {

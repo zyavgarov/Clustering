@@ -1,5 +1,5 @@
 #include "dbscan.h"
-
+// Created by Zyavgarov Rustam
 int dbscan::err () const {
     return err_;
 }

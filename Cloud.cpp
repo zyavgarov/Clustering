@@ -1,3 +1,4 @@
+// Created by Zyavgarov Rustam
 #include "Cloud.h"
 Cloud::Cloud () = default;
 

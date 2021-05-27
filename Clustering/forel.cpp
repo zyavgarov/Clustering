@@ -1,3 +1,4 @@
+// Created by Zyavgarov Rustam
 #include "forel.h"
 
 void forel::forel_clustering () {

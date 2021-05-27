@@ -1,3 +1,4 @@
+// Created by Zyavgarov Rustam
 #include "../Controller.h"
 
 int Controller::buffer_add_cloud (int id) {

@@ -1,3 +1,4 @@
+// Created by Zyavgarov Rustam
 #ifndef SERVER__ADMINISTRATOR_H_
 #define SERVER__ADMINISTRATOR_H_
 #include <cstdio>

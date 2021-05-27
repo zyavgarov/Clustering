@@ -1,3 +1,4 @@
+// Created by Zyavgarov Rustam
 #include "Point.h"
 int Point::quantity_ = 0;
 vector<Point *> Point::id_pointers;

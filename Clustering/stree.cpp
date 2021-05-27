@@ -1,3 +1,4 @@
+// Created by Zyavgarov Rustam
 #include "stree.h"
 
 stree::stree () {

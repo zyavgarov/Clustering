@@ -1,3 +1,4 @@
+// Created by Zyavgarov Rustam
 #include "kmeans.h"
 
 kmeans::kmeans (int clusters_number) : clusters_number (clusters_number) {

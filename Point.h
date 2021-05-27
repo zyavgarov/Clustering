@@ -1,3 +1,4 @@
+// Created by Zyavgarov Rustam
 #ifndef INTERFACE4__POINT_H_
 #define INTERFACE4__POINT_H_
 #include <fstream>

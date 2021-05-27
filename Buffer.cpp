@@ -1,3 +1,4 @@
+// Created by Zyavgarov Rustam
 #include "Buffer.h"
 
 void Buffer::add (Cloud *c) {
