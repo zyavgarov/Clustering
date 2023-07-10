@@ -1,0 +1,12 @@
+set term gif animate optimize delay 25 size 1080,1080
+set output "gifs/forel.gif"
+set palette model RGB defined (-3 'blue', -2 'red', -1 'green', 0 'yellow', 1 'black')
+set xrange[-0.5:0.5]
+set yrange[-0.5:0.5]
+set style line 1 \
+    linecolor rgb '#0060ad' \
+    linetype 1 linewidth 2 pointtype 7 pointsize 0.5
+do for [i=0:1000] {
+	plot 'forel/frl'.i.'.txt' u 1:2:3 with points linestyle 1 palette, \
+	'forel/circle'.i.'.txt' u 1:2:3 w circles
+}

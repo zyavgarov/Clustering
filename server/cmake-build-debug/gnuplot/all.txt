@@ -1,0 +1,8 @@
+load 'dbscan.txt'
+load 'dlfin.txt'
+load 'emfin.txt'
+load 'hatree.txt'
+load 'kmcfin.txt'
+load 'kmfin.txt'
+load 'wave.txt'
+load 'stree.txt'
